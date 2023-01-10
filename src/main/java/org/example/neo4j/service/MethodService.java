@@ -13,14 +13,9 @@ public class MethodService {
     final SessionFactory sessionFactory;
 
     public MethodService() {
-        Configuration config = new Configuration.Builder().uri("neo4j://localhost:7687").credentials("neo4j", "flight").build();
+        Configuration config = new Configuration.Builder().uri("neo4j://localhost:7687").credentials("neo4j", "password").build();
 
         this.sessionFactory = new SessionFactory(config, "org.example.neo4j");
-    }
-
-    Method findMethodByName(String name) {
-        Session session = sessionFactory.openSession();
-        return session.queryForObject(Method.class, "MATCH (m:Method {title:$title}) return m", Map.of("name", name));
     }
 
     public void createMethodNode(Method method) {
