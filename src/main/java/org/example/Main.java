@@ -91,8 +91,6 @@ public class Main {
         CallGraph callGraph = Scene.v().getCallGraph();
 
         Map<String, Method> neo4jEntities = new HashMap<>();
-
-        System.out.printf("adding edges to jgrapht%n");
         callGraph.iterator().forEachRemaining(new Consumer<Edge>() {
             @Override
             public void accept(Edge edge) {

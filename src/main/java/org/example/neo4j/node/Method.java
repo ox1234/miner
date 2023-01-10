@@ -56,6 +56,9 @@ public class Method {
     }
 
     public void appendCallee(Method callee) {
+        if(this.callees == null){
+            this.callees = new ArrayList<>();
+        }
         this.callees.add(callee);
     }
 
