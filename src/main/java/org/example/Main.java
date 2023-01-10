@@ -2,6 +2,8 @@ package org.example;
 
 import org.apache.commons.io.FileUtils;
 import org.example.config.Global;
+import org.example.neo4j.node.Method;
+import org.example.neo4j.service.MethodService;
 import org.example.rule.Root;
 import org.example.rule.RuleUtil;
 import org.jgrapht.Graph;
@@ -15,6 +17,9 @@ import org.jgrapht.nio.IntegerIdProvider;
 import org.jgrapht.nio.dot.DOTExporter;
 import org.jgrapht.nio.graphml.GraphMLExporter;
 import org.jgrapht.traverse.DepthFirstIterator;
+import org.neo4j.ogm.config.Configuration;
+import org.neo4j.ogm.session.Session;
+import org.neo4j.ogm.session.SessionFactory;
 import soot.PackManager;
 import soot.Scene;
 import soot.SootClass;
@@ -32,11 +37,17 @@ import java.io.*;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class Main {
-    public static void main(String[] args) throws Exception{
+    public static void main(String[] args) throws Exception {
+        generateCG();
+
+    }
+
+    public static void generateCG() throws Exception {
         FileInputStream fileInputStream = new FileInputStream("config.json");
         byte[] buf = new byte[fileInputStream.available()];
         fileInputStream.read(buf);
@@ -62,12 +73,12 @@ public class Main {
 
         Scene.v().loadNecessaryClasses();
         System.out.printf("load %d app classes and %d library classes%n", Scene.v().getApplicationClasses().size(), Scene.v().getLibraryClasses().size());
-        for(SootClass sootClass : Scene.v().getClasses()){
-            if(sootClass.getName().startsWith("com.weaver") && !sootClass.isPhantom()){
+        for (SootClass sootClass : Scene.v().getClasses()) {
+            if (sootClass.getName().startsWith("com.weaver") && !sootClass.isPhantom()) {
                 sootClass.setApplicationClass();
-            }else if(sootClass.isPhantom()){
+            } else if (sootClass.isPhantom()) {
                 sootClass.setPhantomClass();
-            }else{
+            } else {
                 sootClass.setLibraryClass();
             }
         }
@@ -77,125 +88,70 @@ public class Main {
 
         PackManager.v().runPacks();
 
-        Graph<String, DefaultEdge> g = new DefaultDirectedGraph<>(DefaultEdge.class);
-
         CallGraph callGraph = Scene.v().getCallGraph();
+
+        Map<String, Method> neo4jEntities = new HashMap<>();
+
         System.out.printf("adding edges to jgrapht%n");
         callGraph.iterator().forEachRemaining(new Consumer<Edge>() {
             @Override
             public void accept(Edge edge) {
-                if(edge.tgt() == null){
+                if (edge.tgt() == null) {
                     return;
                 }
-                if(!edge.src().getDeclaringClass().getName().startsWith("com.weaver")){
+                if (!edge.src().getDeclaringClass().getName().startsWith("com.weaver")) {
                     return;
                 }
-                g.addVertex(edge.src().getSignature());
-                g.addVertex(edge.tgt().getSignature());
-                g.addEdge(edge.src().getSignature(), edge.tgt().getSignature());
-            }
-        });
-        Global.cg = g;
-        System.out.printf("doing depth first iterator%n");
 
-        GraphMLExporter<String, DefaultEdge> mlExporter = new GraphMLExporter<>(s -> s);
-        mlExporter.setVertexAttributeProvider(new Function<String, Map<String, Attribute>>() {
-            @Override
-            public Map<String, Attribute> apply(String s) {
-                Map<String, Attribute> m = new HashMap<>();
-                m.put("name", DefaultAttribute.createAttribute(s));
-                return m;
-            }
-        });
-        mlExporter.setEdgeIdProvider(new IntegerIdProvider<>(0));
-        mlExporter.setEdgeAttributeProvider(e -> {
-            Map<String, Attribute> m = new HashMap<>();
-            m.put("name", DefaultAttribute.createAttribute("call"));
-            return m;
-        });
-        mlExporter.registerAttribute("name", GraphMLExporter.AttributeCategory.ALL, AttributeType.STRING);
-
-        Writer mlWriter = new FileWriter("/home/flight/.config/Neo4j Desktop/Application/relate-data/dbmss/dbms-e6ce57d4-5e78-4c7b-841a-dacb48958ee6/import/cg.graphml");
-        mlExporter.exportGraph(g, mlWriter);
-
-
-//        DOTExporter<String, DefaultEdge> exporter = new DOTExporter<>(s -> s);
-//        exporter.setVertexAttributeProvider(s -> {
-//            Map<String, Attribute> map = new LinkedHashMap<>();
-//            map.put("label", DefaultAttribute.createAttribute(s));
-//            return map;
-//        });
-//        Writer writer = new StringWriter();
-//        exporter.exportGraph(g, writer);
-//        FileOutputStream fileOutputStream = new FileOutputStream("cg.dot");
-//        fileOutputStream.write(writer.toString().getBytes());
-//        fileOutputStream.close();
-
-//        for(SootMethod entry : routeMethods){
-//            System.out.printf("doing depth first vuln find for %s%n", entry.getSignature());
-//            try {
-//                findInterestingCall(entry);
-//            }catch (Exception e){
-//                e.printStackTrace();
-//            }
-//        }
-    }
-
-    public static void findInterestingCall(SootMethod entry) throws Exception{
-        Graph<String, DefaultEdge> g = Global.cg;
-        DepthFirstIterator<String, DefaultEdge> iterator = new DepthFirstIterator<>(g, entry.getSignature());
-        List<String> callStack = new ArrayList<>();
-        boolean isInteresting = false;
-        while(iterator.hasNext()){
-            String call = iterator.next();
-            if(Global.sinks.contains(call)){
-                for (Object o : iterator.getStack()) {
-                    System.out.println(o);
-                    callStack.add((String) o);
+                String srcSig = edge.src().getSignature();
+                if (neo4jEntities.containsKey(srcSig)) {
+                    Method srcMethod = neo4jEntities.get(srcSig);
+                    srcMethod.appendCallee(Method.getInstance(edge.tgt()));
+                } else {
+                    neo4jEntities.put(edge.src().getSignature(), Method.getInstance(edge.tgt()));
                 }
-                isInteresting = true;
             }
-        }
-        if(isInteresting){
-            FileOutputStream fileOutputStream = new FileOutputStream(String.format("vulns/%s.flow", entry.getSignature()));
-            fileOutputStream.write(String.join("----------------------------------\n\n", callStack).getBytes());
-            fileOutputStream.close();
-        }
+        });
+
+        MethodService methodService = new MethodService();
+        neo4jEntities.forEach((s, method) -> {
+            methodService.createMethodNode(method);
+        });
     }
 
-    public static String getLibClassPathStr(Collection<File> jars){
+    public static String getLibClassPathStr(Collection<File> jars) {
         List<String> files = new ArrayList<>();
-        for(File jar : jars){
+        for (File jar : jars) {
             files.add(jar.getAbsolutePath());
         }
         return String.join(":", files);
     }
 
-    public static List<AnnotationTag> getClassAnnotation(SootClass sootClass){
+    public static List<AnnotationTag> getClassAnnotation(SootClass sootClass) {
         VisibilityAnnotationTag annotationTag = (VisibilityAnnotationTag) sootClass.getTag("VisibilityAnnotationTag");
-        if(annotationTag == null){
+        if (annotationTag == null) {
             return Collections.emptyList();
         }
         return annotationTag.getAnnotations();
     }
 
-    public static List<AnnotationTag> getMethodAnnotation(SootMethod sootMethod){
+    public static List<AnnotationTag> getMethodAnnotation(SootMethod sootMethod) {
         VisibilityAnnotationTag annotationTag = (VisibilityAnnotationTag) sootMethod.getTag("VisibilityAnnotationTag");
-        if(annotationTag == null){
+        if (annotationTag == null) {
             return Collections.emptyList();
         }
         return annotationTag.getAnnotations();
     }
 
-    public static List<SootMethod> getRouteMethods(){
+    public static List<SootMethod> getRouteMethods() {
         List<SootMethod> routeMethods = new ArrayList<>();
-        for(SootClass sootClass : Scene.v().getApplicationClasses()){
+        for (SootClass sootClass : Scene.v().getApplicationClasses()) {
 //            System.out.printf("%s class has %d method%n", sootClass.getName(), sootClass.getMethods().size());
-            for(AnnotationTag annotationTag : getClassAnnotation(sootClass)){
-                if(isSpringControllerAnnotation(annotationTag)){
-                    for(SootMethod sootMethod : sootClass.getMethods()){
-                        for(AnnotationTag methodTag : getMethodAnnotation(sootMethod)){
-                            if(isRouteMethodAnnotation(methodTag)){
+            for (AnnotationTag annotationTag : getClassAnnotation(sootClass)) {
+                if (isSpringControllerAnnotation(annotationTag)) {
+                    for (SootMethod sootMethod : sootClass.getMethods()) {
+                        for (AnnotationTag methodTag : getMethodAnnotation(sootMethod)) {
+                            if (isRouteMethodAnnotation(methodTag)) {
                                 routeMethods.add(sootMethod);
                             }
                         }
@@ -206,11 +162,11 @@ public class Main {
         return routeMethods;
     }
 
-    public static boolean isSpringControllerAnnotation(AnnotationTag tag){
+    public static boolean isSpringControllerAnnotation(AnnotationTag tag) {
         return Global.rule.filter.controllerClassTags.contains(tag.getType());
     }
 
-    public static boolean isRouteMethodAnnotation(AnnotationTag tag){
+    public static boolean isRouteMethodAnnotation(AnnotationTag tag) {
         return Global.rule.filter.requestMethodTags.contains(tag.getType());
     }
 }
