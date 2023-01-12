@@ -1247,6 +1247,11 @@
         },
 
         {
+          "expression": "<java.net.URL: java.io.InputStream openStream()>",
+          "index": null
+        },
+
+        {
           "expression": "<org.jsoup.Jsoup: org.jsoup.Connection connect(java.lang.String)>",
           "index": [0]
         },
