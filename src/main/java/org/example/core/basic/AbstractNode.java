@@ -34,4 +34,18 @@ public abstract class AbstractNode implements Node {
     public String getType() {
         return type;
     }
+
+    @Override
+    public int hashCode() {
+        return 1;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Node)) {
+            return false;
+        }
+        Node node = (Node) obj;
+        return node.getNodeID().equals(this.getNodeID());
+    }
 }

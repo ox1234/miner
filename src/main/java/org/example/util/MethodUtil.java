@@ -35,6 +35,6 @@ public class MethodUtil {
     }
 
     public static String getMethodObjID(SootMethod sootMethod, Unit unit) {
-        return DigestUtils.sha1Hex(String.format("%s-%s", sootMethod.getSignature(), unit.toString()));
+        return DigestUtils.sha1Hex(String.format("%s-%s-%d", sootMethod.getSignature(), unit.toString(), UnitUtil.getLineNumber(unit)));
     }
 }

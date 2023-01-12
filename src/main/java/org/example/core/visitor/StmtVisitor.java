@@ -2,14 +2,12 @@ package org.example.core.visitor;
 
 import org.example.config.FlowRepository;
 import org.example.core.basic.Node;
+import org.example.core.basic.identity.RetNodeIdentity;
 import org.example.util.NodeUtil;
 import soot.SootMethod;
 import soot.Unit;
 import soot.Value;
-import soot.jimple.AbstractStmtSwitch;
-import soot.jimple.AssignStmt;
-import soot.jimple.DefinitionStmt;
-import soot.jimple.IdentityStmt;
+import soot.jimple.*;
 
 import java.util.List;
 import java.util.Set;
@@ -32,6 +30,21 @@ public class StmtVisitor extends AbstractStmtSwitch<Void> {
     @Override
     public void caseIdentityStmt(IdentityStmt stmt) {
         handleDefinitionStmt(stmt);
+    }
+
+    @Override
+    public void caseInvokeStmt(InvokeStmt stmt) {
+        stmt.getInvokeExpr().apply(valueVisitor);
+    }
+
+    @Override
+    public void caseReturnStmt(ReturnStmt stmt) {
+        Value op = stmt.getOp();
+        op.apply(valueVisitor);
+
+        List<Node> nodeSet = valueVisitor.getResult();
+        Node node = new RetNodeIdentity(currentMethod, currentUnit);
+        FlowRepository.addTaintFlow(node, nodeSet);
     }
 
     public void handleDefinitionStmt(DefinitionStmt stmt) {

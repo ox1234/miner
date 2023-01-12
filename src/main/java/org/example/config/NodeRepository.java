@@ -11,6 +11,7 @@ public class NodeRepository {
     private static Map<String, Node> nodeRepository = new HashMap<>();
     private static Map<String, Identity> identityRepository = new HashMap<>();
     private static Map<String, Obj> objRepository = new HashMap<>();
+    private static Map<String, Identity> callNodeRepository = new HashMap<>();
 
     public static void addNode(Node node) {
         nodeRepository.put(node.getNodeID(), node);
