@@ -19,4 +19,8 @@ public class FlowRepository {
             taintFlowMap.put(to, nodeSet);
         }
     }
+
+    public static void exportTaintFlowMap(){
+        
+    }
 }

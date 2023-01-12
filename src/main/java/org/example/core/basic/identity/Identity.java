@@ -16,4 +16,9 @@ public abstract class Identity extends AbstractNode {
         super.id = MethodUtil.getMethodLocalID(enclosingMethod, name);
         this.name = name;
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

@@ -61,6 +61,8 @@ public class SootSetup {
         Options.v().set_no_bodies_for_excluded(true);
         Options.v().set_whole_shimple(true);
         Options.v().set_output_format(Options.output_format_shimp);
+        Options.v().set_keep_line_number(true);
+        Options.v().set_keep_offset(true);
 
 
         if (Global.allReachable) {

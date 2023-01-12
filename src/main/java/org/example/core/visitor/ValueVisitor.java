@@ -1,6 +1,7 @@
 package org.example.core.visitor;
 
 import org.example.config.NodeRepository;
+import org.example.core.basic.CallNode;
 import org.example.core.basic.Node;
 import org.example.core.basic.identity.*;
 import org.example.core.basic.obj.ConstantObj;
@@ -151,6 +152,59 @@ public class ValueVisitor extends AbstractShimpleValueSwitch<List<Node>> {
 
 
         this.setNodeResult(nodeList);
+    }
+
+    @Override
+    public void caseInterfaceInvokeExpr(InterfaceInvokeExpr v) {
+        handleInvoke(v);
+    }
+
+    @Override
+    public void caseVirtualInvokeExpr(VirtualInvokeExpr v) {
+        handleInvoke(v);
+    }
+
+    @Override
+    public void caseSpecialInvokeExpr(SpecialInvokeExpr v) {
+        handleInvoke(v);
+    }
+
+    @Override
+    public void caseStaticInvokeExpr(StaticInvokeExpr v) {
+        handleInvoke(v);
+    }
+
+    @Override
+    public void caseDynamicInvokeExpr(DynamicInvokeExpr v) {
+        List<Node> nodeList = new ArrayList<>();
+        if (v.getMethod().getName().equals("makeConcatWithConstants")) {
+            for (Value boostrapValue : v.getBootstrapArgs()) {
+                boostrapValue.apply(this);
+                nodeList.addAll(this.getResult());
+            }
+
+            for (Value arg : v.getArgs()) {
+                arg.apply(this);
+                nodeList.addAll(this.getResult());
+            }
+            this.setNodeResult(nodeList);
+        } else {
+            handleInvoke(v);
+        }
+    }
+
+    public void handleInvoke(InvokeExpr v) {
+        SootMethod targetMethod = v.getMethod();
+        CallNode callNode = new CallNode(targetMethod, currentMethod, currentUnit);
+        for (int i = 0; i < v.getArgCount(); i++) {
+            Value argValue = v.getArg(i);
+            argValue.apply(this);
+            List<Node> nodes = getResult();
+            assert nodes.size() == 1;
+            callNode.addArg(nodes.get(0));
+        }
+        callNode.setRet(new RetNodeIdentity(targetMethod, currentUnit));
+        this.setNodeResult(callNode);
     }
 
     // ------------------------------------------------------- result manipulate ------------------------------------------
