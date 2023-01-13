@@ -5,9 +5,9 @@ import org.example.core.basic.Node;
 import java.util.*;
 
 public class FlowRepository {
-    public static Map<Node, Set<Node>> taintFlowMap = new HashMap<>();
+    public static Map<String, Set<String>> taintFlowMap = new HashMap<>();
 
-    public static void addTaintFlow(Node to, List<Node> from) {
+    public static void addTaintFlow(String to, Set<String> from) {
         if (from == null || to == null || from.isEmpty()) {
             return;
         }
@@ -15,20 +15,16 @@ public class FlowRepository {
         if (taintFlowMap.containsKey(to)) {
             taintFlowMap.get(to).addAll(from);
         } else {
-            Set<Node> nodeSet = new HashSet<>(from);
+            Set<String> nodeSet = new HashSet<>(from);
             taintFlowMap.put(to, nodeSet);
         }
     }
 
-    public static Set<Node> getTaintFlow(Node to) {
-        Set<Node> fromNodes = taintFlowMap.get(to);
-        if(fromNodes == null){
+    public static Set<String> getTaintFlow(String to) {
+        Set<String> fromNodes = taintFlowMap.get(to);
+        if (fromNodes == null) {
             return Collections.emptySet();
         }
         return fromNodes;
-    }
-
-    public static void exportTaintFlowMap() {
-
     }
 }

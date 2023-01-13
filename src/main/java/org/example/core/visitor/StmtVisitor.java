@@ -55,7 +55,7 @@ public class StmtVisitor extends AbstractStmtSwitch<Void> {
         List<Node> nodeSet = valueVisitor.getResult();
         Node node = new RetNodeIdentity(currentMethod, currentUnit);
         NodeRepository.addNode(node);
-        FlowRepository.addTaintFlow(node, nodeSet);
+        FlowRepository.addTaintFlow(node.getNodeID(), NodeUtil.getNodeID(nodeSet));
     }
 
     public void handleDefinitionStmt(DefinitionStmt stmt) {
@@ -69,7 +69,7 @@ public class StmtVisitor extends AbstractStmtSwitch<Void> {
         rightVal.apply(valueVisitor);
         List<Node> rightNode = valueVisitor.getResult();
 
-        FlowRepository.addTaintFlow(leftNodes.get(0), rightNode);
+        FlowRepository.addTaintFlow(leftNodes.get(0).getNodeID(), NodeUtil.getNodeID(rightNode));
     }
 
 

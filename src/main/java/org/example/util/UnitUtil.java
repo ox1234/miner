@@ -38,6 +38,6 @@ public class UnitUtil {
     }
 
     public static String getParameterNodeID(SootMethod sootMethod, int idx) {
-        return DigestUtils.sha1Hex(String.format("param-%s-%d", sootMethod.getSignature(), idx));
+        return getIdentityNodeID(sootMethod, String.format("param-%s-%d", sootMethod.getSignature(), idx));
     }
 }

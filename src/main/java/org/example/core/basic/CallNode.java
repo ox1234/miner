@@ -1,6 +1,7 @@
 package org.example.core.basic;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.example.core.basic.identity.ParameterIdentify;
 import org.example.util.UnitUtil;
 import soot.SootMethod;
 import soot.Unit;
@@ -12,6 +13,7 @@ import java.util.List;
 public class CallNode extends AbstractNode {
     public String signature;
     public List<Node> args = new ArrayList<>();
+    public List<Node> params = new ArrayList<>();
     public Node ret;
 
 
@@ -19,6 +21,9 @@ public class CallNode extends AbstractNode {
         super(targetMethod.getDeclaringClass().getName(), enclosingMethod, nodeSite);
         super.id = UnitUtil.getCallNodeID(enclosingMethod, nodeSite);
         this.signature = targetMethod.getSignature();
+        for (int i = 0; i < targetMethod.getParameterCount(); i++) {
+            params.add(new ParameterIdentify(targetMethod.getParameterType(0).toString(), i, targetMethod));
+        }
     }
 
     public void setRet(Node ret) {
