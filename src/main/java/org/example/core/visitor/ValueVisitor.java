@@ -8,6 +8,7 @@ import org.example.core.basic.obj.ConstantObj;
 import org.example.core.basic.obj.NormalObj;
 import org.example.core.basic.obj.Obj;
 import org.example.util.MethodUtil;
+import org.example.util.UnitUtil;
 import soot.SootMethod;
 import soot.Unit;
 import soot.Value;
@@ -34,7 +35,7 @@ public class ValueVisitor extends AbstractShimpleValueSwitch<List<Node>> {
     // ----------------------------------------------- value visitor ----------------------------------------------------------------
     @Override
     public void caseLocal(soot.Local v) {
-        Identity node = NodeRepository.getIdentity(MethodUtil.getMethodLocalID(currentMethod, v.getName()));
+        Identity node = NodeRepository.getIdentity(UnitUtil.getIdentityNodeID(currentMethod, v.getName()));
         if (node == null) {
             node = new NormalIdentity(v.getName(), v.getType().toString(), currentMethod, currentUnit);
         }
@@ -219,10 +220,17 @@ public class ValueVisitor extends AbstractShimpleValueSwitch<List<Node>> {
     }
 
     private void addNodeRepository(Node node) {
+        // check if already has this node, if have just return
+        if (NodeRepository.getNode(node.getNodeID()) != null) {
+            return;
+        }
+
         if (node instanceof Identity) {
             NodeRepository.addIdentity((Identity) node);
         } else if (node instanceof Obj) {
             NodeRepository.addObj((Obj) node);
+        } else if (node instanceof CallNode) {
+            NodeRepository.addCallNode((CallNode) node);
         }
         NodeRepository.addNode(node);
     }

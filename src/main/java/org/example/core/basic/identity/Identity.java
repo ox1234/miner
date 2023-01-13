@@ -2,6 +2,7 @@ package org.example.core.basic.identity;
 
 import org.example.core.basic.AbstractNode;
 import org.example.util.MethodUtil;
+import org.example.util.UnitUtil;
 import soot.SootMethod;
 import soot.Unit;
 
@@ -13,8 +14,12 @@ public abstract class Identity extends AbstractNode {
 
     public Identity(String name, String type, SootMethod enclosingMethod, Unit nodeSite) {
         super(type, enclosingMethod, nodeSite);
-        super.id = MethodUtil.getMethodLocalID(enclosingMethod, name);
+        super.id = UnitUtil.getIdentityNodeID(enclosingMethod, name);
         this.name = name;
+    }
+
+    public String getName() {
+        return name;
     }
 
     @Override

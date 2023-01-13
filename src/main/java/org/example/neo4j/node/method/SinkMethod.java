@@ -1,14 +1,11 @@
-package org.example.neo4j.node;
+package org.example.neo4j.node.method;
 
-import org.example.config.Global;
 import org.neo4j.ogm.annotation.NodeEntity;
 import soot.SootMethod;
 
-import java.util.ArrayList;
-
-@NodeEntity
 public class SinkMethod extends Method {
     boolean isSink = true;
-
-
+    public SinkMethod(SootMethod sootMethod) {
+        super(sootMethod);
+    }
 }

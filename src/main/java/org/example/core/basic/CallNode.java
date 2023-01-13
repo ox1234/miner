@@ -17,7 +17,7 @@ public class CallNode extends AbstractNode {
 
     public CallNode(SootMethod targetMethod, SootMethod enclosingMethod, Unit nodeSite) {
         super(targetMethod.getDeclaringClass().getName(), enclosingMethod, nodeSite);
-        super.id = String.format("call-%s", UnitUtil.getUniqHash(enclosingMethod, nodeSite));
+        super.id = UnitUtil.getCallNodeID(enclosingMethod, nodeSite);
         this.signature = targetMethod.getSignature();
     }
 

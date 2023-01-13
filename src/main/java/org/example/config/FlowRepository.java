@@ -20,7 +20,15 @@ public class FlowRepository {
         }
     }
 
-    public static void exportTaintFlowMap(){
-        
+    public static Set<Node> getTaintFlow(Node to) {
+        Set<Node> fromNodes = taintFlowMap.get(to);
+        if(fromNodes == null){
+            return Collections.emptySet();
+        }
+        return fromNodes;
+    }
+
+    public static void exportTaintFlowMap() {
+
     }
 }

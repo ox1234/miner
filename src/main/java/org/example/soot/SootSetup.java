@@ -2,6 +2,8 @@ package org.example.soot;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.example.config.Global;
 import org.example.exception.NoSootTargetException;
 import org.example.util.ClassUtil;
@@ -20,6 +22,8 @@ import java.util.Collections;
 import java.util.List;
 
 public class SootSetup {
+    Logger logger = LogManager.getRootLogger();
+
     private SourceTypeSpecifier sourceTypeSpecifier;
 
     public SootSetup() {
@@ -76,10 +80,10 @@ public class SootSetup {
             SourceType sourceType = sourceTypeSpecifier.getClassSourceType(sootClass);
             ClassUtil.setClassType(sootClass, sourceType);
         }
-        System.out.printf("load %d app classes, %d library classes, %d phantom classes%n",
+        logger.info(String.format("load %d app classes, %d library classes, %d phantom classes",
                 Scene.v().getApplicationClasses().size(),
                 Scene.v().getLibraryClasses().size(),
-                Scene.v().getPhantomClasses().size());
+                Scene.v().getPhantomClasses().size()));
     }
 
     public void initialize(String target) throws Exception {

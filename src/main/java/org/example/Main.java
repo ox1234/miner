@@ -14,6 +14,7 @@ public class Main {
 
         Engine engine = new Engine();
         engine.extractPointRelation();
+        engine.importCallGraphToNeo4j(engine.getCallGraph());
         System.out.println("finish");
     }
 }

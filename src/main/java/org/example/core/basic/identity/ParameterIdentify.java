@@ -10,4 +10,8 @@ public class ParameterIdentify extends Identity {
         super(String.format("param-%s-%d", enclosingMethod.getSignature(), idx), type, enclosingMethod, nodeSite);
         this.idx = idx;
     }
+
+    public int getIdx() {
+        return idx;
+    }
 }
