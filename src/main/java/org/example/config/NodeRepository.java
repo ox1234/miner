@@ -25,7 +25,7 @@ public class NodeRepository {
         return nodeRepository.get(nodeID);
     }
 
-    public static Set<Node> getAllNode(){
+    public static Set<Node> getAllNode() {
         Set<Node> allNodes = new HashSet<>();
         nodeRepository.forEach((s, node) -> allNodes.add(node));
         return allNodes;
@@ -48,6 +48,13 @@ public class NodeRepository {
     }
 
     public static void addCallNode(CallNode node) {
+        for (Node param : node.params) {
+            nodeRepository.put(param.getNodeID(), param);
+            identityRepository.put(param.getNodeID(), (Identity) param);
+        }
+        for (Node arg : node.args) {
+            nodeRepository.put(arg.getNodeID(), arg);
+        }
         callNodeRepository.put(node.getNodeID(), node);
     }
 

@@ -1,5 +1,6 @@
 package org.example.core.visitor;
 
+import org.example.config.FlowRepository;
 import org.example.config.NodeRepository;
 import org.example.core.basic.CallNode;
 import org.example.core.basic.Node;
@@ -118,7 +119,7 @@ public class ValueVisitor extends AbstractShimpleValueSwitch<List<Node>> {
 
     @Override
     public void caseParameterRef(ParameterRef v) {
-        Node paramNode = new ParameterIdentify(v.getType().toString(), v.getIndex(), currentMethod, currentUnit);
+        Node paramNode = new ParameterIdentify(v.getType().toString(), v.getIndex(), currentMethod);
         this.setNodeResult(paramNode);
     }
 
@@ -202,8 +203,11 @@ public class ValueVisitor extends AbstractShimpleValueSwitch<List<Node>> {
             argValue.apply(this);
             List<Node> nodes = getResult();
             assert nodes.size() == 1;
+
+            FlowRepository.addTaintFlow(UnitUtil.getParameterNodeID(targetMethod, i), Collections.singleton(nodes.get(0).getNodeID()));
             callNode.addArg(nodes.get(0));
         }
+
         callNode.setRet(new RetNodeIdentity(targetMethod, currentUnit));
         this.setNodeResult(callNode);
     }
