@@ -29,12 +29,4 @@ public class MethodUtil {
         return sootMethod.isPhantom();
     }
 
-    public static String getMethodLocalID(SootMethod sootMethod, String name) {
-        String methodSig = sootMethod.getSignature();
-        return DigestUtils.sha1Hex(String.format("%s-%s", methodSig, name));
-    }
-
-    public static String getMethodObjID(SootMethod sootMethod, Unit unit) {
-        return DigestUtils.sha1Hex(String.format("%s-%s-%d", sootMethod.getSignature(), unit.toString(), UnitUtil.getLineNumber(unit)));
-    }
 }

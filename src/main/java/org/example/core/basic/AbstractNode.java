@@ -26,6 +26,15 @@ public abstract class AbstractNode implements Node {
     }
 
     @Override
+    public SootMethod getEnclosingMethod() {
+        return this.enclosingMethod;
+    }
+
+    public Unit getNodeSite() {
+        return nodeSite;
+    }
+
+    @Override
     public void addEdge(Node node) {
         relatedNodes.add(node);
     }

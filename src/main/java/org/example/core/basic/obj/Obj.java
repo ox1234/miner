@@ -9,6 +9,6 @@ import soot.Unit;
 abstract public class Obj extends AbstractNode {
     public Obj(String type, SootMethod enclosingMethod, Unit unit) {
         super(type, enclosingMethod, unit);
-        super.id = UnitUtil.getUniqHash(enclosingMethod, unit);
+        super.id = UnitUtil.getObjNodeID(enclosingMethod, unit);
     }
 }

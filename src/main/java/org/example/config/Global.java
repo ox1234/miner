@@ -24,7 +24,8 @@ public class Global {
     public static String neo4jUser = "neo4j";
     public static String neo4jPass = "password";
 
-    public static boolean allReachable = true;
+    public static boolean allReachable = false;
+    public static boolean onlyCG = false;
 
     public static Set<String> getAllSinkSignature() {
         Set<String> sinks = new HashSet<>();

@@ -1,7 +1,10 @@
 package org.example.core.visitor;
 
 import org.example.config.FlowRepository;
+import org.example.config.NodeRepository;
 import org.example.core.basic.Node;
+import org.example.core.basic.identity.Identity;
+import org.example.core.basic.identity.ParameterIdentify;
 import org.example.core.basic.identity.RetNodeIdentity;
 import org.example.util.NodeUtil;
 import soot.SootMethod;
@@ -29,6 +32,13 @@ public class StmtVisitor extends AbstractStmtSwitch<Void> {
 
     @Override
     public void caseIdentityStmt(IdentityStmt stmt) {
+        if (stmt instanceof ParameterRef) {
+            ParameterRef param = (ParameterRef) stmt;
+            stmt.getLeftOp().apply(valueVisitor);
+            List<Node> nodeList = valueVisitor.getResult();
+            assert nodeList.size() == 1 && nodeList.get(0) instanceof Identity;
+
+        }
         handleDefinitionStmt(stmt);
     }
 
@@ -44,6 +54,7 @@ public class StmtVisitor extends AbstractStmtSwitch<Void> {
 
         List<Node> nodeSet = valueVisitor.getResult();
         Node node = new RetNodeIdentity(currentMethod, currentUnit);
+        NodeRepository.addNode(node);
         FlowRepository.addTaintFlow(node, nodeSet);
     }
 
@@ -57,7 +68,6 @@ public class StmtVisitor extends AbstractStmtSwitch<Void> {
 
         rightVal.apply(valueVisitor);
         List<Node> rightNode = valueVisitor.getResult();
-
 
         FlowRepository.addTaintFlow(leftNodes.get(0), rightNode);
     }
