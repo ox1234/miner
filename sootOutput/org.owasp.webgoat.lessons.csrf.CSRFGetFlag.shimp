@@ -1,0 +1,202 @@
+public class org.owasp.webgoat.lessons.csrf.CSRFGetFlag extends java.lang.Object
+{
+    org.owasp.webgoat.container.session.UserSessionData userSessionData;
+    private org.owasp.webgoat.container.i18n.PluginMessages pluginMessages;
+
+    public void <init>()
+    {
+        org.owasp.webgoat.lessons.csrf.CSRFGetFlag r0;
+
+        r0 := @this;
+
+        specialinvoke r0.<init>();
+
+        return;
+    }
+
+    public java.util.Map invoke(javax.servlet.http.HttpServletRequest)
+    {
+        java.util.Random $r7, $r20, $r29;
+        java.lang.Integer $r10, $r22, $r31;
+        org.owasp.webgoat.lessons.csrf.CSRFGetFlag r8;
+        boolean $z0, $z1, $z2;
+        org.owasp.webgoat.container.session.UserSessionData $r9, $r15, $r21, $r27, $r30, $r36;
+        java.lang.Object[] $r12, $r24, $r33;
+        java.util.HashMap $r0;
+        java.lang.String[] $r5;
+        javax.servlet.http.HttpServletRequest r1;
+        int $i0, $i1, $i2;
+        java.lang.Boolean $r11, $r17, $r23, $r32;
+        java.lang.String $r2, r3, $r4, $r6, $r14, $r18, $r19, $r26, $r35, $r38, $r39, $r38_1, $r38_2, $r39_1, $r39_2;
+        org.owasp.webgoat.container.i18n.PluginMessages $r13, $r25, $r34;
+        java.lang.Object $r16, $r28, $r37;
+
+        r8 := @this;
+
+        r1 := @parameter0;
+
+        $r0 = new java.util.HashMap;
+
+        specialinvoke $r0.<init>();
+
+        $r2 = interfaceinvoke r1.getHeader("host");
+
+        if $r2 != null goto label1;
+
+        $r38 = "NULL";
+
+(0)     goto label2;
+
+     label1:
+(1)     $r38_1 = interfaceinvoke r1.getHeader("host");
+
+     label2:
+        $r38_2 = Phi($r38 #0, $r38_1 #1);
+
+        r3 = $r38_2;
+
+        $r4 = interfaceinvoke r1.getHeader("referer");
+
+        if $r4 != null goto label3;
+
+        $r39 = "NULL";
+
+(2)     goto label4;
+
+     label3:
+(3)     $r39_1 = interfaceinvoke r1.getHeader("referer");
+
+     label4:
+        $r39_2 = Phi($r39 #2, $r39_1 #3);
+
+        $r5 = virtualinvoke $r39_2.split("/");
+
+        $z0 = virtualinvoke $r39_2.equals("NULL");
+
+        if $z0 == 0 goto label6;
+
+        $r18 = "true";
+
+        $r19 = interfaceinvoke r1.getParameter("csrf");
+
+        $z2 = virtualinvoke $r18.equals($r19);
+
+        if $z2 == 0 goto label5;
+
+        $r29 = new java.util.Random;
+
+        specialinvoke $r29.<init>();
+
+        $r30 = r8.userSessionData;
+
+        $i2 = virtualinvoke $r29.nextInt(65536);
+
+        $r31 = staticinvoke java.lang.Integer.valueOf($i2);
+
+        virtualinvoke $r30.setValue("csrf-get-success", $r31);
+
+        $r32 = staticinvoke java.lang.Boolean.valueOf(1);
+
+        interfaceinvoke $r0.put("success", $r32);
+
+        $r34 = r8.pluginMessages;
+
+        $r33 = newarray (java.lang.Object)[0];
+
+        $r35 = virtualinvoke $r34.getMessage("csrf-get-null-referer.success", $r33);
+
+        interfaceinvoke $r0.put("message", $r35);
+
+        $r36 = r8.userSessionData;
+
+        $r37 = virtualinvoke $r36.getValue("csrf-get-success");
+
+        interfaceinvoke $r0.put("flag", $r37);
+
+        goto label8;
+
+     label5:
+        $r20 = new java.util.Random;
+
+        specialinvoke $r20.<init>();
+
+        $r21 = r8.userSessionData;
+
+        $i1 = virtualinvoke $r20.nextInt(65536);
+
+        $r22 = staticinvoke java.lang.Integer.valueOf($i1);
+
+        virtualinvoke $r21.setValue("csrf-get-success", $r22);
+
+        $r23 = staticinvoke java.lang.Boolean.valueOf(1);
+
+        interfaceinvoke $r0.put("success", $r23);
+
+        $r25 = r8.pluginMessages;
+
+        $r24 = newarray (java.lang.Object)[0];
+
+        $r26 = virtualinvoke $r25.getMessage("csrf-get-other-referer.success", $r24);
+
+        interfaceinvoke $r0.put("message", $r26);
+
+        $r27 = r8.userSessionData;
+
+        $r28 = virtualinvoke $r27.getValue("csrf-get-success");
+
+        interfaceinvoke $r0.put("flag", $r28);
+
+        goto label8;
+
+     label6:
+        $r6 = $r5[2];
+
+        $z1 = virtualinvoke $r6.equals(r3);
+
+        if $z1 == 0 goto label7;
+
+        $r17 = staticinvoke java.lang.Boolean.valueOf(0);
+
+        interfaceinvoke $r0.put("success", $r17);
+
+        interfaceinvoke $r0.put("message", "Appears the request came from the original host");
+
+        interfaceinvoke $r0.put("flag", null);
+
+        goto label8;
+
+     label7:
+        $r7 = new java.util.Random;
+
+        specialinvoke $r7.<init>();
+
+        $r9 = r8.userSessionData;
+
+        $i0 = virtualinvoke $r7.nextInt(65536);
+
+        $r10 = staticinvoke java.lang.Integer.valueOf($i0);
+
+        virtualinvoke $r9.setValue("csrf-get-success", $r10);
+
+        $r11 = staticinvoke java.lang.Boolean.valueOf(1);
+
+        interfaceinvoke $r0.put("success", $r11);
+
+        $r13 = r8.pluginMessages;
+
+        $r12 = newarray (java.lang.Object)[0];
+
+        $r14 = virtualinvoke $r13.getMessage("csrf-get-other-referer.success", $r12);
+
+        interfaceinvoke $r0.put("message", $r14);
+
+        $r15 = r8.userSessionData;
+
+        $r16 = virtualinvoke $r15.getValue("csrf-get-success");
+
+        interfaceinvoke $r0.put("flag", $r16);
+
+     label8:
+        return $r0;
+    }
+}

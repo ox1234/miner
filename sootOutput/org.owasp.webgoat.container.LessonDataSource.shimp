@@ -1,0 +1,191 @@
+public class org.owasp.webgoat.container.LessonDataSource extends java.lang.Object implements javax.sql.DataSource
+{
+    private final javax.sql.DataSource originalDataSource;
+
+    public void <init>(javax.sql.DataSource)
+    {
+        javax.sql.DataSource r1;
+        org.owasp.webgoat.container.LessonDataSource r0;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        specialinvoke r0.<init>();
+
+        r0.originalDataSource = r1;
+
+        return;
+    }
+
+    public java.sql.Connection getConnection() throws java.sql.SQLException
+    {
+        org.owasp.webgoat.container.LessonDataSource r0;
+        java.sql.Connection $r2, $r8;
+        org.owasp.webgoat.container.lessons.LessonConnectionInvocationHandler $r6;
+        java.lang.Class[] $r5;
+        javax.sql.DataSource $r1;
+        java.lang.Class $r3;
+        java.lang.Object $r7;
+        java.lang.ClassLoader $r4;
+
+        r0 := @this;
+
+        $r1 = r0.originalDataSource;
+
+        $r2 = interfaceinvoke $r1.getConnection();
+
+        $r3 = class "Lorg/springframework/jdbc/datasource/ConnectionProxy;";
+
+        $r4 = virtualinvoke $r3.getClassLoader();
+
+        $r5 = newarray (java.lang.Class)[1];
+
+        $r5[0] = class "Lorg/springframework/jdbc/datasource/ConnectionProxy;";
+
+        $r6 = new org.owasp.webgoat.container.lessons.LessonConnectionInvocationHandler;
+
+        specialinvoke $r6.<init>($r2);
+
+        $r7 = staticinvoke java.lang.reflect.Proxy.newProxyInstance($r4, $r5, $r6);
+
+        $r8 = (java.sql.Connection) $r7;
+
+        return $r8;
+    }
+
+    public java.sql.Connection getConnection(java.lang.String, java.lang.String) throws java.sql.SQLException
+    {
+        org.owasp.webgoat.container.LessonDataSource r0;
+        java.sql.Connection $r4;
+        javax.sql.DataSource $r3;
+        java.lang.String r1, r2;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        r2 := @parameter1;
+
+        $r3 = r0.originalDataSource;
+
+        $r4 = interfaceinvoke $r3.getConnection(r1, r2);
+
+        return $r4;
+    }
+
+    public java.io.PrintWriter getLogWriter() throws java.sql.SQLException
+    {
+        javax.sql.DataSource $r1;
+        java.io.PrintWriter $r2;
+        org.owasp.webgoat.container.LessonDataSource r0;
+
+        r0 := @this;
+
+        $r1 = r0.originalDataSource;
+
+        $r2 = interfaceinvoke $r1.getLogWriter();
+
+        return $r2;
+    }
+
+    public void setLogWriter(java.io.PrintWriter) throws java.sql.SQLException
+    {
+        java.io.PrintWriter r1;
+        javax.sql.DataSource $r2;
+        org.owasp.webgoat.container.LessonDataSource r0;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        $r2 = r0.originalDataSource;
+
+        interfaceinvoke $r2.setLogWriter(r1);
+
+        return;
+    }
+
+    public void setLoginTimeout(int) throws java.sql.SQLException
+    {
+        int i0;
+        javax.sql.DataSource $r1;
+        org.owasp.webgoat.container.LessonDataSource r0;
+
+        r0 := @this;
+
+        i0 := @parameter0;
+
+        $r1 = r0.originalDataSource;
+
+        interfaceinvoke $r1.setLoginTimeout(i0);
+
+        return;
+    }
+
+    public int getLoginTimeout() throws java.sql.SQLException
+    {
+        javax.sql.DataSource $r1;
+        int $i0;
+        org.owasp.webgoat.container.LessonDataSource r0;
+
+        r0 := @this;
+
+        $r1 = r0.originalDataSource;
+
+        $i0 = interfaceinvoke $r1.getLoginTimeout();
+
+        return $i0;
+    }
+
+    public java.util.logging.Logger getParentLogger() throws java.sql.SQLFeatureNotSupportedException
+    {
+        javax.sql.DataSource $r1;
+        org.owasp.webgoat.container.LessonDataSource r0;
+        java.util.logging.Logger $r2;
+
+        r0 := @this;
+
+        $r1 = r0.originalDataSource;
+
+        $r2 = interfaceinvoke $r1.getParentLogger();
+
+        return $r2;
+    }
+
+    public java.lang.Object unwrap(java.lang.Class) throws java.sql.SQLException
+    {
+        org.owasp.webgoat.container.LessonDataSource r0;
+        javax.sql.DataSource $r2;
+        java.lang.Class r1;
+        java.lang.Object $r3;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        $r2 = r0.originalDataSource;
+
+        $r3 = interfaceinvoke $r2.unwrap(r1);
+
+        return $r3;
+    }
+
+    public boolean isWrapperFor(java.lang.Class) throws java.sql.SQLException
+    {
+        org.owasp.webgoat.container.LessonDataSource r0;
+        javax.sql.DataSource $r2;
+        java.lang.Class r1;
+        boolean $z0;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        $r2 = r0.originalDataSource;
+
+        $z0 = interfaceinvoke $r2.isWrapperFor(r1);
+
+        return $z0;
+    }
+}

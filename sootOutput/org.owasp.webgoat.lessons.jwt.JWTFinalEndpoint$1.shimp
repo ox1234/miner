@@ -1,0 +1,136 @@
+class org.owasp.webgoat.lessons.jwt.JWTFinalEndpoint$1 extends io.jsonwebtoken.SigningKeyResolverAdapter
+{
+    final java.lang.String[] val$errorMessage;
+    final org.owasp.webgoat.lessons.jwt.JWTFinalEndpoint this$0;
+
+    void <init>(org.owasp.webgoat.lessons.jwt.JWTFinalEndpoint, java.lang.String[])
+    {
+        org.owasp.webgoat.lessons.jwt.JWTFinalEndpoint$1 r0;
+        org.owasp.webgoat.lessons.jwt.JWTFinalEndpoint r1;
+        java.lang.String[] r2;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        r2 := @parameter1;
+
+        r0.this$0 = r1;
+
+        r0.val$errorMessage = r2;
+
+        specialinvoke r0.<init>();
+
+        return;
+    }
+
+    public byte[] resolveSigningKeyBytes(io.jsonwebtoken.JwsHeader, io.jsonwebtoken.Claims)
+    {
+        java.lang.Throwable $r13, $r16, $r17;
+        io.jsonwebtoken.impl.TextCodec $r10;
+        byte[] $r12;
+        org.owasp.webgoat.container.LessonDataSource $r5;
+        java.sql.Connection $r6;
+        java.lang.String[] $r14;
+        io.jsonwebtoken.Claims r18;
+        io.jsonwebtoken.JwsHeader r0;
+        java.sql.SQLException $r19;
+        java.sql.ResultSet $r9;
+        java.lang.String r2, $r8, $r11, $r15;
+        boolean $z0;
+        org.owasp.webgoat.lessons.jwt.JWTFinalEndpoint$1 r3;
+        org.owasp.webgoat.lessons.jwt.JWTFinalEndpoint $r4;
+        java.sql.Statement $r7;
+        java.lang.Object $r1;
+
+        r3 := @this;
+
+        r0 := @parameter0;
+
+        r18 := @parameter1;
+
+        $r1 = interfaceinvoke r0.get("kid");
+
+        r2 = (java.lang.String) $r1;
+
+     label01:
+        $r4 = r3.this$0;
+
+        $r5 = $r4.dataSource;
+
+        $r6 = virtualinvoke $r5.getConnection();
+
+     label02:
+        $r7 = interfaceinvoke $r6.createStatement();
+
+        $r8 = dynamicinvoke "makeConcatWithConstants" <java.lang.String (java.lang.String)>(r2) java.lang.invoke.StringConcatFactory.makeConcatWithConstants("SELECT key FROM jwt_keys WHERE id = \'\u0001\'");
+
+        $r9 = interfaceinvoke $r7.executeQuery($r8);
+
+        $z0 = interfaceinvoke $r9.next();
+
+        if $z0 == 0 goto label05;
+
+        $r10 = io.jsonwebtoken.impl.TextCodec.BASE64;
+
+        $r11 = interfaceinvoke $r9.getString(1);
+
+        $r12 = interfaceinvoke $r10.decode($r11);
+
+     label03:
+        if $r6 == null goto label04;
+
+        interfaceinvoke $r6.close();
+
+     label04:
+        return $r12;
+
+     label05:
+        if $r6 == null goto label11;
+
+        interfaceinvoke $r6.close();
+
+        goto label11;
+
+     label06:
+        $r17 := @caughtexception;
+
+        if $r6 == null goto label10;
+
+     label07:
+        interfaceinvoke $r6.close();
+
+     label08:
+        goto label10;
+
+     label09:
+        $r16 := @caughtexception;
+
+        virtualinvoke $r17.addSuppressed($r16);
+
+     label10:
+        throw $r17;
+
+     label11:
+        goto label13;
+
+     label12:
+        $r13 := @caughtexception;
+
+        $r14 = r3.val$errorMessage;
+
+        $r19 = (java.sql.SQLException) $r13;
+
+        $r15 = virtualinvoke $r19.getMessage();
+
+        $r14[0] = $r15;
+
+     label13:
+        return null;
+
+        catch java.lang.Throwable from label02 to label03 with label06;
+        catch java.lang.Throwable from label07 to label08 with label09;
+        catch java.sql.SQLException from label01 to label04 with label12;
+        catch java.sql.SQLException from label05 to label11 with label12;
+    }
+}

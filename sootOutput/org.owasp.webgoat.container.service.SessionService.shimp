@@ -1,0 +1,77 @@
+public class org.owasp.webgoat.container.service.SessionService extends java.lang.Object
+{
+    private final org.owasp.webgoat.container.session.WebSession webSession;
+    private final org.owasp.webgoat.container.service.RestartLessonService restartLessonService;
+    private final org.owasp.webgoat.container.i18n.Messages messages;
+
+    public java.lang.String applySecurity()
+    {
+        java.lang.Object[] $r4;
+        org.owasp.webgoat.container.session.WebSession $r1, $r3;
+        org.owasp.webgoat.container.service.RestartLessonService $r2;
+        org.owasp.webgoat.container.service.SessionService r0;
+        java.lang.String $r6, $r7, $r7_1, $r7_2;
+        org.owasp.webgoat.container.i18n.Messages $r5;
+        boolean $z0;
+
+        r0 := @this;
+
+        $r1 = r0.webSession;
+
+        virtualinvoke $r1.toggleSecurity();
+
+        $r2 = r0.restartLessonService;
+
+        virtualinvoke $r2.restartLesson();
+
+        $r3 = r0.webSession;
+
+        $z0 = virtualinvoke $r3.isSecurityEnabled();
+
+        if $z0 == 0 goto label1;
+
+        $r7 = "security.enabled";
+
+(0)     goto label2;
+
+     label1:
+(1)     $r7_1 = "security.disabled";
+
+     label2:
+        $r7_2 = Phi($r7 #0, $r7_1 #1);
+
+        $r5 = r0.messages;
+
+        $r4 = newarray (java.lang.Object)[0];
+
+        $r6 = virtualinvoke $r5.getMessage($r7_2, $r4);
+
+        return $r6;
+    }
+
+    public void <init>(org.owasp.webgoat.container.session.WebSession, org.owasp.webgoat.container.service.RestartLessonService, org.owasp.webgoat.container.i18n.Messages)
+    {
+        org.owasp.webgoat.container.service.SessionService r0;
+        org.owasp.webgoat.container.session.WebSession r1;
+        org.owasp.webgoat.container.service.RestartLessonService r2;
+        org.owasp.webgoat.container.i18n.Messages r3;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        r2 := @parameter1;
+
+        r3 := @parameter2;
+
+        specialinvoke r0.<init>();
+
+        r0.webSession = r1;
+
+        r0.restartLessonService = r2;
+
+        r0.messages = r3;
+
+        return;
+    }
+}

@@ -1,0 +1,55 @@
+public final class org.owasp.webgoat.container.service.HintService$createHint__39 extends java.lang.Object implements java.util.function.Function
+{
+    org.owasp.webgoat.container.service.HintService cap0;
+
+    public static java.util.function.Function bootstrap$(org.owasp.webgoat.container.service.HintService)
+    {
+        org.owasp.webgoat.container.service.HintService $r0;
+        org.owasp.webgoat.container.service.HintService$createHint__39 $r1;
+
+        $r0 := @parameter0;
+
+        $r1 = new org.owasp.webgoat.container.service.HintService$createHint__39;
+
+        specialinvoke $r1.<init>($r0);
+
+        return $r1;
+    }
+
+    public void <init>(org.owasp.webgoat.container.service.HintService)
+    {
+        org.owasp.webgoat.container.service.HintService $r1;
+        org.owasp.webgoat.container.service.HintService$createHint__39 $r0;
+
+        $r0 := @this;
+
+        $r1 := @parameter0;
+
+        specialinvoke $r0.<init>();
+
+        $r0.cap0 = $r1;
+
+        return;
+    }
+
+    public java.lang.Object apply(java.lang.Object)
+    {
+        java.util.List $r4;
+        org.owasp.webgoat.container.service.HintService$createHint__39 $r0;
+        org.owasp.webgoat.container.lessons.Assignment $r2;
+        java.lang.Object $r1;
+        org.owasp.webgoat.container.service.HintService $r3;
+
+        $r0 := @this;
+
+        $r1 := @parameter0;
+
+        $r2 = (org.owasp.webgoat.container.lessons.Assignment) $r1;
+
+        $r3 = $r0.cap0;
+
+        $r4 = virtualinvoke $r3.createHint($r2);
+
+        return $r4;
+    }
+}

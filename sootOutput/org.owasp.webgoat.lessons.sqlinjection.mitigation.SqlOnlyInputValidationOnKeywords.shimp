@@ -1,0 +1,74 @@
+public class org.owasp.webgoat.lessons.sqlinjection.mitigation.SqlOnlyInputValidationOnKeywords extends org.owasp.webgoat.container.assignments.AssignmentEndpoint
+{
+    private final org.owasp.webgoat.lessons.sqlinjection.advanced.SqlInjectionLesson6a lesson6a;
+
+    public void <init>(org.owasp.webgoat.lessons.sqlinjection.advanced.SqlInjectionLesson6a)
+    {
+        org.owasp.webgoat.lessons.sqlinjection.mitigation.SqlOnlyInputValidationOnKeywords r0;
+        org.owasp.webgoat.lessons.sqlinjection.advanced.SqlInjectionLesson6a r1;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        specialinvoke r0.<init>();
+
+        r0.lesson6a = r1;
+
+        return;
+    }
+
+    public org.owasp.webgoat.container.assignments.AttackResult attack(java.lang.String)
+    {
+        org.owasp.webgoat.container.assignments.AttackResult$AttackResultBuilder $r11, $r12;
+        java.lang.String $r0, $r1, $r2, $r7, $r8, $r10, r14;
+        boolean $z0, $z1;
+        org.owasp.webgoat.lessons.sqlinjection.mitigation.SqlOnlyInputValidationOnKeywords r3;
+        org.owasp.webgoat.lessons.sqlinjection.advanced.SqlInjectionLesson6a $r4;
+        org.owasp.webgoat.container.assignments.AttackResult $r5, $r6, $r13;
+        java.lang.Class $r9;
+
+        r3 := @this;
+
+        r14 := @parameter0;
+
+        $r0 = virtualinvoke r14.toUpperCase();
+
+        $r1 = virtualinvoke $r0.replace("FROM", "");
+
+        $r2 = virtualinvoke $r1.replace("SELECT", "");
+
+        $z0 = virtualinvoke $r2.contains(" ");
+
+        if $z0 == 0 goto label1;
+
+        $r11 = virtualinvoke r3.failed(r3);
+
+        $r12 = virtualinvoke $r11.feedback("SqlOnlyInputValidationOnKeywords-failed");
+
+        $r13 = virtualinvoke $r12.build();
+
+        return $r13;
+
+     label1:
+        $r4 = r3.lesson6a;
+
+        $r5 = virtualinvoke $r4.injectableQuery($r2);
+
+        $r6 = new org.owasp.webgoat.container.assignments.AttackResult;
+
+        $z1 = virtualinvoke $r5.isLessonCompleted();
+
+        $r7 = virtualinvoke $r5.getFeedback();
+
+        $r8 = virtualinvoke $r5.getOutput();
+
+        $r9 = virtualinvoke r3.getClass();
+
+        $r10 = virtualinvoke $r9.getSimpleName();
+
+        specialinvoke $r6.<init>($z1, $r7, $r8, $r10, 1);
+
+        return $r6;
+    }
+}

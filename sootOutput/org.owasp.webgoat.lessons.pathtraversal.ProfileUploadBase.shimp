@@ -1,0 +1,494 @@
+public class org.owasp.webgoat.lessons.pathtraversal.ProfileUploadBase extends org.owasp.webgoat.container.assignments.AssignmentEndpoint
+{
+    private java.lang.String webGoatHomeDirectory;
+    private org.owasp.webgoat.container.session.WebSession webSession;
+
+    protected org.owasp.webgoat.container.assignments.AttackResult execute(org.springframework.web.multipart.MultipartFile, java.lang.String)
+    {
+        java.lang.Throwable $r19;
+        byte[] $r5;
+        org.owasp.webgoat.container.assignments.AttackResult$AttackResultBuilder $r6, $r7, $r10, $r13, $r14, $r16, $r17, $r20, $r22;
+        java.lang.Object[] $r8;
+        org.owasp.webgoat.lessons.pathtraversal.ProfileUploadBase r2;
+        java.lang.String r1, $r21;
+        boolean $z0, $z1, $z2;
+        java.io.IOException $r25;
+        java.io.File $r3, $r9, $r24;
+        org.owasp.webgoat.container.assignments.AttackResult $r11, $r12, $r15, $r18, $r23;
+        org.springframework.web.multipart.MultipartFile r0;
+
+        r2 := @this;
+
+        r0 := @parameter0;
+
+        r1 := @parameter1;
+
+        $z0 = interfaceinvoke r0.isEmpty();
+
+        if $z0 == 0 goto label1;
+
+        $r16 = virtualinvoke r2.failed(r2);
+
+        $r17 = virtualinvoke $r16.feedback("path-traversal-profile-empty-file");
+
+        $r18 = virtualinvoke $r17.build();
+
+        return $r18;
+
+     label1:
+        $z1 = staticinvoke org.springframework.util.StringUtils.isEmpty(r1);
+
+        if $z1 == 0 goto label2;
+
+        $r13 = virtualinvoke r2.failed(r2);
+
+        $r14 = virtualinvoke $r13.feedback("path-traversal-profile-empty-name");
+
+        $r15 = virtualinvoke $r14.build();
+
+        return $r15;
+
+     label2:
+        $r3 = virtualinvoke r2.cleanupAndCreateDirectoryForUser();
+
+     label3:
+        $r24 = new java.io.File;
+
+        specialinvoke $r24.<init>($r3, r1);
+
+        virtualinvoke $r24.createNewFile();
+
+        $r5 = interfaceinvoke r0.getBytes();
+
+        staticinvoke org.springframework.util.FileCopyUtils.copy($r5, $r24);
+
+        $z2 = virtualinvoke r2.attemptWasMade($r3, $r24);
+
+        if $z2 == 0 goto label5;
+
+        $r12 = virtualinvoke r2.solvedIt($r24);
+
+     label4:
+        return $r12;
+
+     label5:
+        $r6 = virtualinvoke r2.informationMessage(r2);
+
+        $r7 = virtualinvoke $r6.feedback("path-traversal-profile-updated");
+
+        $r8 = newarray (java.lang.Object)[1];
+
+        $r9 = virtualinvoke $r24.getAbsoluteFile();
+
+        $r8[0] = $r9;
+
+        $r10 = virtualinvoke $r7.feedbackArgs($r8);
+
+        $r11 = virtualinvoke $r10.build();
+
+     label6:
+        return $r11;
+
+     label7:
+        $r19 := @caughtexception;
+
+        $r20 = virtualinvoke r2.failed(r2);
+
+        $r25 = (java.io.IOException) $r19;
+
+        $r21 = virtualinvoke $r25.getMessage();
+
+        $r22 = virtualinvoke $r20.output($r21);
+
+        $r23 = virtualinvoke $r22.build();
+
+        return $r23;
+
+        catch java.io.IOException from label3 to label4 with label7;
+        catch java.io.IOException from label5 to label6 with label7;
+    }
+
+    protected java.io.File cleanupAndCreateDirectoryForUser()
+    {
+        java.lang.Throwable $r8;
+        org.owasp.webgoat.container.session.WebSession $r2;
+        org.owasp.webgoat.lessons.pathtraversal.ProfileUploadBase r1;
+        java.io.File $r0;
+        java.nio.file.attribute.FileAttribute[] $r7;
+        java.lang.String $r3, $r4, $r5;
+        java.nio.file.Path $r6;
+        boolean $z0;
+
+        r1 := @this;
+
+     label1:
+        $r0 = new java.io.File;
+
+        $r3 = r1.webGoatHomeDirectory;
+
+        $r2 = r1.webSession;
+
+        $r4 = virtualinvoke $r2.getUserName();
+
+        $r5 = dynamicinvoke "makeConcatWithConstants" <java.lang.String (java.lang.String)>($r4) java.lang.invoke.StringConcatFactory.makeConcatWithConstants("/PathTraversal/\u0001");
+
+        specialinvoke $r0.<init>($r3, $r5);
+
+        $z0 = virtualinvoke $r0.exists();
+
+        if $z0 == 0 goto label2;
+
+        staticinvoke org.springframework.util.FileSystemUtils.deleteRecursively($r0);
+
+     label2:
+        $r6 = virtualinvoke $r0.toPath();
+
+        $r7 = newarray (java.nio.file.attribute.FileAttribute)[0];
+
+        staticinvoke java.nio.file.Files.createDirectories($r6, $r7);
+
+     label3:
+        return $r0;
+
+     label4:
+        $r8 := @caughtexception;
+
+        throw $r8;
+
+        catch java.lang.Throwable from label1 to label3 with label4;
+    }
+
+    private boolean attemptWasMade(java.io.File, java.io.File) throws java.io.IOException
+    {
+        org.owasp.webgoat.lessons.pathtraversal.ProfileUploadBase r5;
+        java.io.File r0, r2, $r3;
+        java.lang.String $r1, $r4;
+        boolean $z0, $z1, $z1_1, $z1_2;
+
+        r5 := @this;
+
+        r0 := @parameter0;
+
+        r2 := @parameter1;
+
+        $r1 = virtualinvoke r0.getCanonicalPath();
+
+        $r3 = virtualinvoke r2.getParentFile();
+
+        $r4 = virtualinvoke $r3.getCanonicalPath();
+
+        $z0 = virtualinvoke $r1.equals($r4);
+
+        if $z0 != 0 goto label1;
+
+        $z1 = 1;
+
+(0)     goto label2;
+
+     label1:
+(1)     $z1_1 = 0;
+
+     label2:
+        $z1_2 = Phi($z1 #0, $z1_1 #1);
+
+        return $z1_2;
+    }
+
+    private org.owasp.webgoat.container.assignments.AttackResult solvedIt(java.io.File) throws java.io.IOException
+    {
+        org.owasp.webgoat.container.assignments.AttackResult$AttackResultBuilder $r5, $r6, $r7, $r10, $r12;
+        java.lang.Object[] $r8;
+        org.owasp.webgoat.lessons.pathtraversal.ProfileUploadBase r4;
+        java.io.File r0, $r1, $r2;
+        org.owasp.webgoat.container.assignments.AttackResult $r11, $r13;
+        java.lang.String $r3, $r9;
+        boolean $z0;
+
+        r4 := @this;
+
+        r0 := @parameter0;
+
+        $r1 = virtualinvoke r0.getCanonicalFile();
+
+        $r2 = virtualinvoke $r1.getParentFile();
+
+        $r3 = virtualinvoke $r2.getName();
+
+        $z0 = virtualinvoke $r3.endsWith("PathTraversal");
+
+        if $z0 == 0 goto label1;
+
+        $r12 = virtualinvoke r4.success(r4);
+
+        $r13 = virtualinvoke $r12.build();
+
+        return $r13;
+
+     label1:
+        $r5 = virtualinvoke r4.failed(r4);
+
+        $r6 = virtualinvoke $r5.attemptWasMade();
+
+        $r7 = virtualinvoke $r6.feedback("path-traversal-profile-attempt");
+
+        $r8 = newarray (java.lang.Object)[1];
+
+        $r9 = virtualinvoke r0.getCanonicalPath();
+
+        $r8[0] = $r9;
+
+        $r10 = virtualinvoke $r7.feedbackArgs($r8);
+
+        $r11 = virtualinvoke $r10.build();
+
+        return $r11;
+    }
+
+    public org.springframework.http.ResponseEntity getProfilePicture()
+    {
+        byte[] $r4;
+        org.springframework.http.MediaType $r1;
+        org.springframework.http.ResponseEntity $r5;
+        org.springframework.http.ResponseEntity$BodyBuilder $r0, $r2;
+        org.owasp.webgoat.lessons.pathtraversal.ProfileUploadBase r3;
+
+        r3 := @this;
+
+        $r0 = staticinvoke org.springframework.http.ResponseEntity.ok();
+
+        $r1 = staticinvoke org.springframework.http.MediaType.parseMediaType("image/jpeg");
+
+        $r2 = interfaceinvoke $r0.contentType($r1);
+
+        $r4 = virtualinvoke r3.getProfilePictureAsBase64();
+
+        $r5 = interfaceinvoke $r2.body($r4);
+
+        return $r5;
+    }
+
+    protected byte[] getProfilePictureAsBase64()
+    {
+        byte[] $r7, $r14, $r16;
+        org.owasp.webgoat.lessons.pathtraversal.ProfileUploadBase r1;
+        java.util.function.Function $r12;
+        int $i0;
+        java.lang.String $r3, $r4, $r5;
+        java.util.function.Predicate $r9;
+        org.owasp.webgoat.container.session.WebSession $r2;
+        java.io.File $r0;
+        java.util.stream.Stream $r8, $r10;
+        java.util.Optional $r11, $r13;
+        java.lang.Object $r15;
+        java.io.File[] $r6;
+
+        r1 := @this;
+
+        $r0 = new java.io.File;
+
+        $r3 = r1.webGoatHomeDirectory;
+
+        $r2 = r1.webSession;
+
+        $r4 = virtualinvoke $r2.getUserName();
+
+        $r5 = dynamicinvoke "makeConcatWithConstants" <java.lang.String (java.lang.String)>($r4) java.lang.invoke.StringConcatFactory.makeConcatWithConstants("/PathTraversal/\u0001");
+
+        specialinvoke $r0.<init>($r3, $r5);
+
+        $r6 = virtualinvoke $r0.listFiles();
+
+        if $r6 == null goto label1;
+
+        $i0 = lengthof $r6;
+
+        if $i0 <= 0 goto label1;
+
+        $r8 = staticinvoke java.util.Arrays.stream($r6);
+
+        $r9 = staticinvoke org.owasp.webgoat.lessons.pathtraversal.ProfileUploadBase$lambda_getProfilePictureAsBase64_0__66.bootstrap$();
+
+        $r10 = interfaceinvoke $r8.filter($r9);
+
+        $r11 = interfaceinvoke $r10.findFirst();
+
+        $r12 = staticinvoke org.owasp.webgoat.lessons.pathtraversal.ProfileUploadBase$lambda_getProfilePictureAsBase64_1__67.bootstrap$(r1, $r6);
+
+        $r13 = virtualinvoke $r11.map($r12);
+
+        $r14 = virtualinvoke r1.defaultImage();
+
+        $r15 = virtualinvoke $r13.orElse($r14);
+
+        $r16 = (byte[]) $r15;
+
+        return $r16;
+
+     label1:
+        $r7 = virtualinvoke r1.defaultImage();
+
+        return $r7;
+    }
+
+    protected byte[] defaultImage()
+    {
+        java.lang.Throwable $r6;
+        byte[] $r4, $r5;
+        java.lang.Class $r1;
+        java.util.Base64$Encoder $r3;
+        org.owasp.webgoat.lessons.pathtraversal.ProfileUploadBase r0;
+        java.io.InputStream $r2;
+
+        r0 := @this;
+
+     label1:
+        $r1 = virtualinvoke r0.getClass();
+
+        $r2 = virtualinvoke $r1.getResourceAsStream("/images/account.png");
+
+        $r3 = staticinvoke java.util.Base64.getEncoder();
+
+        $r4 = staticinvoke org.springframework.util.FileCopyUtils.copyToByteArray($r2);
+
+        $r5 = virtualinvoke $r3.encode($r4);
+
+     label2:
+        return $r5;
+
+     label3:
+        $r6 := @caughtexception;
+
+        throw $r6;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public void <init>(java.lang.String, org.owasp.webgoat.container.session.WebSession)
+    {
+        java.lang.String r1;
+        org.owasp.webgoat.container.session.WebSession r2;
+        org.owasp.webgoat.lessons.pathtraversal.ProfileUploadBase r0;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        r2 := @parameter1;
+
+        specialinvoke r0.<init>();
+
+        r0.webGoatHomeDirectory = r1;
+
+        r0.webSession = r2;
+
+        return;
+    }
+
+    public java.lang.String getWebGoatHomeDirectory()
+    {
+        java.lang.String $r1;
+        org.owasp.webgoat.lessons.pathtraversal.ProfileUploadBase r0;
+
+        r0 := @this;
+
+        $r1 = r0.webGoatHomeDirectory;
+
+        return $r1;
+    }
+
+    public org.owasp.webgoat.container.session.WebSession getWebSession()
+    {
+        org.owasp.webgoat.container.session.WebSession $r1;
+        org.owasp.webgoat.lessons.pathtraversal.ProfileUploadBase r0;
+
+        r0 := @this;
+
+        $r1 = r0.webSession;
+
+        return $r1;
+    }
+
+    private byte[] lambda$getProfilePictureAsBase64$1(java.io.File[], java.io.File)
+    {
+        java.lang.Throwable $r6, $r9, $r10;
+        byte[] $r4, $r5, $r8;
+        java.util.Base64$Encoder $r3;
+        java.io.FileInputStream $r0;
+        org.owasp.webgoat.lessons.pathtraversal.ProfileUploadBase r7;
+        java.io.File $r2, r11;
+        java.io.File[] r1;
+
+        r7 := @this;
+
+        r1 := @parameter0;
+
+        r11 := @parameter1;
+
+     label01:
+        $r0 = new java.io.FileInputStream;
+
+        $r2 = r1[0];
+
+        specialinvoke $r0.<init>($r2);
+
+     label02:
+        $r3 = staticinvoke java.util.Base64.getEncoder();
+
+        $r4 = staticinvoke org.springframework.util.FileCopyUtils.copyToByteArray($r0);
+
+        $r5 = virtualinvoke $r3.encode($r4);
+
+     label03:
+        virtualinvoke $r0.close();
+
+     label04:
+        return $r5;
+
+     label05:
+        $r10 := @caughtexception;
+
+     label06:
+        virtualinvoke $r0.close();
+
+     label07:
+        goto label09;
+
+     label08:
+        $r9 := @caughtexception;
+
+        virtualinvoke $r10.addSuppressed($r9);
+
+     label09:
+        throw $r10;
+
+     label10:
+        $r6 := @caughtexception;
+
+        $r8 = virtualinvoke r7.defaultImage();
+
+        return $r8;
+
+        catch java.lang.Throwable from label02 to label03 with label05;
+        catch java.lang.Throwable from label06 to label07 with label08;
+        catch java.io.IOException from label01 to label04 with label10;
+        catch java.io.IOException from label05 to label10 with label10;
+    }
+
+    public static boolean lambda$getProfilePictureAsBase64$0(java.io.File)
+    {
+        java.util.List $r2;
+        java.lang.String $r1;
+        java.io.File r0;
+        boolean $z0;
+
+        r0 := @parameter0;
+
+        $r1 = virtualinvoke r0.getName();
+
+        $r2 = staticinvoke java.util.List.of("jpg", "png");
+
+        $z0 = staticinvoke org.apache.commons.io.FilenameUtils.isExtension($r1, $r2);
+
+        return $z0;
+    }
+}

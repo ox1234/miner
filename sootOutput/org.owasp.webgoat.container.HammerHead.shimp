@@ -1,0 +1,45 @@
+public class org.owasp.webgoat.container.HammerHead extends java.lang.Object
+{
+    private final org.owasp.webgoat.container.session.Course course;
+
+    public org.springframework.web.servlet.ModelAndView attack()
+    {
+        org.springframework.web.servlet.ModelAndView $r0;
+        org.owasp.webgoat.container.HammerHead r1;
+        java.lang.String $r4, $r5;
+        org.owasp.webgoat.container.lessons.Lesson $r3;
+        org.owasp.webgoat.container.session.Course $r2;
+
+        r1 := @this;
+
+        $r0 = new org.springframework.web.servlet.ModelAndView;
+
+        $r2 = r1.course;
+
+        $r3 = virtualinvoke $r2.getFirstLesson();
+
+        $r4 = virtualinvoke $r3.getLink();
+
+        $r5 = dynamicinvoke "makeConcatWithConstants" <java.lang.String (java.lang.String)>($r4) java.lang.invoke.StringConcatFactory.makeConcatWithConstants("redirect:start.mvc\u0001");
+
+        specialinvoke $r0.<init>($r5);
+
+        return $r0;
+    }
+
+    public void <init>(org.owasp.webgoat.container.session.Course)
+    {
+        org.owasp.webgoat.container.HammerHead r0;
+        org.owasp.webgoat.container.session.Course r1;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        specialinvoke r0.<init>();
+
+        r0.course = r1;
+
+        return;
+    }
+}

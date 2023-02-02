@@ -1,0 +1,50 @@
+public class org.owasp.webgoat.container.AjaxAuthenticationEntryPoint extends org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint
+{
+
+    public void <init>(java.lang.String)
+    {
+        java.lang.String r1;
+        org.owasp.webgoat.container.AjaxAuthenticationEntryPoint r0;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        specialinvoke r0.<init>(r1);
+
+        return;
+    }
+
+    public void commence(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, org.springframework.security.core.AuthenticationException) throws java.io.IOException, javax.servlet.ServletException
+    {
+        javax.servlet.http.HttpServletRequest r0;
+        org.owasp.webgoat.container.AjaxAuthenticationEntryPoint r2;
+        javax.servlet.http.HttpServletResponse r3;
+        org.springframework.security.core.AuthenticationException r4;
+        java.lang.String $r1, $r5;
+
+        r2 := @this;
+
+        r0 := @parameter0;
+
+        r3 := @parameter1;
+
+        r4 := @parameter2;
+
+        $r1 = interfaceinvoke r0.getHeader("x-requested-with");
+
+        if $r1 == null goto label1;
+
+        $r5 = virtualinvoke r4.getMessage();
+
+        interfaceinvoke r3.sendError(401, $r5);
+
+        goto label2;
+
+     label1:
+        specialinvoke r2.commence(r0, r3, r4);
+
+     label2:
+        return;
+    }
+}

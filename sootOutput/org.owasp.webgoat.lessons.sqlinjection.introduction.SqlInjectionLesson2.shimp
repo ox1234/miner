@@ -1,0 +1,165 @@
+public class org.owasp.webgoat.lessons.sqlinjection.introduction.SqlInjectionLesson2 extends org.owasp.webgoat.container.assignments.AssignmentEndpoint
+{
+    private final org.owasp.webgoat.container.LessonDataSource dataSource;
+
+    public void <init>(org.owasp.webgoat.container.LessonDataSource)
+    {
+        org.owasp.webgoat.lessons.sqlinjection.introduction.SqlInjectionLesson2 r0;
+        org.owasp.webgoat.container.LessonDataSource r1;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        specialinvoke r0.<init>();
+
+        r0.dataSource = r1;
+
+        return;
+    }
+
+    public org.owasp.webgoat.container.assignments.AttackResult completed(java.lang.String)
+    {
+        org.owasp.webgoat.container.assignments.AttackResult $r2;
+        org.owasp.webgoat.lessons.sqlinjection.introduction.SqlInjectionLesson2 r0;
+        java.lang.String r1;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        $r2 = virtualinvoke r0.injectableQuery(r1);
+
+        return $r2;
+    }
+
+    protected org.owasp.webgoat.container.assignments.AttackResult injectableQuery(java.lang.String)
+    {
+        java.lang.Throwable $r20, $r26, $r27;
+        org.owasp.webgoat.container.LessonDataSource $r1;
+        java.sql.Connection $r2;
+        org.owasp.webgoat.container.assignments.AttackResult$AttackResultBuilder $r8, $r9, $r11, $r15, $r16, $r18, $r21, $r22, $r24;
+        org.owasp.webgoat.lessons.sqlinjection.introduction.SqlInjectionLesson2 r0;
+        java.sql.SQLException $r29;
+        java.sql.ResultSet $r5;
+        java.lang.String r4, $r7, $r10, $r13, $r14, $r17, $r23;
+        boolean $z0;
+        java.sql.Statement $r3;
+        org.owasp.webgoat.container.assignments.AttackResult $r12, $r19, $r25;
+        java.lang.StringBuilder $r28;
+
+        r0 := @this;
+
+        r4 := @parameter0;
+
+     label01:
+        $r1 = r0.dataSource;
+
+        $r2 = virtualinvoke $r1.getConnection();
+
+     label02:
+        $r3 = interfaceinvoke $r2.createStatement(1004, 1007);
+
+        $r5 = interfaceinvoke $r3.executeQuery(r4);
+
+        $r28 = new java.lang.StringBuilder;
+
+        specialinvoke $r28.<init>();
+
+        interfaceinvoke $r5.first();
+
+        $r7 = interfaceinvoke $r5.getString("department");
+
+        $z0 = virtualinvoke $r7.equals("Marketing");
+
+        if $z0 == 0 goto label05;
+
+        $r13 = dynamicinvoke "makeConcatWithConstants" <java.lang.String (java.lang.String)>(r4) java.lang.invoke.StringConcatFactory.makeConcatWithConstants("<span class=\'feedback-positive\'>\u0001</span>");
+
+        virtualinvoke $r28.append($r13);
+
+        $r14 = staticinvoke org.owasp.webgoat.lessons.sqlinjection.introduction.SqlInjectionLesson8.generateTable($r5);
+
+        virtualinvoke $r28.append($r14);
+
+        $r15 = virtualinvoke r0.success(r0);
+
+        $r16 = virtualinvoke $r15.feedback("sql-injection.2.success");
+
+        $r17 = virtualinvoke $r28.toString();
+
+        $r18 = virtualinvoke $r16.output($r17);
+
+        $r19 = virtualinvoke $r18.build();
+
+     label03:
+        if $r2 == null goto label04;
+
+        interfaceinvoke $r2.close();
+
+     label04:
+        return $r19;
+
+     label05:
+        $r8 = virtualinvoke r0.failed(r0);
+
+        $r9 = virtualinvoke $r8.feedback("sql-injection.2.failed");
+
+        $r10 = virtualinvoke $r28.toString();
+
+        $r11 = virtualinvoke $r9.output($r10);
+
+        $r12 = virtualinvoke $r11.build();
+
+     label06:
+        if $r2 == null goto label07;
+
+        interfaceinvoke $r2.close();
+
+     label07:
+        return $r12;
+
+     label08:
+        $r27 := @caughtexception;
+
+        if $r2 == null goto label12;
+
+     label09:
+        interfaceinvoke $r2.close();
+
+     label10:
+        goto label12;
+
+     label11:
+        $r26 := @caughtexception;
+
+        virtualinvoke $r27.addSuppressed($r26);
+
+     label12:
+        throw $r27;
+
+     label13:
+        $r20 := @caughtexception;
+
+        $r21 = virtualinvoke r0.failed(r0);
+
+        $r22 = virtualinvoke $r21.feedback("sql-injection.2.failed");
+
+        $r29 = (java.sql.SQLException) $r20;
+
+        $r23 = virtualinvoke $r29.getMessage();
+
+        $r24 = virtualinvoke $r22.output($r23);
+
+        $r25 = virtualinvoke $r24.build();
+
+        return $r25;
+
+        catch java.lang.Throwable from label02 to label03 with label08;
+        catch java.lang.Throwable from label05 to label06 with label08;
+        catch java.lang.Throwable from label09 to label10 with label11;
+        catch java.sql.SQLException from label01 to label04 with label13;
+        catch java.sql.SQLException from label05 to label07 with label13;
+        catch java.sql.SQLException from label08 to label13 with label13;
+    }
+}

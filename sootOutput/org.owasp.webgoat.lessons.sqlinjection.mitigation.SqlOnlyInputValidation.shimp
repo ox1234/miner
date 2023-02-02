@@ -1,0 +1,68 @@
+public class org.owasp.webgoat.lessons.sqlinjection.mitigation.SqlOnlyInputValidation extends org.owasp.webgoat.container.assignments.AssignmentEndpoint
+{
+    private final org.owasp.webgoat.lessons.sqlinjection.advanced.SqlInjectionLesson6a lesson6a;
+
+    public void <init>(org.owasp.webgoat.lessons.sqlinjection.advanced.SqlInjectionLesson6a)
+    {
+        org.owasp.webgoat.lessons.sqlinjection.mitigation.SqlOnlyInputValidation r0;
+        org.owasp.webgoat.lessons.sqlinjection.advanced.SqlInjectionLesson6a r1;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        specialinvoke r0.<init>();
+
+        r0.lesson6a = r1;
+
+        return;
+    }
+
+    public org.owasp.webgoat.container.assignments.AttackResult attack(java.lang.String)
+    {
+        org.owasp.webgoat.container.assignments.AttackResult$AttackResultBuilder $r9, $r10;
+        org.owasp.webgoat.lessons.sqlinjection.mitigation.SqlOnlyInputValidation r1;
+        org.owasp.webgoat.lessons.sqlinjection.advanced.SqlInjectionLesson6a $r2;
+        org.owasp.webgoat.container.assignments.AttackResult $r3, $r4, $r11;
+        java.lang.Class $r7;
+        java.lang.String r0, $r5, $r6, $r8;
+        boolean $z0, $z1;
+
+        r1 := @this;
+
+        r0 := @parameter0;
+
+        $z0 = virtualinvoke r0.contains(" ");
+
+        if $z0 == 0 goto label1;
+
+        $r9 = virtualinvoke r1.failed(r1);
+
+        $r10 = virtualinvoke $r9.feedback("SqlOnlyInputValidation-failed");
+
+        $r11 = virtualinvoke $r10.build();
+
+        return $r11;
+
+     label1:
+        $r2 = r1.lesson6a;
+
+        $r3 = virtualinvoke $r2.injectableQuery(r0);
+
+        $r4 = new org.owasp.webgoat.container.assignments.AttackResult;
+
+        $z1 = virtualinvoke $r3.isLessonCompleted();
+
+        $r5 = virtualinvoke $r3.getFeedback();
+
+        $r6 = virtualinvoke $r3.getOutput();
+
+        $r7 = virtualinvoke r1.getClass();
+
+        $r8 = virtualinvoke $r7.getSimpleName();
+
+        specialinvoke $r4.<init>($z1, $r5, $r6, $r8, 1);
+
+        return $r4;
+    }
+}

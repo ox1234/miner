@@ -1,0 +1,41 @@
+public final class org.owasp.webgoat.lessons.challenges.challenge8.Assignment8$lambda_average_4__61 extends java.lang.Object implements java.util.function.IntBinaryOperator
+{
+
+    public static java.util.function.IntBinaryOperator bootstrap$()
+    {
+        org.owasp.webgoat.lessons.challenges.challenge8.Assignment8$lambda_average_4__61 $r0;
+
+        $r0 = new org.owasp.webgoat.lessons.challenges.challenge8.Assignment8$lambda_average_4__61;
+
+        specialinvoke $r0.<init>();
+
+        return $r0;
+    }
+
+    public void <init>()
+    {
+        org.owasp.webgoat.lessons.challenges.challenge8.Assignment8$lambda_average_4__61 $r0;
+
+        $r0 := @this;
+
+        specialinvoke $r0.<init>();
+
+        return;
+    }
+
+    public int applyAsInt(int, int)
+    {
+        org.owasp.webgoat.lessons.challenges.challenge8.Assignment8$lambda_average_4__61 $r0;
+        int $i0, $i1, $i2;
+
+        $r0 := @this;
+
+        $i0 := @parameter0;
+
+        $i1 := @parameter1;
+
+        $i2 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge8.Assignment8.lambda$average$4($i0, $i1);
+
+        return $i2;
+    }
+}

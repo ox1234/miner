@@ -1,0 +1,6 @@
+public interface  org.owasp.webgoat.lessons.challenges.SolutionConstants extends java.lang.Object
+{
+    public static final java.lang.String PASSWORD;
+    public static final java.lang.String PASSWORD_TOM;
+    public static final java.lang.String ADMIN_PASSWORD_LINK;
+}

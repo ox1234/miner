@@ -1,10 +1,7 @@
 package org.example.util;
 
-import org.apache.commons.codec.digest.DigestUtils;
 import org.example.config.Global;
-import soot.Local;
 import soot.SootMethod;
-import soot.Unit;
 import soot.tagkit.AnnotationTag;
 
 public class MethodUtil {
@@ -29,4 +26,7 @@ public class MethodUtil {
         return sootMethod.isPhantom();
     }
 
+    public static boolean isAppMethod(SootMethod sootMethod) {
+        return sootMethod.getDeclaringClass().isApplicationClass();
+    }
 }

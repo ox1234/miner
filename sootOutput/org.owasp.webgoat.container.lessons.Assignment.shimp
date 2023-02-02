@@ -1,0 +1,345 @@
+public class org.owasp.webgoat.container.lessons.Assignment extends java.lang.Object
+{
+    private java.lang.Long id;
+    private java.lang.String name;
+    private java.lang.String path;
+    private java.util.List hints;
+
+    private void <init>()
+    {
+        org.owasp.webgoat.container.lessons.Assignment r0;
+
+        r0 := @this;
+
+        specialinvoke r0.<init>();
+
+        return;
+    }
+
+    public void <init>(java.lang.String)
+    {
+        java.lang.String r1;
+        org.owasp.webgoat.container.lessons.Assignment r0;
+        java.util.ArrayList $r2;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        $r2 = new java.util.ArrayList;
+
+        specialinvoke $r2.<init>();
+
+        specialinvoke r0.<init>(r1, r1, $r2);
+
+        return;
+    }
+
+    public void <init>(java.lang.String, java.lang.String, java.util.List)
+    {
+        java.lang.IllegalStateException $r4;
+        java.util.List r3;
+        org.owasp.webgoat.container.lessons.Assignment r0;
+        java.lang.String r1, r2, $r5;
+        boolean $z0, $z1, $z2;
+
+        r0 := @this;
+
+        r2 := @parameter0;
+
+        r1 := @parameter1;
+
+        r3 := @parameter2;
+
+        specialinvoke r0.<init>();
+
+        $z0 = virtualinvoke r1.equals("");
+
+        if $z0 != 0 goto label1;
+
+        $z1 = virtualinvoke r1.equals("/");
+
+        if $z1 != 0 goto label1;
+
+        $z2 = virtualinvoke r1.equals("/WebGoat/");
+
+        if $z2 == 0 goto label2;
+
+     label1:
+        $r4 = new java.lang.IllegalStateException;
+
+        $r5 = dynamicinvoke "makeConcatWithConstants" <java.lang.String (java.lang.String)>(r2) java.lang.invoke.StringConcatFactory.makeConcatWithConstants("The path of assignment \'\u0001\' overrides WebGoat endpoints, please choose a path within the scope of the lesson");
+
+        specialinvoke $r4.<init>($r5);
+
+        throw $r4;
+
+     label2:
+        r0.name = r2;
+
+        r0.path = r1;
+
+        r0.hints = r3;
+
+        return;
+    }
+
+    public java.lang.Long getId()
+    {
+        org.owasp.webgoat.container.lessons.Assignment r0;
+        java.lang.Long $r1;
+
+        r0 := @this;
+
+        $r1 = r0.id;
+
+        return $r1;
+    }
+
+    public java.lang.String getName()
+    {
+        java.lang.String $r1;
+        org.owasp.webgoat.container.lessons.Assignment r0;
+
+        r0 := @this;
+
+        $r1 = r0.name;
+
+        return $r1;
+    }
+
+    public java.lang.String getPath()
+    {
+        java.lang.String $r1;
+        org.owasp.webgoat.container.lessons.Assignment r0;
+
+        r0 := @this;
+
+        $r1 = r0.path;
+
+        return $r1;
+    }
+
+    public java.util.List getHints()
+    {
+        java.util.List $r1;
+        org.owasp.webgoat.container.lessons.Assignment r0;
+
+        r0 := @this;
+
+        $r1 = r0.hints;
+
+        return $r1;
+    }
+
+    public boolean equals(java.lang.Object)
+    {
+        java.lang.Long $r3, $r4;
+        java.lang.String $r5, $r6, $r7, $r8;
+        boolean $z0, $z1, $z2, $z3, $z4, $z5;
+        java.util.List $r9, $r10;
+        org.owasp.webgoat.container.lessons.Assignment r1, r2;
+        java.lang.Object r0;
+
+        r1 := @this;
+
+        r0 := @parameter0;
+
+        if r0 != r1 goto label01;
+
+        return 1;
+
+     label01:
+        $z0 = r0 instanceof org.owasp.webgoat.container.lessons.Assignment;
+
+        if $z0 != 0 goto label02;
+
+        return 0;
+
+     label02:
+        r2 = (org.owasp.webgoat.container.lessons.Assignment) r0;
+
+        $z1 = virtualinvoke r2.canEqual(r1);
+
+        if $z1 != 0 goto label03;
+
+        return 0;
+
+     label03:
+        $r3 = virtualinvoke r1.getId();
+
+        $r4 = virtualinvoke r2.getId();
+
+        if $r3 != null goto label04;
+
+        if $r4 == null goto label06;
+
+        goto label05;
+
+     label04:
+        $z2 = virtualinvoke $r3.equals($r4);
+
+        if $z2 != 0 goto label06;
+
+     label05:
+        return 0;
+
+     label06:
+        $r5 = virtualinvoke r1.getName();
+
+        $r6 = virtualinvoke r2.getName();
+
+        if $r5 != null goto label07;
+
+        if $r6 == null goto label09;
+
+        goto label08;
+
+     label07:
+        $z3 = virtualinvoke $r5.equals($r6);
+
+        if $z3 != 0 goto label09;
+
+     label08:
+        return 0;
+
+     label09:
+        $r7 = virtualinvoke r1.getPath();
+
+        $r8 = virtualinvoke r2.getPath();
+
+        if $r7 != null goto label10;
+
+        if $r8 == null goto label12;
+
+        goto label11;
+
+     label10:
+        $z4 = virtualinvoke $r7.equals($r8);
+
+        if $z4 != 0 goto label12;
+
+     label11:
+        return 0;
+
+     label12:
+        $r9 = virtualinvoke r1.getHints();
+
+        $r10 = virtualinvoke r2.getHints();
+
+        if $r9 != null goto label13;
+
+        if $r10 == null goto label15;
+
+        goto label14;
+
+     label13:
+        $z5 = virtualinvoke $r9.equals($r10);
+
+        if $z5 != 0 goto label15;
+
+     label14:
+        return 0;
+
+     label15:
+        return 1;
+    }
+
+    protected boolean canEqual(java.lang.Object)
+    {
+        java.lang.Object r0;
+        org.owasp.webgoat.container.lessons.Assignment r1;
+        boolean $z0;
+
+        r1 := @this;
+
+        r0 := @parameter0;
+
+        $z0 = r0 instanceof org.owasp.webgoat.container.lessons.Assignment;
+
+        return $z0;
+    }
+
+    public int hashCode()
+    {
+        java.lang.Long $r1;
+        int $i0, $i1, $i2, $i3, $i4, $i5, $i6, $i7, $i8, $i9, $i10, $i7_1, $i7_2, $i8_1, $i8_2, $i9_1, $i9_2, $i10_1, $i10_2;
+        java.lang.String $r2, $r3;
+        java.util.List $r4;
+        org.owasp.webgoat.container.lessons.Assignment r0;
+
+        r0 := @this;
+
+        $r1 = virtualinvoke r0.getId();
+
+        if $r1 != null goto label1;
+
+        $i7 = 43;
+
+(0)     goto label2;
+
+     label1:
+(1)     $i7_1 = virtualinvoke $r1.hashCode();
+
+     label2:
+        $i7_2 = Phi($i7 #0, $i7_1 #1);
+
+        $i6 = 59 + $i7_2;
+
+        $r2 = virtualinvoke r0.getName();
+
+        $i0 = $i6 * 59;
+
+        if $r2 != null goto label3;
+
+        $i8 = 43;
+
+(2)     goto label4;
+
+     label3:
+(3)     $i8_1 = virtualinvoke $r2.hashCode();
+
+     label4:
+        $i8_2 = Phi($i8 #2, $i8_1 #3);
+
+        $i5 = $i0 + $i8_2;
+
+        $r3 = virtualinvoke r0.getPath();
+
+        $i1 = $i5 * 59;
+
+        if $r3 != null goto label5;
+
+        $i9 = 43;
+
+(4)     goto label6;
+
+     label5:
+(5)     $i9_1 = virtualinvoke $r3.hashCode();
+
+     label6:
+        $i9_2 = Phi($i9 #4, $i9_1 #5);
+
+        $i4 = $i1 + $i9_2;
+
+        $r4 = virtualinvoke r0.getHints();
+
+        $i2 = $i4 * 59;
+
+        if $r4 != null goto label7;
+
+        $i10 = 43;
+
+(6)     goto label8;
+
+     label7:
+(7)     $i10_1 = virtualinvoke $r4.hashCode();
+
+     label8:
+        $i10_2 = Phi($i10 #6, $i10_1 #7);
+
+        $i3 = $i2 + $i10_2;
+
+        return $i3;
+    }
+}

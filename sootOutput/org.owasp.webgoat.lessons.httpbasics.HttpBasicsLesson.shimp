@@ -1,0 +1,64 @@
+public class org.owasp.webgoat.lessons.httpbasics.HttpBasicsLesson extends org.owasp.webgoat.container.assignments.AssignmentEndpoint
+{
+
+    public void <init>()
+    {
+        org.owasp.webgoat.lessons.httpbasics.HttpBasicsLesson r0;
+
+        r0 := @this;
+
+        specialinvoke r0.<init>();
+
+        return;
+    }
+
+    public org.owasp.webgoat.container.assignments.AttackResult completed(java.lang.String)
+    {
+        org.owasp.webgoat.container.assignments.AttackResult$AttackResultBuilder $r2, $r3, $r5, $r6, $r11;
+        java.lang.Object[] $r7;
+        org.owasp.webgoat.lessons.httpbasics.HttpBasicsLesson r1;
+        org.owasp.webgoat.container.assignments.AttackResult $r4, $r12;
+        java.lang.StringBuilder $r8, $r9;
+        java.lang.String r0, $r10;
+        boolean $z0;
+
+        r1 := @this;
+
+        r0 := @parameter0;
+
+        $z0 = virtualinvoke r0.isBlank();
+
+        if $z0 != 0 goto label1;
+
+        $r5 = virtualinvoke r1.success(r1);
+
+        $r6 = virtualinvoke $r5.feedback("http-basics.reversed");
+
+        $r7 = newarray (java.lang.Object)[1];
+
+        $r8 = new java.lang.StringBuilder;
+
+        specialinvoke $r8.<init>(r0);
+
+        $r9 = virtualinvoke $r8.reverse();
+
+        $r10 = virtualinvoke $r9.toString();
+
+        $r7[0] = $r10;
+
+        $r11 = virtualinvoke $r6.feedbackArgs($r7);
+
+        $r12 = virtualinvoke $r11.build();
+
+        return $r12;
+
+     label1:
+        $r2 = virtualinvoke r1.failed(r1);
+
+        $r3 = virtualinvoke $r2.feedback("http-basics.empty");
+
+        $r4 = virtualinvoke $r3.build();
+
+        return $r4;
+    }
+}

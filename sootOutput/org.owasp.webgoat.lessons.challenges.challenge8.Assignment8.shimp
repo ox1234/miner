@@ -1,0 +1,353 @@
+public class org.owasp.webgoat.lessons.challenges.challenge8.Assignment8 extends org.owasp.webgoat.container.assignments.AssignmentEndpoint
+{
+    private static final org.slf4j.Logger log;
+    private static final java.util.Map votes;
+
+    public void <init>()
+    {
+        org.owasp.webgoat.lessons.challenges.challenge8.Assignment8 r0;
+
+        r0 := @this;
+
+        specialinvoke r0.<init>();
+
+        return;
+    }
+
+    public org.springframework.http.ResponseEntity vote(int, javax.servlet.http.HttpServletRequest)
+    {
+        java.lang.String[] $r10;
+        org.springframework.http.ResponseEntity$BodyBuilder $r9, $r17, $r21;
+        java.lang.Integer $r3, $r4, $r7, $r8, $r12, r24;
+        org.owasp.webgoat.lessons.challenges.challenge8.Assignment8 r23;
+        javax.servlet.http.HttpServletRequest r0;
+        java.util.Map $r2, $r6, $r11, $r20;
+        int i0, $i1, $i2;
+        java.lang.Boolean $r19;
+        java.lang.String $r1, $r14, $r15;
+        boolean $z0;
+        java.lang.Object $r5, $r13;
+        org.springframework.http.ResponseEntity$HeadersBuilder $r16;
+        org.springframework.http.ResponseEntity $r18, $r22;
+
+        r23 := @this;
+
+        i0 := @parameter0;
+
+        r0 := @parameter1;
+
+        $r1 = interfaceinvoke r0.getMethod();
+
+        $z0 = virtualinvoke $r1.equals("GET");
+
+        if $z0 == 0 goto label1;
+
+        $r19 = staticinvoke java.lang.Boolean.valueOf(1);
+
+        $r20 = staticinvoke java.util.Map.of("error", $r19, "message", "Sorry but you need to login first in order to vote");
+
+        $r21 = staticinvoke org.springframework.http.ResponseEntity.status(200);
+
+        $r22 = interfaceinvoke $r21.body($r20);
+
+        return $r22;
+
+     label1:
+        $r2 = org.owasp.webgoat.lessons.challenges.challenge8.Assignment8.votes;
+
+        $r3 = staticinvoke java.lang.Integer.valueOf(i0);
+
+        $r4 = staticinvoke java.lang.Integer.valueOf(0);
+
+        $r5 = interfaceinvoke $r2.getOrDefault($r3, $r4);
+
+        r24 = (java.lang.Integer) $r5;
+
+        $r6 = org.owasp.webgoat.lessons.challenges.challenge8.Assignment8.votes;
+
+        $r7 = staticinvoke java.lang.Integer.valueOf(i0);
+
+        $i1 = virtualinvoke r24.intValue();
+
+        $i2 = $i1 + 1;
+
+        $r8 = staticinvoke java.lang.Integer.valueOf($i2);
+
+        interfaceinvoke $r6.put($r7, $r8);
+
+        $r9 = staticinvoke org.springframework.http.ResponseEntity.ok();
+
+        $r10 = newarray (java.lang.String)[1];
+
+        $r11 = org.owasp.webgoat.lessons.challenges.Flag.FLAGS;
+
+        $r12 = staticinvoke java.lang.Integer.valueOf(8);
+
+        $r13 = interfaceinvoke $r11.get($r12);
+
+        $r14 = (java.lang.String) $r13;
+
+        $r15 = dynamicinvoke "makeConcatWithConstants" <java.lang.String (java.lang.String)>($r14) java.lang.invoke.StringConcatFactory.makeConcatWithConstants("Thanks for voting, your flag is: \u0001");
+
+        $r10[0] = $r15;
+
+        $r16 = interfaceinvoke $r9.header("X-Flag", $r10);
+
+        $r17 = (org.springframework.http.ResponseEntity$BodyBuilder) $r16;
+
+        $r18 = interfaceinvoke $r17.build();
+
+        return $r18;
+    }
+
+    public org.springframework.http.ResponseEntity getVotes()
+    {
+        java.util.Set $r1;
+        java.util.function.Function $r3, $r4;
+        org.owasp.webgoat.lessons.challenges.challenge8.Assignment8 r9;
+        java.util.stream.Stream $r2;
+        java.util.Map $r0, $r7;
+        java.lang.Object $r6;
+        org.springframework.http.ResponseEntity $r8;
+        java.util.stream.Collector $r5;
+
+        r9 := @this;
+
+        $r0 = org.owasp.webgoat.lessons.challenges.challenge8.Assignment8.votes;
+
+        $r1 = interfaceinvoke $r0.entrySet();
+
+        $r2 = interfaceinvoke $r1.stream();
+
+        $r3 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge8.Assignment8$lambda_getVotes_0__57.bootstrap$();
+
+        $r4 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge8.Assignment8$lambda_getVotes_1__58.bootstrap$();
+
+        $r5 = staticinvoke java.util.stream.Collectors.toMap($r3, $r4);
+
+        $r6 = interfaceinvoke $r2.collect($r5);
+
+        $r7 = (java.util.Map) $r6;
+
+        $r8 = staticinvoke org.springframework.http.ResponseEntity.ok($r7);
+
+        return $r8;
+    }
+
+    public org.springframework.http.ResponseEntity average()
+    {
+        java.util.stream.IntStream $r4, $r9;
+        java.util.function.IntBinaryOperator $r10;
+        java.lang.Integer $r11;
+        org.owasp.webgoat.lessons.challenges.challenge8.Assignment8 r14;
+        java.util.Map $r0, $r5, $r12;
+        int $i0, $i1, $i2;
+        double $d0, $d1, $d2, $d3;
+        java.util.Collection $r1;
+        java.util.function.ToIntFunction $r3, $r8;
+        java.util.Set $r6;
+        java.util.stream.Stream $r2, $r7;
+        org.springframework.http.ResponseEntity $r13;
+
+        r14 := @this;
+
+        $r0 = org.owasp.webgoat.lessons.challenges.challenge8.Assignment8.votes;
+
+        $r1 = interfaceinvoke $r0.values();
+
+        $r2 = interfaceinvoke $r1.stream();
+
+        $r3 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge8.Assignment8$lambda_average_2__59.bootstrap$();
+
+        $r4 = interfaceinvoke $r2.mapToInt($r3);
+
+        $i0 = interfaceinvoke $r4.sum();
+
+        $r5 = org.owasp.webgoat.lessons.challenges.challenge8.Assignment8.votes;
+
+        $r6 = interfaceinvoke $r5.entrySet();
+
+        $r7 = interfaceinvoke $r6.stream();
+
+        $r8 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge8.Assignment8$lambda_average_3__60.bootstrap$();
+
+        $r9 = interfaceinvoke $r7.mapToInt($r8);
+
+        $r10 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge8.Assignment8$lambda_average_4__61.bootstrap$();
+
+        $i1 = interfaceinvoke $r9.reduce(0, $r10);
+
+        $d1 = (double) $i1;
+
+        $d0 = (double) $i0;
+
+        $d2 = $d1 / $d0;
+
+        $d3 = staticinvoke java.lang.Math.ceil($d2);
+
+        $i2 = (int) $d3;
+
+        $r11 = staticinvoke java.lang.Integer.valueOf($i2);
+
+        $r12 = staticinvoke java.util.Map.of("average", $r11);
+
+        $r13 = staticinvoke org.springframework.http.ResponseEntity.ok($r12);
+
+        return $r13;
+    }
+
+    public org.owasp.webgoat.container.assignments.AttackResult notUsed()
+    {
+        java.lang.IllegalStateException $r0;
+        org.owasp.webgoat.lessons.challenges.challenge8.Assignment8 r1;
+
+        r1 := @this;
+
+        $r0 = new java.lang.IllegalStateException;
+
+        specialinvoke $r0.<init>("Should never be called, challenge specific method");
+
+        throw $r0;
+    }
+
+    public static int lambda$average$4(int, int)
+    {
+        int i0, i1, $i2;
+
+        i0 := @parameter0;
+
+        i1 := @parameter1;
+
+        $i2 = i0 + i1;
+
+        return $i2;
+    }
+
+    public static int lambda$average$3(java.util.Map$Entry)
+    {
+        java.util.Map$Entry r0;
+        java.lang.Integer $r2, $r4;
+        int $i0, $i1, $i2;
+        java.lang.Object $r1, $r3;
+
+        r0 := @parameter0;
+
+        $r1 = interfaceinvoke r0.getKey();
+
+        $r2 = (java.lang.Integer) $r1;
+
+        $i0 = virtualinvoke $r2.intValue();
+
+        $r3 = interfaceinvoke r0.getValue();
+
+        $r4 = (java.lang.Integer) $r3;
+
+        $i1 = virtualinvoke $r4.intValue();
+
+        $i2 = $i0 * $i1;
+
+        return $i2;
+    }
+
+    public static int lambda$average$2(java.lang.Integer)
+    {
+        int $i0;
+        java.lang.Integer r0;
+
+        r0 := @parameter0;
+
+        $i0 = virtualinvoke r0.intValue();
+
+        return $i0;
+    }
+
+    public static java.lang.Integer lambda$getVotes$1(java.util.Map$Entry)
+    {
+        java.util.Map$Entry r0;
+        java.lang.Object $r1;
+        java.lang.Integer $r2;
+
+        r0 := @parameter0;
+
+        $r1 = interfaceinvoke r0.getValue();
+
+        $r2 = (java.lang.Integer) $r1;
+
+        return $r2;
+    }
+
+    public static java.lang.String lambda$getVotes$0(java.util.Map$Entry)
+    {
+        java.util.Map$Entry r0;
+        java.lang.Object $r1;
+        java.lang.String $r2;
+
+        r0 := @parameter0;
+
+        $r1 = interfaceinvoke r0.getKey();
+
+        $r2 = dynamicinvoke "makeConcatWithConstants" <java.lang.String (java.lang.Object)>($r1) java.lang.invoke.StringConcatFactory.makeConcatWithConstants("\u0001");
+
+        return $r2;
+    }
+
+    static void <clinit>()
+    {
+        java.util.HashMap $r1;
+        java.lang.Integer $r3, $r4, $r6, $r7, $r9, $r10, $r12, $r13, $r15, $r16;
+        java.util.Map $r2, $r5, $r8, $r11, $r14;
+        org.slf4j.Logger $r0;
+
+        $r0 = staticinvoke org.slf4j.LoggerFactory.getLogger(class "Lorg/owasp/webgoat/lessons/challenges/challenge8/Assignment8;");
+
+        org.owasp.webgoat.lessons.challenges.challenge8.Assignment8.log = $r0;
+
+        $r1 = new java.util.HashMap;
+
+        specialinvoke $r1.<init>();
+
+        org.owasp.webgoat.lessons.challenges.challenge8.Assignment8.votes = $r1;
+
+        $r2 = org.owasp.webgoat.lessons.challenges.challenge8.Assignment8.votes;
+
+        $r3 = staticinvoke java.lang.Integer.valueOf(1);
+
+        $r4 = staticinvoke java.lang.Integer.valueOf(400);
+
+        interfaceinvoke $r2.put($r3, $r4);
+
+        $r5 = org.owasp.webgoat.lessons.challenges.challenge8.Assignment8.votes;
+
+        $r6 = staticinvoke java.lang.Integer.valueOf(2);
+
+        $r7 = staticinvoke java.lang.Integer.valueOf(120);
+
+        interfaceinvoke $r5.put($r6, $r7);
+
+        $r8 = org.owasp.webgoat.lessons.challenges.challenge8.Assignment8.votes;
+
+        $r9 = staticinvoke java.lang.Integer.valueOf(3);
+
+        $r10 = staticinvoke java.lang.Integer.valueOf(140);
+
+        interfaceinvoke $r8.put($r9, $r10);
+
+        $r11 = org.owasp.webgoat.lessons.challenges.challenge8.Assignment8.votes;
+
+        $r12 = staticinvoke java.lang.Integer.valueOf(4);
+
+        $r13 = staticinvoke java.lang.Integer.valueOf(150);
+
+        interfaceinvoke $r11.put($r12, $r13);
+
+        $r14 = org.owasp.webgoat.lessons.challenges.challenge8.Assignment8.votes;
+
+        $r15 = staticinvoke java.lang.Integer.valueOf(5);
+
+        $r16 = staticinvoke java.lang.Integer.valueOf(300);
+
+        interfaceinvoke $r14.put($r15, $r16);
+
+        return;
+    }
+}

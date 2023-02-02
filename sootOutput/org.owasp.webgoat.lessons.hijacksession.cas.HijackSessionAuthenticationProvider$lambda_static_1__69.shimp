@@ -1,0 +1,37 @@
+public final class org.owasp.webgoat.lessons.hijacksession.cas.HijackSessionAuthenticationProvider$lambda_static_1__69 extends java.lang.Object implements java.util.function.Supplier
+{
+
+    public static java.util.function.Supplier bootstrap$()
+    {
+        org.owasp.webgoat.lessons.hijacksession.cas.HijackSessionAuthenticationProvider$lambda_static_1__69 $r0;
+
+        $r0 = new org.owasp.webgoat.lessons.hijacksession.cas.HijackSessionAuthenticationProvider$lambda_static_1__69;
+
+        specialinvoke $r0.<init>();
+
+        return $r0;
+    }
+
+    public void <init>()
+    {
+        org.owasp.webgoat.lessons.hijacksession.cas.HijackSessionAuthenticationProvider$lambda_static_1__69 $r0;
+
+        $r0 := @this;
+
+        specialinvoke $r0.<init>();
+
+        return;
+    }
+
+    public java.lang.Object get()
+    {
+        org.owasp.webgoat.lessons.hijacksession.cas.HijackSessionAuthenticationProvider$lambda_static_1__69 $r0;
+        java.lang.String $r1;
+
+        $r0 := @this;
+
+        $r1 = staticinvoke org.owasp.webgoat.lessons.hijacksession.cas.HijackSessionAuthenticationProvider.lambda$static$1();
+
+        return $r1;
+    }
+}

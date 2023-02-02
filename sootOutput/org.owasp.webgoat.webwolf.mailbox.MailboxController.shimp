@@ -1,0 +1,113 @@
+public class org.owasp.webgoat.webwolf.mailbox.MailboxController extends java.lang.Object
+{
+    private static final org.slf4j.Logger log;
+    private final org.owasp.webgoat.webwolf.mailbox.MailboxRepository mailboxRepository;
+
+    public org.springframework.web.servlet.ModelAndView mail()
+    {
+        org.owasp.webgoat.webwolf.mailbox.MailboxRepository $r6;
+        java.lang.Integer $r9;
+        org.springframework.web.servlet.ModelAndView $r4;
+        java.util.List $r8;
+        org.springframework.security.core.context.SecurityContext $r0;
+        int $i0;
+        org.springframework.security.core.userdetails.UserDetails r3;
+        java.lang.Object $r2;
+        org.owasp.webgoat.webwolf.mailbox.MailboxController r5;
+        java.lang.String $r7;
+        org.springframework.security.core.Authentication $r1;
+        boolean $z0;
+
+        r5 := @this;
+
+        $r0 = staticinvoke org.springframework.security.core.context.SecurityContextHolder.getContext();
+
+        $r1 = interfaceinvoke $r0.getAuthentication();
+
+        $r2 = interfaceinvoke $r1.getPrincipal();
+
+        r3 = (org.springframework.security.core.userdetails.UserDetails) $r2;
+
+        $r4 = new org.springframework.web.servlet.ModelAndView;
+
+        specialinvoke $r4.<init>();
+
+        $r6 = r5.mailboxRepository;
+
+        $r7 = interfaceinvoke r3.getUsername();
+
+        $r8 = interfaceinvoke $r6.findByRecipientOrderByTimeDesc($r7);
+
+        if $r8 == null goto label1;
+
+        $z0 = interfaceinvoke $r8.isEmpty();
+
+        if $z0 != 0 goto label1;
+
+        $i0 = interfaceinvoke $r8.size();
+
+        $r9 = staticinvoke java.lang.Integer.valueOf($i0);
+
+        virtualinvoke $r4.addObject("total", $r9);
+
+        virtualinvoke $r4.addObject("emails", $r8);
+
+     label1:
+        virtualinvoke $r4.setViewName("mailbox");
+
+        return $r4;
+    }
+
+    public org.springframework.http.ResponseEntity sendEmail(org.owasp.webgoat.webwolf.mailbox.Email)
+    {
+        org.springframework.http.HttpStatus $r3;
+        org.owasp.webgoat.webwolf.mailbox.MailboxRepository $r2;
+        org.owasp.webgoat.webwolf.mailbox.Email r1;
+        org.springframework.http.ResponseEntity $r5;
+        org.owasp.webgoat.webwolf.mailbox.MailboxController r0;
+        org.springframework.http.ResponseEntity$BodyBuilder $r4;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        $r2 = r0.mailboxRepository;
+
+        interfaceinvoke $r2.save(r1);
+
+        $r3 = org.springframework.http.HttpStatus.CREATED;
+
+        $r4 = staticinvoke org.springframework.http.ResponseEntity.status($r3);
+
+        $r5 = interfaceinvoke $r4.build();
+
+        return $r5;
+    }
+
+    public void <init>(org.owasp.webgoat.webwolf.mailbox.MailboxRepository)
+    {
+        org.owasp.webgoat.webwolf.mailbox.MailboxController r0;
+        org.owasp.webgoat.webwolf.mailbox.MailboxRepository r1;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        specialinvoke r0.<init>();
+
+        r0.mailboxRepository = r1;
+
+        return;
+    }
+
+    static void <clinit>()
+    {
+        org.slf4j.Logger $r0;
+
+        $r0 = staticinvoke org.slf4j.LoggerFactory.getLogger(class "Lorg/owasp/webgoat/webwolf/mailbox/MailboxController;");
+
+        org.owasp.webgoat.webwolf.mailbox.MailboxController.log = $r0;
+
+        return;
+    }
+}

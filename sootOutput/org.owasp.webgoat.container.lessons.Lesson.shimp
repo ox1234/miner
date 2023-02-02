@@ -1,0 +1,194 @@
+public abstract class org.owasp.webgoat.container.lessons.Lesson extends java.lang.Object
+{
+    private static int count;
+    private java.lang.Integer id;
+    private java.util.List assignments;
+
+    protected void <init>()
+    {
+        int $i0, $i1;
+        org.owasp.webgoat.container.lessons.Lesson r0;
+        java.lang.Integer $r1;
+
+        r0 := @this;
+
+        specialinvoke r0.<init>();
+
+        r0.id = null;
+
+        $i0 = org.owasp.webgoat.container.lessons.Lesson.count;
+
+        $i1 = $i0 + 1;
+
+        org.owasp.webgoat.container.lessons.Lesson.count = $i1;
+
+        $r1 = staticinvoke java.lang.Integer.valueOf($i1);
+
+        r0.id = $r1;
+
+        return;
+    }
+
+    public java.lang.String getName()
+    {
+        int $i0, $i1;
+        java.lang.Class $r1;
+        java.lang.String $r2, $r3;
+        org.owasp.webgoat.container.lessons.Lesson r0;
+
+        r0 := @this;
+
+        $r1 = virtualinvoke r0.getClass();
+
+        $r2 = virtualinvoke $r1.getName();
+
+        $i0 = virtualinvoke $r2.lastIndexOf(46);
+
+        $i1 = $i0 + 1;
+
+        $r3 = virtualinvoke $r2.substring($i1);
+
+        return $r3;
+    }
+
+    public org.owasp.webgoat.container.lessons.Category getCategory()
+    {
+        org.owasp.webgoat.container.lessons.Lesson r0;
+        org.owasp.webgoat.container.lessons.Category $r1;
+
+        r0 := @this;
+
+        $r1 = virtualinvoke r0.getDefaultCategory();
+
+        return $r1;
+    }
+
+    protected abstract org.owasp.webgoat.container.lessons.Category getDefaultCategory();
+
+    public abstract java.lang.String getTitle();
+
+    protected java.lang.String getPath()
+    {
+        org.owasp.webgoat.container.lessons.Lesson r0;
+
+        r0 := @this;
+
+        return "#lesson/";
+    }
+
+    public java.lang.String getLink()
+    {
+        java.lang.Object[] $r0;
+        java.lang.String $r2, $r3, $r4;
+        org.owasp.webgoat.container.lessons.Lesson r1;
+
+        r1 := @this;
+
+        $r0 = newarray (java.lang.Object)[2];
+
+        $r2 = virtualinvoke r1.getPath();
+
+        $r0[0] = $r2;
+
+        $r3 = virtualinvoke r1.getId();
+
+        $r0[1] = $r3;
+
+        $r4 = staticinvoke java.lang.String.format("%s%s.lesson", $r0);
+
+        return $r4;
+    }
+
+    public java.lang.String toString()
+    {
+        java.lang.String $r1;
+        org.owasp.webgoat.container.lessons.Lesson r0;
+
+        r0 := @this;
+
+        $r1 = virtualinvoke r0.getTitle();
+
+        return $r1;
+    }
+
+    public final java.lang.String getId()
+    {
+        java.lang.Class $r1;
+        java.lang.String $r2;
+        org.owasp.webgoat.container.lessons.Lesson r0;
+
+        r0 := @this;
+
+        $r1 = virtualinvoke r0.getClass();
+
+        $r2 = virtualinvoke $r1.getSimpleName();
+
+        return $r2;
+    }
+
+    public final java.lang.String getPackage()
+    {
+        java.lang.Class $r1;
+        java.lang.String $r2, $r3, $r4;
+        org.owasp.webgoat.container.lessons.Lesson r0;
+
+        r0 := @this;
+
+        $r1 = virtualinvoke r0.getClass();
+
+        $r2 = virtualinvoke $r1.getPackageName();
+
+        $r3 = virtualinvoke $r2.replaceAll("org.owasp.webgoat.lessons.", "");
+
+        $r4 = virtualinvoke $r3.replaceAll("\\..*", "");
+
+        return $r4;
+    }
+
+    public java.util.List getAssignments()
+    {
+        java.util.List $r1;
+        org.owasp.webgoat.container.lessons.Lesson r0;
+
+        r0 := @this;
+
+        $r1 = r0.assignments;
+
+        return $r1;
+    }
+
+    public void setId(java.lang.Integer)
+    {
+        org.owasp.webgoat.container.lessons.Lesson r0;
+        java.lang.Integer r1;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        r0.id = r1;
+
+        return;
+    }
+
+    public void setAssignments(java.util.List)
+    {
+        java.util.List r1;
+        org.owasp.webgoat.container.lessons.Lesson r0;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        r0.assignments = r1;
+
+        return;
+    }
+
+    static void <clinit>()
+    {
+        org.owasp.webgoat.container.lessons.Lesson.count = 1;
+
+        return;
+    }
+}

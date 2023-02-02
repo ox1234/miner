@@ -1,0 +1,54 @@
+public final class org.owasp.webgoat.container.users.LessonTracker$add__20 extends java.lang.Object implements java.util.function.Consumer
+{
+    java.util.Set cap0;
+
+    public static java.util.function.Consumer bootstrap$(java.util.Set)
+    {
+        java.util.Set $r0;
+        org.owasp.webgoat.container.users.LessonTracker$add__20 $r1;
+
+        $r0 := @parameter0;
+
+        $r1 = new org.owasp.webgoat.container.users.LessonTracker$add__20;
+
+        specialinvoke $r1.<init>($r0);
+
+        return $r1;
+    }
+
+    public void <init>(java.util.Set)
+    {
+        java.util.Set $r1;
+        org.owasp.webgoat.container.users.LessonTracker$add__20 $r0;
+
+        $r0 := @this;
+
+        $r1 := @parameter0;
+
+        specialinvoke $r0.<init>();
+
+        $r0.cap0 = $r1;
+
+        return;
+    }
+
+    public void accept(java.lang.Object)
+    {
+        org.owasp.webgoat.container.lessons.Assignment $r2;
+        org.owasp.webgoat.container.users.LessonTracker$add__20 $r0;
+        java.util.Set $r3;
+        java.lang.Object $r1;
+
+        $r0 := @this;
+
+        $r1 := @parameter0;
+
+        $r2 = (org.owasp.webgoat.container.lessons.Assignment) $r1;
+
+        $r3 = $r0.cap0;
+
+        interfaceinvoke $r3.add($r2);
+
+        return;
+    }
+}

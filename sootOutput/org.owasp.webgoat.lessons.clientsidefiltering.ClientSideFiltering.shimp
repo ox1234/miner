@@ -1,0 +1,35 @@
+public class org.owasp.webgoat.lessons.clientsidefiltering.ClientSideFiltering extends org.owasp.webgoat.container.lessons.Lesson
+{
+
+    public void <init>()
+    {
+        org.owasp.webgoat.lessons.clientsidefiltering.ClientSideFiltering r0;
+
+        r0 := @this;
+
+        specialinvoke r0.<init>();
+
+        return;
+    }
+
+    public org.owasp.webgoat.container.lessons.Category getDefaultCategory()
+    {
+        org.owasp.webgoat.container.lessons.Category $r0;
+        org.owasp.webgoat.lessons.clientsidefiltering.ClientSideFiltering r1;
+
+        r1 := @this;
+
+        $r0 = org.owasp.webgoat.container.lessons.Category.CLIENT_SIDE;
+
+        return $r0;
+    }
+
+    public java.lang.String getTitle()
+    {
+        org.owasp.webgoat.lessons.clientsidefiltering.ClientSideFiltering r0;
+
+        r0 := @this;
+
+        return "client.side.filtering.title";
+    }
+}

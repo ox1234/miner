@@ -1,0 +1,70 @@
+public class org.owasp.webgoat.lessons.chromedevtools.NetworkLesson extends org.owasp.webgoat.container.assignments.AssignmentEndpoint
+{
+
+    public void <init>()
+    {
+        org.owasp.webgoat.lessons.chromedevtools.NetworkLesson r0;
+
+        r0 := @this;
+
+        specialinvoke r0.<init>();
+
+        return;
+    }
+
+    public org.owasp.webgoat.container.assignments.AttackResult completed(java.lang.String, java.lang.String)
+    {
+        org.owasp.webgoat.container.assignments.AttackResult$AttackResultBuilder $r3, $r4, $r6, $r7, $r8;
+        org.owasp.webgoat.lessons.chromedevtools.NetworkLesson r2;
+        org.owasp.webgoat.container.assignments.AttackResult $r5, $r9;
+        java.lang.String r0, r1;
+        boolean $z0;
+
+        r2 := @this;
+
+        r0 := @parameter0;
+
+        r1 := @parameter1;
+
+        $z0 = virtualinvoke r0.equals(r1);
+
+        if $z0 == 0 goto label1;
+
+        $r6 = virtualinvoke r2.success(r2);
+
+        $r7 = virtualinvoke $r6.feedback("network.success");
+
+        $r8 = virtualinvoke $r7.output("");
+
+        $r9 = virtualinvoke $r8.build();
+
+        return $r9;
+
+     label1:
+        $r3 = virtualinvoke r2.failed(r2);
+
+        $r4 = virtualinvoke $r3.feedback("network.failed");
+
+        $r5 = virtualinvoke $r4.build();
+
+        return $r5;
+    }
+
+    public org.springframework.http.ResponseEntity ok(java.lang.String)
+    {
+        org.owasp.webgoat.lessons.chromedevtools.NetworkLesson r2;
+        org.springframework.http.ResponseEntity $r1;
+        org.springframework.http.ResponseEntity$BodyBuilder $r0;
+        java.lang.String r3;
+
+        r2 := @this;
+
+        r3 := @parameter0;
+
+        $r0 = staticinvoke org.springframework.http.ResponseEntity.ok();
+
+        $r1 = interfaceinvoke $r0.build();
+
+        return $r1;
+    }
+}

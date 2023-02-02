@@ -1,0 +1,193 @@
+public class org.owasp.webgoat.container.assignments.AttackResult$AttackResultBuilder extends java.lang.Object
+{
+    private boolean lessonCompleted;
+    private org.owasp.webgoat.container.i18n.PluginMessages messages;
+    private java.lang.Object[] feedbackArgs;
+    private java.lang.String feedbackResourceBundleKey;
+    private java.lang.String output;
+    private java.lang.Object[] outputArgs;
+    private org.owasp.webgoat.container.assignments.AssignmentEndpoint assignment;
+    private boolean attemptWasMade;
+
+    public void <init>(org.owasp.webgoat.container.i18n.PluginMessages)
+    {
+        org.owasp.webgoat.container.assignments.AttackResult$AttackResultBuilder r0;
+        org.owasp.webgoat.container.i18n.PluginMessages r1;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        specialinvoke r0.<init>();
+
+        r0.attemptWasMade = 0;
+
+        r0.messages = r1;
+
+        return;
+    }
+
+    public org.owasp.webgoat.container.assignments.AttackResult$AttackResultBuilder lessonCompleted(boolean)
+    {
+        org.owasp.webgoat.container.assignments.AttackResult$AttackResultBuilder r0;
+        boolean z0;
+
+        r0 := @this;
+
+        z0 := @parameter0;
+
+        r0.lessonCompleted = z0;
+
+        r0.feedbackResourceBundleKey = "lesson.completed";
+
+        return r0;
+    }
+
+    public org.owasp.webgoat.container.assignments.AttackResult$AttackResultBuilder lessonCompleted(boolean, java.lang.String)
+    {
+        org.owasp.webgoat.container.assignments.AttackResult$AttackResultBuilder r0;
+        java.lang.String r1;
+        boolean z0;
+
+        r0 := @this;
+
+        z0 := @parameter0;
+
+        r1 := @parameter1;
+
+        r0.lessonCompleted = z0;
+
+        r0.feedbackResourceBundleKey = r1;
+
+        return r0;
+    }
+
+    public transient org.owasp.webgoat.container.assignments.AttackResult$AttackResultBuilder feedbackArgs(java.lang.Object[])
+    {
+        org.owasp.webgoat.container.assignments.AttackResult$AttackResultBuilder r0;
+        java.lang.Object[] r1;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        r0.feedbackArgs = r1;
+
+        return r0;
+    }
+
+    public org.owasp.webgoat.container.assignments.AttackResult$AttackResultBuilder feedback(java.lang.String)
+    {
+        org.owasp.webgoat.container.assignments.AttackResult$AttackResultBuilder r0;
+        java.lang.String r1;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        r0.feedbackResourceBundleKey = r1;
+
+        return r0;
+    }
+
+    public org.owasp.webgoat.container.assignments.AttackResult$AttackResultBuilder output(java.lang.String)
+    {
+        org.owasp.webgoat.container.assignments.AttackResult$AttackResultBuilder r0;
+        java.lang.String r1;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        r0.output = r1;
+
+        return r0;
+    }
+
+    public transient org.owasp.webgoat.container.assignments.AttackResult$AttackResultBuilder outputArgs(java.lang.Object[])
+    {
+        org.owasp.webgoat.container.assignments.AttackResult$AttackResultBuilder r0;
+        java.lang.Object[] r1;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        r0.outputArgs = r1;
+
+        return r0;
+    }
+
+    public org.owasp.webgoat.container.assignments.AttackResult$AttackResultBuilder attemptWasMade()
+    {
+        org.owasp.webgoat.container.assignments.AttackResult$AttackResultBuilder r0;
+
+        r0 := @this;
+
+        r0.attemptWasMade = 1;
+
+        return r0;
+    }
+
+    public org.owasp.webgoat.container.assignments.AttackResult build()
+    {
+        org.owasp.webgoat.container.assignments.AttackResult$AttackResultBuilder r1;
+        java.lang.Object[] $r2, $r6;
+        java.lang.String $r3, $r5, $r7, $r8, $r10, $r13;
+        boolean $z0, $z1;
+        org.owasp.webgoat.container.i18n.PluginMessages $r4, $r9;
+        org.owasp.webgoat.container.assignments.AttackResult $r0;
+        java.lang.Class $r12;
+        org.owasp.webgoat.container.assignments.AssignmentEndpoint $r11;
+
+        r1 := @this;
+
+        $r0 = new org.owasp.webgoat.container.assignments.AttackResult;
+
+        $z0 = r1.lessonCompleted;
+
+        $r4 = r1.messages;
+
+        $r3 = r1.feedbackResourceBundleKey;
+
+        $r2 = r1.feedbackArgs;
+
+        $r5 = virtualinvoke $r4.getMessage($r3, $r2);
+
+        $r9 = r1.messages;
+
+        $r8 = r1.output;
+
+        $r7 = r1.output;
+
+        $r6 = r1.outputArgs;
+
+        $r10 = virtualinvoke $r9.getMessage($r8, $r7, $r6);
+
+        $r11 = r1.assignment;
+
+        $r12 = virtualinvoke $r11.getClass();
+
+        $r13 = virtualinvoke $r12.getSimpleName();
+
+        $z1 = r1.attemptWasMade;
+
+        specialinvoke $r0.<init>($z0, $r5, $r10, $r13, $z1);
+
+        return $r0;
+    }
+
+    public org.owasp.webgoat.container.assignments.AttackResult$AttackResultBuilder assignment(org.owasp.webgoat.container.assignments.AssignmentEndpoint)
+    {
+        org.owasp.webgoat.container.assignments.AttackResult$AttackResultBuilder r0;
+        org.owasp.webgoat.container.assignments.AssignmentEndpoint r1;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        r0.assignment = r1;
+
+        return r0;
+    }
+}

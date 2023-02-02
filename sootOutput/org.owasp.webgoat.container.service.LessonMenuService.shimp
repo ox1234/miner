@@ -1,0 +1,319 @@
+public class org.owasp.webgoat.container.service.LessonMenuService extends java.lang.Object
+{
+    public static final java.lang.String URL_LESSONMENU_MVC;
+    private final org.owasp.webgoat.container.session.Course course;
+    private final org.owasp.webgoat.container.session.WebSession webSession;
+    private org.owasp.webgoat.container.users.UserTrackerRepository userTrackerRepository;
+    private java.util.List excludeCategories;
+    private java.util.List excludeLessons;
+
+    public java.util.List showLeftNav()
+    {
+        org.owasp.webgoat.container.users.LessonTracker $r34;
+        org.owasp.webgoat.container.lessons.LessonMenuItem $r13, $r30;
+        java.util.Map $r35;
+        org.owasp.webgoat.container.lessons.Category r10;
+        boolean $z0, $z1, $z2, $z3, $z4;
+        org.owasp.webgoat.container.users.UserTracker $r7;
+        java.util.List $r3, $r11, $r17, $r22, $r24, $r28;
+        java.util.stream.Stream $r18, $r21;
+        org.owasp.webgoat.container.session.Course $r2, $r16;
+        org.owasp.webgoat.container.lessons.LessonMenuItemType $r15, $r33;
+        org.owasp.webgoat.container.lessons.Lesson r27;
+        java.util.function.Function $r19;
+        java.util.ArrayList $r0;
+        java.lang.String $r6, $r12, $r14, $r29, $r31, $r32;
+        java.util.Iterator $r8, $r23;
+        org.owasp.webgoat.container.users.UserTrackerRepository $r5;
+        org.owasp.webgoat.container.session.WebSession $r4;
+        java.lang.Object $r9, $r26;
+        java.util.Comparator $r20, $r25;
+        org.owasp.webgoat.container.service.LessonMenuService r1;
+
+        r1 := @this;
+
+        $r0 = new java.util.ArrayList;
+
+        specialinvoke $r0.<init>();
+
+        $r2 = r1.course;
+
+        $r3 = virtualinvoke $r2.getCategories();
+
+        $r5 = r1.userTrackerRepository;
+
+        $r4 = r1.webSession;
+
+        $r6 = virtualinvoke $r4.getUserName();
+
+        $r7 = interfaceinvoke $r5.findByUser($r6);
+
+        $r8 = interfaceinvoke $r3.iterator();
+
+     label1:
+        $z3 = interfaceinvoke $r8.hasNext();
+
+        if $z3 == 0 goto label6;
+
+        $r9 = interfaceinvoke $r8.next();
+
+        r10 = (org.owasp.webgoat.container.lessons.Category) $r9;
+
+        $r11 = r1.excludeCategories;
+
+        $r12 = virtualinvoke r10.name();
+
+        $z0 = interfaceinvoke $r11.contains($r12);
+
+        if $z0 == 0 goto label2;
+
+        goto label1;
+
+     label2:
+        $r13 = new org.owasp.webgoat.container.lessons.LessonMenuItem;
+
+        specialinvoke $r13.<init>();
+
+        $r14 = virtualinvoke r10.getName();
+
+        virtualinvoke $r13.setName($r14);
+
+        $r15 = org.owasp.webgoat.container.lessons.LessonMenuItemType.CATEGORY;
+
+        virtualinvoke $r13.setType($r15);
+
+        $r16 = r1.course;
+
+        $r17 = virtualinvoke $r16.getLessons(r10);
+
+        $r18 = interfaceinvoke $r17.stream();
+
+        $r19 = staticinvoke org.owasp.webgoat.container.service.LessonMenuService$getTitle__43.bootstrap$();
+
+        $r20 = staticinvoke java.util.Comparator.comparing($r19);
+
+        $r21 = interfaceinvoke $r18.sorted($r20);
+
+        $r22 = interfaceinvoke $r21.toList();
+
+        $r23 = interfaceinvoke $r22.iterator();
+
+     label3:
+        $z4 = interfaceinvoke $r23.hasNext();
+
+        if $z4 == 0 goto label5;
+
+        $r26 = interfaceinvoke $r23.next();
+
+        r27 = (org.owasp.webgoat.container.lessons.Lesson) $r26;
+
+        $r28 = r1.excludeLessons;
+
+        $r29 = virtualinvoke r27.getName();
+
+        $z1 = interfaceinvoke $r28.contains($r29);
+
+        if $z1 == 0 goto label4;
+
+        goto label3;
+
+     label4:
+        $r30 = new org.owasp.webgoat.container.lessons.LessonMenuItem;
+
+        specialinvoke $r30.<init>();
+
+        $r31 = virtualinvoke r27.getTitle();
+
+        virtualinvoke $r30.setName($r31);
+
+        $r32 = virtualinvoke r27.getLink();
+
+        virtualinvoke $r30.setLink($r32);
+
+        $r33 = org.owasp.webgoat.container.lessons.LessonMenuItemType.LESSON;
+
+        virtualinvoke $r30.setType($r33);
+
+        $r34 = virtualinvoke $r7.getLessonTracker(r27);
+
+        $r35 = virtualinvoke $r34.getLessonOverview();
+
+        $z2 = virtualinvoke r1.lessonCompleted($r35, r27);
+
+        virtualinvoke $r30.setComplete($z2);
+
+        virtualinvoke $r13.addChild($r30);
+
+        goto label3;
+
+     label5:
+        $r24 = virtualinvoke $r13.getChildren();
+
+        $r25 = staticinvoke org.owasp.webgoat.container.service.LessonMenuService$lambda_showLeftNav_0__44.bootstrap$();
+
+        interfaceinvoke $r24.sort($r25);
+
+        interfaceinvoke $r0.add($r13);
+
+        goto label1;
+
+     label6:
+        return $r0;
+    }
+
+    private boolean lessonCompleted(java.util.Map, org.owasp.webgoat.container.lessons.Lesson)
+    {
+        org.owasp.webgoat.container.lessons.Lesson r7;
+        java.util.Map r0;
+        java.lang.Boolean $r15;
+        java.lang.String $r12, $r13;
+        boolean $z0, $z1, $z2, $z3, z4, $z5, z4_1, $z5_1, $z5_2, $z5_3, z4_2, $z5_4, z4_3;
+        java.util.Map$Entry r4;
+        java.util.Iterator $r2, $r9;
+        java.util.Set $r1;
+        java.util.List $r8;
+        org.owasp.webgoat.container.lessons.Assignment r6, r11;
+        java.lang.Object $r3, $r5, $r10, $r14;
+        org.owasp.webgoat.container.service.LessonMenuService r16;
+
+        r16 := @this;
+
+        r0 := @parameter0;
+
+        r7 := @parameter1;
+
+        z4 = 1;
+
+        $r1 = interfaceinvoke r0.entrySet();
+
+(0)     $r2 = interfaceinvoke $r1.iterator();
+
+     label1:
+        $z5 = Phi($z5 #0, $z5_4 #5);
+
+        z4_1 = Phi(z4 #0, z4_3 #5);
+
+        $z0 = interfaceinvoke $r2.hasNext();
+
+        if $z0 == 0 goto label7;
+
+        $r3 = interfaceinvoke $r2.next();
+
+        r4 = (java.util.Map$Entry) $r3;
+
+        $r5 = interfaceinvoke r4.getKey();
+
+        r6 = (org.owasp.webgoat.container.lessons.Assignment) $r5;
+
+        $r8 = virtualinvoke r7.getAssignments();
+
+        $r9 = interfaceinvoke $r8.iterator();
+
+     label2:
+        $z1 = interfaceinvoke $r9.hasNext();
+
+(1)     if $z1 == 0 goto label6;
+
+        $r10 = interfaceinvoke $r9.next();
+
+        r11 = (org.owasp.webgoat.container.lessons.Assignment) $r10;
+
+        $r12 = virtualinvoke r11.getName();
+
+        $r13 = virtualinvoke r6.getName();
+
+        $z2 = virtualinvoke $r12.equals($r13);
+
+        if $z2 == 0 goto label5;
+
+        if z4_1 == 0 goto label3;
+
+        $r14 = interfaceinvoke r4.getValue();
+
+        $r15 = (java.lang.Boolean) $r14;
+
+        $z3 = virtualinvoke $r15.booleanValue();
+
+        if $z3 == 0 goto label3;
+
+        $z5_1 = 1;
+
+(2)     goto label4;
+
+     label3:
+(3)     $z5_2 = 0;
+
+     label4:
+        $z5_3 = Phi($z5_1 #2, $z5_2 #3);
+
+        z4_2 = $z5_3;
+
+(4)     goto label6;
+
+     label5:
+        goto label2;
+
+     label6:
+        $z5_4 = Phi($z5 #1, $z5_3 #4);
+
+        z4_3 = Phi(z4_1 #1, z4_2 #4);
+
+(5)     goto label1;
+
+     label7:
+        return z4_1;
+    }
+
+    public void <init>(org.owasp.webgoat.container.session.Course, org.owasp.webgoat.container.session.WebSession, org.owasp.webgoat.container.users.UserTrackerRepository, java.util.List, java.util.List)
+    {
+        java.util.List r4, r5;
+        org.owasp.webgoat.container.users.UserTrackerRepository r3;
+        org.owasp.webgoat.container.session.WebSession r2;
+        org.owasp.webgoat.container.service.LessonMenuService r0;
+        org.owasp.webgoat.container.session.Course r1;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        r2 := @parameter1;
+
+        r3 := @parameter2;
+
+        r4 := @parameter3;
+
+        r5 := @parameter4;
+
+        specialinvoke r0.<init>();
+
+        r0.course = r1;
+
+        r0.webSession = r2;
+
+        r0.userTrackerRepository = r3;
+
+        r0.excludeCategories = r4;
+
+        r0.excludeLessons = r5;
+
+        return;
+    }
+
+    public static int lambda$showLeftNav$0(org.owasp.webgoat.container.lessons.LessonMenuItem, org.owasp.webgoat.container.lessons.LessonMenuItem)
+    {
+        int $i0, $i1, $i2;
+        org.owasp.webgoat.container.lessons.LessonMenuItem r0, r1;
+
+        r0 := @parameter0;
+
+        r1 := @parameter1;
+
+        $i0 = virtualinvoke r0.getRanking();
+
+        $i1 = virtualinvoke r1.getRanking();
+
+        $i2 = $i0 - $i1;
+
+        return $i2;
+    }
+}

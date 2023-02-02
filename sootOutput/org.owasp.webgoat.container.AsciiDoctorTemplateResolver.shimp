@@ -1,0 +1,398 @@
+public class org.owasp.webgoat.container.AsciiDoctorTemplateResolver extends org.thymeleaf.templateresolver.FileTemplateResolver
+{
+    private static final org.slf4j.Logger log;
+    private static final org.asciidoctor.Asciidoctor asciidoctor;
+    private static final java.lang.String PREFIX;
+    private final org.owasp.webgoat.container.i18n.Language language;
+    private final org.springframework.core.io.ResourceLoader resourceLoader;
+
+    public void <init>(org.owasp.webgoat.container.i18n.Language, org.springframework.core.io.ResourceLoader)
+    {
+        org.springframework.core.io.ResourceLoader r1;
+        org.owasp.webgoat.container.AsciiDoctorTemplateResolver r0;
+        java.util.Set $r3;
+        org.owasp.webgoat.container.i18n.Language r2;
+
+        r0 := @this;
+
+        r2 := @parameter0;
+
+        r1 := @parameter1;
+
+        specialinvoke r0.<init>();
+
+        r0.resourceLoader = r1;
+
+        r0.language = r2;
+
+        $r3 = staticinvoke java.util.Set.of("doc:*");
+
+        virtualinvoke r0.setResolvablePatterns($r3);
+
+        return;
+    }
+
+    protected org.thymeleaf.templateresource.ITemplateResource computeTemplateResource(org.thymeleaf.IEngineConfiguration, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.util.Map)
+    {
+        java.lang.Throwable $r15, $r18, $r19;
+        org.thymeleaf.IEngineConfiguration r20;
+        org.thymeleaf.templateresource.StringTemplateResource $r12, $r16;
+        java.lang.StringBuffer $r13;
+        java.util.Map $r11, r24;
+        int $i0;
+        org.asciidoctor.Asciidoctor $r6, $r10;
+        java.lang.String r0, $r1, $r2, $r14, $r17, r21, r22, r23;
+        org.slf4j.Logger $r3;
+        java.io.StringWriter $r8;
+        java.io.InputStreamReader $r9;
+        org.owasp.webgoat.container.AsciiDoctorTemplateResolver r4;
+        org.asciidoctor.extension.JavaExtensionRegistry $r7;
+        java.io.InputStream $r5;
+
+        r4 := @this;
+
+        r20 := @parameter0;
+
+        r21 := @parameter1;
+
+        r22 := @parameter2;
+
+        r0 := @parameter3;
+
+        r23 := @parameter4;
+
+        r24 := @parameter5;
+
+        $r1 = "doc:";
+
+        $i0 = virtualinvoke $r1.length();
+
+        $r2 = virtualinvoke r0.substring($i0);
+
+        $r3 = org.owasp.webgoat.container.AsciiDoctorTemplateResolver.log;
+
+        interfaceinvoke $r3.debug("template used: {}", $r2);
+
+     label01:
+        $r5 = virtualinvoke r4.getInputStream($r2);
+
+     label02:
+        $r6 = org.owasp.webgoat.container.AsciiDoctorTemplateResolver.asciidoctor;
+
+        $r7 = interfaceinvoke $r6.javaExtensionRegistry();
+
+        interfaceinvoke $r7.inlineMacro("webWolfLink", class "Lorg/owasp/webgoat/container/asciidoc/WebWolfMacro;");
+
+        interfaceinvoke $r7.inlineMacro("webWolfRootLink", class "Lorg/owasp/webgoat/container/asciidoc/WebWolfRootMacro;");
+
+        interfaceinvoke $r7.inlineMacro("webGoatVersion", class "Lorg/owasp/webgoat/container/asciidoc/WebGoatVersionMacro;");
+
+        interfaceinvoke $r7.inlineMacro("webGoatTempDir", class "Lorg/owasp/webgoat/container/asciidoc/WebGoatTmpDirMacro;");
+
+        interfaceinvoke $r7.inlineMacro("operatingSystem", class "Lorg/owasp/webgoat/container/asciidoc/OperatingSystemMacro;");
+
+        interfaceinvoke $r7.inlineMacro("username", class "Lorg/owasp/webgoat/container/asciidoc/UsernameMacro;");
+
+        $r8 = new java.io.StringWriter;
+
+        specialinvoke $r8.<init>();
+
+        $r10 = org.owasp.webgoat.container.AsciiDoctorTemplateResolver.asciidoctor;
+
+        $r9 = new java.io.InputStreamReader;
+
+        specialinvoke $r9.<init>($r5);
+
+        $r11 = virtualinvoke r4.createAttributes();
+
+        interfaceinvoke $r10.convert($r9, $r8, $r11);
+
+        $r12 = new org.thymeleaf.templateresource.StringTemplateResource;
+
+        $r13 = virtualinvoke $r8.getBuffer();
+
+        $r14 = virtualinvoke $r13.toString();
+
+        specialinvoke $r12.<init>($r14);
+
+     label03:
+        if $r5 == null goto label04;
+
+        virtualinvoke $r5.close();
+
+     label04:
+        return $r12;
+
+     label05:
+        $r19 := @caughtexception;
+
+        if $r5 == null goto label09;
+
+     label06:
+        virtualinvoke $r5.close();
+
+     label07:
+        goto label09;
+
+     label08:
+        $r18 := @caughtexception;
+
+        virtualinvoke $r19.addSuppressed($r18);
+
+     label09:
+        throw $r19;
+
+     label10:
+        $r15 := @caughtexception;
+
+        $r16 = new org.thymeleaf.templateresource.StringTemplateResource;
+
+        $r17 = dynamicinvoke "makeConcatWithConstants" <java.lang.String (java.lang.String)>($r2) java.lang.invoke.StringConcatFactory.makeConcatWithConstants("<div>Unable to find documentation for: \u0001 </div>");
+
+        specialinvoke $r16.<init>($r17);
+
+        return $r16;
+
+        catch java.lang.Throwable from label02 to label03 with label05;
+        catch java.lang.Throwable from label06 to label07 with label08;
+        catch java.io.IOException from label01 to label04 with label10;
+        catch java.io.IOException from label05 to label10 with label10;
+    }
+
+    private java.io.InputStream getInputStream(java.lang.String) throws java.io.IOException
+    {
+        java.util.Locale $r3, $r7;
+        java.lang.String $r4, r5, $r8, $r9, $r11, $r15, $r20;
+        org.springframework.core.io.Resource $r12, $r16, $r21;
+        boolean $z0;
+        org.slf4j.Logger $r2, $r13, $r18;
+        org.springframework.core.io.ResourceLoader $r10, $r14, $r19;
+        org.owasp.webgoat.container.i18n.Language $r1, $r6;
+        org.owasp.webgoat.container.AsciiDoctorTemplateResolver r0;
+        java.io.InputStream $r17, $r22;
+
+        r0 := @this;
+
+        r5 := @parameter0;
+
+        $r2 = org.owasp.webgoat.container.AsciiDoctorTemplateResolver.log;
+
+        $r1 = r0.language;
+
+        $r3 = virtualinvoke $r1.getLocale();
+
+        $r4 = virtualinvoke $r3.getLanguage();
+
+        interfaceinvoke $r2.debug("locale: {}", $r4);
+
+        $r6 = r0.language;
+
+        $r7 = virtualinvoke $r6.getLocale();
+
+        $r8 = virtualinvoke $r7.getLanguage();
+
+        $r9 = virtualinvoke r0.computeResourceName(r5, $r8);
+
+        $r10 = r0.resourceLoader;
+
+        $r11 = dynamicinvoke "makeConcatWithConstants" <java.lang.String (java.lang.String)>($r9) java.lang.invoke.StringConcatFactory.makeConcatWithConstants("classpath:/\u0001");
+
+        $r12 = interfaceinvoke $r10.getResource($r11);
+
+        $z0 = interfaceinvoke $r12.isReadable();
+
+        if $z0 == 0 goto label1;
+
+        $r18 = org.owasp.webgoat.container.AsciiDoctorTemplateResolver.log;
+
+        interfaceinvoke $r18.debug("localized file exists");
+
+        $r19 = r0.resourceLoader;
+
+        $r20 = dynamicinvoke "makeConcatWithConstants" <java.lang.String (java.lang.String)>($r9) java.lang.invoke.StringConcatFactory.makeConcatWithConstants("classpath:/\u0001");
+
+        $r21 = interfaceinvoke $r19.getResource($r20);
+
+        $r22 = interfaceinvoke $r21.getInputStream();
+
+        return $r22;
+
+     label1:
+        $r13 = org.owasp.webgoat.container.AsciiDoctorTemplateResolver.log;
+
+        interfaceinvoke $r13.debug("using english template");
+
+        $r14 = r0.resourceLoader;
+
+        $r15 = dynamicinvoke "makeConcatWithConstants" <java.lang.String (java.lang.String)>(r5) java.lang.invoke.StringConcatFactory.makeConcatWithConstants("classpath:/\u0001");
+
+        $r16 = interfaceinvoke $r14.getResource($r15);
+
+        $r17 = interfaceinvoke $r16.getInputStream();
+
+        return $r17;
+    }
+
+    private java.lang.String computeResourceName(java.lang.String, java.lang.String)
+    {
+        java.lang.Boolean $r11;
+        java.lang.String r0, r1, $r2, $r3, $r4, $r9, r12, r12_1, r12_2;
+        boolean $z0, $z1;
+        org.springframework.core.io.Resource $r10;
+        org.slf4j.Logger $r5, $r7;
+        org.springframework.core.io.ResourceLoader $r8;
+        org.owasp.webgoat.container.AsciiDoctorTemplateResolver r6;
+
+        r6 := @this;
+
+        r1 := @parameter0;
+
+        r0 := @parameter1;
+
+        $z0 = virtualinvoke r0.equals("en");
+
+        if $z0 == 0 goto label1;
+
+        r12 = r1;
+
+(0)     goto label2;
+
+     label1:
+        $r2 = "_";
+
+        $r3 = virtualinvoke $r2.concat(r0);
+
+        $r4 = virtualinvoke $r3.concat(".adoc");
+
+(1)     r12_1 = virtualinvoke r1.replace(".adoc", $r4);
+
+     label2:
+        r12_2 = Phi(r12 #0, r12_1 #1);
+
+        $r5 = org.owasp.webgoat.container.AsciiDoctorTemplateResolver.log;
+
+        interfaceinvoke $r5.debug("computed local file name: {}", r12_2);
+
+        $r7 = org.owasp.webgoat.container.AsciiDoctorTemplateResolver.log;
+
+        $r8 = r6.resourceLoader;
+
+        $r9 = dynamicinvoke "makeConcatWithConstants" <java.lang.String (java.lang.String)>(r12_2) java.lang.invoke.StringConcatFactory.makeConcatWithConstants("classpath:/\u0001");
+
+        $r10 = interfaceinvoke $r8.getResource($r9);
+
+        $z1 = interfaceinvoke $r10.isReadable();
+
+        $r11 = staticinvoke java.lang.Boolean.valueOf($z1);
+
+        interfaceinvoke $r7.debug("file exists: {}", $r11);
+
+        return r12_2;
+    }
+
+    private java.util.Map createAttributes()
+    {
+        org.owasp.webgoat.container.AsciiDoctorTemplateResolver r1;
+        java.util.HashMap $r0, $r3;
+        java.lang.String $r2;
+
+        r1 := @this;
+
+        $r0 = new java.util.HashMap;
+
+        specialinvoke $r0.<init>();
+
+        interfaceinvoke $r0.put("source-highlighter", "coderay");
+
+        interfaceinvoke $r0.put("backend", "xhtml");
+
+        $r2 = virtualinvoke r1.determineLanguage();
+
+        interfaceinvoke $r0.put("lang", $r2);
+
+        interfaceinvoke $r0.put("icons", "font");
+
+        $r3 = new java.util.HashMap;
+
+        specialinvoke $r3.<init>();
+
+        interfaceinvoke $r3.put("attributes", $r0);
+
+        return $r3;
+    }
+
+    private java.lang.String determineLanguage()
+    {
+        javax.servlet.http.HttpSession $r3;
+        org.slf4j.Logger $r8, $r9, $r11;
+        org.springframework.web.context.request.ServletRequestAttributes $r1;
+        javax.servlet.http.HttpServletRequest $r2;
+        org.owasp.webgoat.container.AsciiDoctorTemplateResolver r13;
+        java.util.Locale r6;
+        org.springframework.web.context.request.RequestAttributes $r0;
+        java.lang.Object $r5;
+        java.lang.String $r4, $r7, $r10, $r12;
+
+        r13 := @this;
+
+        $r0 = staticinvoke org.springframework.web.context.request.RequestContextHolder.currentRequestAttributes();
+
+        $r1 = (org.springframework.web.context.request.ServletRequestAttributes) $r0;
+
+        $r2 = virtualinvoke $r1.getRequest();
+
+        $r3 = interfaceinvoke $r2.getSession();
+
+        $r4 = org.springframework.web.servlet.i18n.SessionLocaleResolver.LOCALE_SESSION_ATTRIBUTE_NAME;
+
+        $r5 = interfaceinvoke $r3.getAttribute($r4);
+
+        r6 = (java.util.Locale) $r5;
+
+        if null == r6 goto label1;
+
+        $r11 = org.owasp.webgoat.container.AsciiDoctorTemplateResolver.log;
+
+        interfaceinvoke $r11.debug("browser locale {}", r6);
+
+        $r12 = virtualinvoke r6.getLanguage();
+
+        return $r12;
+
+     label1:
+        $r7 = interfaceinvoke $r2.getHeader("Accept-Language");
+
+        if null == $r7 goto label2;
+
+        $r9 = org.owasp.webgoat.container.AsciiDoctorTemplateResolver.log;
+
+        interfaceinvoke $r9.debug("browser locale {}", $r7);
+
+        $r10 = virtualinvoke $r7.substring(0, 2);
+
+        return $r10;
+
+     label2:
+        $r8 = org.owasp.webgoat.container.AsciiDoctorTemplateResolver.log;
+
+        interfaceinvoke $r8.debug("browser default english");
+
+        return "en";
+    }
+
+    static void <clinit>()
+    {
+        org.asciidoctor.Asciidoctor $r1;
+        org.slf4j.Logger $r0;
+
+        $r0 = staticinvoke org.slf4j.LoggerFactory.getLogger(class "Lorg/owasp/webgoat/container/AsciiDoctorTemplateResolver;");
+
+        org.owasp.webgoat.container.AsciiDoctorTemplateResolver.log = $r0;
+
+        $r1 = staticinvoke org.asciidoctor.Asciidoctor$Factory.create();
+
+        org.owasp.webgoat.container.AsciiDoctorTemplateResolver.asciidoctor = $r1;
+
+        return;
+    }
+}

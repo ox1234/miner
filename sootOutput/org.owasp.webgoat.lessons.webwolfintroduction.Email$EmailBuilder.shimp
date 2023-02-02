@@ -1,0 +1,117 @@
+public class org.owasp.webgoat.lessons.webwolfintroduction.Email$EmailBuilder extends java.lang.Object
+{
+    private java.lang.String contents;
+    private java.lang.String sender;
+    private java.lang.String title;
+    private java.lang.String recipient;
+
+    void <init>()
+    {
+        org.owasp.webgoat.lessons.webwolfintroduction.Email$EmailBuilder r0;
+
+        r0 := @this;
+
+        specialinvoke r0.<init>();
+
+        return;
+    }
+
+    public org.owasp.webgoat.lessons.webwolfintroduction.Email$EmailBuilder contents(java.lang.String)
+    {
+        java.lang.String r1;
+        org.owasp.webgoat.lessons.webwolfintroduction.Email$EmailBuilder r0;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        r0.contents = r1;
+
+        return r0;
+    }
+
+    public org.owasp.webgoat.lessons.webwolfintroduction.Email$EmailBuilder sender(java.lang.String)
+    {
+        java.lang.String r1;
+        org.owasp.webgoat.lessons.webwolfintroduction.Email$EmailBuilder r0;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        r0.sender = r1;
+
+        return r0;
+    }
+
+    public org.owasp.webgoat.lessons.webwolfintroduction.Email$EmailBuilder title(java.lang.String)
+    {
+        java.lang.String r1;
+        org.owasp.webgoat.lessons.webwolfintroduction.Email$EmailBuilder r0;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        r0.title = r1;
+
+        return r0;
+    }
+
+    public org.owasp.webgoat.lessons.webwolfintroduction.Email$EmailBuilder recipient(java.lang.String)
+    {
+        java.lang.String r1;
+        org.owasp.webgoat.lessons.webwolfintroduction.Email$EmailBuilder r0;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        r0.recipient = r1;
+
+        return r0;
+    }
+
+    public org.owasp.webgoat.lessons.webwolfintroduction.Email build()
+    {
+        org.owasp.webgoat.lessons.webwolfintroduction.Email$EmailBuilder r1;
+        org.owasp.webgoat.lessons.webwolfintroduction.Email $r0;
+        java.lang.String $r2, $r3, $r4, $r5;
+
+        r1 := @this;
+
+        $r0 = new org.owasp.webgoat.lessons.webwolfintroduction.Email;
+
+        $r5 = r1.contents;
+
+        $r4 = r1.sender;
+
+        $r3 = r1.title;
+
+        $r2 = r1.recipient;
+
+        specialinvoke $r0.<init>($r5, $r4, $r3, $r2);
+
+        return $r0;
+    }
+
+    public java.lang.String toString()
+    {
+        org.owasp.webgoat.lessons.webwolfintroduction.Email$EmailBuilder r0;
+        java.lang.String $r1, $r2, $r3, $r4, $r5;
+
+        r0 := @this;
+
+        $r4 = r0.contents;
+
+        $r3 = r0.sender;
+
+        $r2 = r0.title;
+
+        $r1 = r0.recipient;
+
+        $r5 = dynamicinvoke "makeConcatWithConstants" <java.lang.String (java.lang.String,java.lang.String,java.lang.String,java.lang.String)>($r4, $r3, $r2, $r1) java.lang.invoke.StringConcatFactory.makeConcatWithConstants("Email.EmailBuilder(contents=\u0001, sender=\u0001, title=\u0001, recipient=\u0001)");
+
+        return $r5;
+    }
+}

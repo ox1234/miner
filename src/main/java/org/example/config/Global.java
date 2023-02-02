@@ -1,20 +1,15 @@
 package org.example.config;
 
-import org.example.core.basic.Node;
 import org.example.rule.Root;
 import org.example.rule.Rule;
 import org.example.rule.RuleUtil;
 import org.example.rule.Sink;
-import org.jgrapht.Graph;
-import org.jgrapht.graph.DefaultEdge;
-import soot.SootMethod;
 
 import java.io.FileInputStream;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
+// Global 全局配置类
 public class Global {
     public static Root rule;
     public static Set<String> sinks;
@@ -23,6 +18,8 @@ public class Global {
     public static String neo4jDSN = "neo4j://localhost:7687";
     public static String neo4jUser = "neo4j";
     public static String neo4jPass = "password";
+
+    public static String sootOutputPath = "sootOutput";
 
     public static boolean allReachable = false;
     public static boolean onlyCG = false;

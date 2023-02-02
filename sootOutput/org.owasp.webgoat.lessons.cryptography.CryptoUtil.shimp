@@ -1,0 +1,378 @@
+public class org.owasp.webgoat.lessons.cryptography.CryptoUtil extends java.lang.Object
+{
+    private static final org.slf4j.Logger log;
+    private static final java.math.BigInteger[] FERMAT_PRIMES;
+
+    public void <init>()
+    {
+        org.owasp.webgoat.lessons.cryptography.CryptoUtil r0;
+
+        r0 := @this;
+
+        specialinvoke r0.<init>();
+
+        return;
+    }
+
+    public static java.security.KeyPair generateKeyPair() throws java.security.NoSuchAlgorithmException, java.security.InvalidAlgorithmParameterException
+    {
+        java.security.KeyPairGenerator $r0;
+        java.security.KeyPair $r6;
+        java.math.BigInteger[] $r3, $r4;
+        java.security.spec.RSAKeyGenParameterSpec $r1;
+        java.security.SecureRandom $r2;
+        int $i0, $i1;
+        java.math.BigInteger $r5;
+
+        $r0 = staticinvoke java.security.KeyPairGenerator.getInstance("RSA");
+
+        $r1 = new java.security.spec.RSAKeyGenParameterSpec;
+
+        $r3 = org.owasp.webgoat.lessons.cryptography.CryptoUtil.FERMAT_PRIMES;
+
+        $r2 = new java.security.SecureRandom;
+
+        specialinvoke $r2.<init>();
+
+        $r4 = org.owasp.webgoat.lessons.cryptography.CryptoUtil.FERMAT_PRIMES;
+
+        $i0 = lengthof $r4;
+
+        $i1 = virtualinvoke $r2.nextInt($i0);
+
+        $r5 = $r3[$i1];
+
+        specialinvoke $r1.<init>(2048, $r5);
+
+        virtualinvoke $r0.initialize($r1);
+
+        $r6 = virtualinvoke $r0.generateKeyPair();
+
+        return $r6;
+    }
+
+    public static java.lang.String getPrivateKeyInPEM(java.security.KeyPair)
+    {
+        java.security.KeyPair r2;
+        byte[] $r4, $r5;
+        java.util.Base64$Encoder $r1;
+        java.nio.charset.Charset $r6;
+        java.security.PrivateKey $r3;
+        java.lang.String $r0, $r7, $r8;
+
+        r2 := @parameter0;
+
+        $r0 = new java.lang.String;
+
+        $r1 = staticinvoke java.util.Base64.getEncoder();
+
+        $r3 = virtualinvoke r2.getPrivate();
+
+        $r4 = interfaceinvoke $r3.getEncoded();
+
+        $r5 = virtualinvoke $r1.encode($r4);
+
+        $r6 = staticinvoke java.nio.charset.Charset.forName("UTF-8");
+
+        specialinvoke $r0.<init>($r5, $r6);
+
+        $r7 = dynamicinvoke "makeConcatWithConstants" <java.lang.String (java.lang.String,java.lang.String)>("-----BEGIN PRIVATE KEY-----\n", $r0) java.lang.invoke.StringConcatFactory.makeConcatWithConstants("\u0001\u0001\n");
+
+        $r8 = dynamicinvoke "makeConcatWithConstants" <java.lang.String (java.lang.String)>($r7) java.lang.invoke.StringConcatFactory.makeConcatWithConstants("\u0001-----END PRIVATE KEY-----\n");
+
+        return $r8;
+    }
+
+    public static java.lang.String signMessage(java.lang.String, java.security.PrivateKey)
+    {
+        byte[] $r4, $r7, $r8;
+        java.nio.charset.Charset $r9;
+        java.lang.String r3, $r5, r14, r14_1, r14_2, r14_3;
+        org.slf4j.Logger $r0, $r10, $r11, $r13;
+        java.security.Signature $r1;
+        java.util.Base64$Encoder $r6;
+        java.lang.Exception $r12;
+        java.security.PrivateKey r2;
+
+        r3 := @parameter0;
+
+        r2 := @parameter1;
+
+        $r0 = org.owasp.webgoat.lessons.cryptography.CryptoUtil.log;
+
+        interfaceinvoke $r0.debug("start signMessage");
+
+(0)     r14 = null;
+
+     label1:
+        $r1 = staticinvoke java.security.Signature.getInstance("SHA256withRSA");
+
+        virtualinvoke $r1.initSign(r2);
+
+        $r4 = virtualinvoke r3.getBytes("UTF-8");
+
+        virtualinvoke $r1.update($r4);
+
+        $r5 = new java.lang.String;
+
+        $r6 = staticinvoke java.util.Base64.getEncoder();
+
+        $r7 = virtualinvoke $r1.sign();
+
+        $r8 = virtualinvoke $r6.encode($r7);
+
+        $r9 = staticinvoke java.nio.charset.Charset.forName("UTF-8");
+
+        specialinvoke $r5.<init>($r8, $r9);
+
+        r14_1 = $r5;
+
+(1)     $r10 = org.owasp.webgoat.lessons.cryptography.CryptoUtil.log;
+
+        interfaceinvoke $r10.info("signe the signature with result: {}", $r5);
+
+     label2:
+(2)     goto label4;
+
+     label3:
+        $r12 := @caughtexception;
+
+        r14_2 = Phi(r14 #0, r14_1 #1);
+
+        $r13 = org.owasp.webgoat.lessons.cryptography.CryptoUtil.log;
+
+(3)     interfaceinvoke $r13.error("Signature signing failed", $r12);
+
+     label4:
+        r14_3 = Phi(r14_1 #2, r14_2 #3);
+
+        $r11 = org.owasp.webgoat.lessons.cryptography.CryptoUtil.log;
+
+        interfaceinvoke $r11.debug("end signMessage");
+
+        return r14_3;
+
+        catch java.lang.Exception from label1 to label2 with label3;
+    }
+
+    public static boolean verifyMessage(java.lang.String, java.lang.String, java.security.PublicKey)
+    {
+        byte[] $r5, $r9;
+        java.util.Base64$Decoder $r4;
+        java.lang.Boolean $r11;
+        java.lang.String $r1, $r2, $r3, r8, r15;
+        boolean $z0, z1, z1_1, z1_2, z1_3;
+        org.slf4j.Logger $r0, $r10, $r12, $r14;
+        java.security.Signature $r6;
+        java.security.PublicKey r7;
+        java.lang.Exception $r13;
+
+        r8 := @parameter0;
+
+        r15 := @parameter1;
+
+        r7 := @parameter2;
+
+        $r0 = org.owasp.webgoat.lessons.cryptography.CryptoUtil.log;
+
+        interfaceinvoke $r0.debug("start verifyMessage");
+
+(0)     z1 = 0;
+
+     label1:
+        $r1 = virtualinvoke r15.replace("\r", "");
+
+        $r2 = virtualinvoke $r1.replace("\n", "");
+
+        $r3 = virtualinvoke $r2.replace(" ", "");
+
+        $r4 = staticinvoke java.util.Base64.getDecoder();
+
+        $r5 = virtualinvoke $r4.decode($r3);
+
+        $r6 = staticinvoke java.security.Signature.getInstance("SHA256withRSA");
+
+        virtualinvoke $r6.initVerify(r7);
+
+        $r9 = virtualinvoke r8.getBytes("UTF-8");
+
+        virtualinvoke $r6.update($r9);
+
+        $z0 = virtualinvoke $r6.verify($r5);
+
+        z1_1 = $z0;
+
+(1)     $r10 = org.owasp.webgoat.lessons.cryptography.CryptoUtil.log;
+
+        $r11 = staticinvoke java.lang.Boolean.valueOf($z0);
+
+        interfaceinvoke $r10.info("Verified the signature with result: {}", $r11);
+
+     label2:
+(2)     goto label4;
+
+     label3:
+        $r13 := @caughtexception;
+
+        z1_2 = Phi(z1 #0, z1_1 #1);
+
+        $r14 = org.owasp.webgoat.lessons.cryptography.CryptoUtil.log;
+
+(3)     interfaceinvoke $r14.error("Signature verification failed", $r13);
+
+     label4:
+        z1_3 = Phi(z1_1 #2, z1_2 #3);
+
+        $r12 = org.owasp.webgoat.lessons.cryptography.CryptoUtil.log;
+
+        interfaceinvoke $r12.debug("end verifyMessage");
+
+        return z1_3;
+
+        catch java.lang.Exception from label1 to label2 with label3;
+    }
+
+    public static boolean verifyAssignment(java.lang.String, java.lang.String, java.security.PublicKey)
+    {
+        byte[] $r4;
+        java.security.interfaces.RSAPublicKey r2;
+        int $i0;
+        java.math.BigInteger $r3;
+        java.lang.String r0, $r5, $r6, $r7, r8, r8_1, r8_2, r8_3;
+        boolean $z0, $z1, z2, $z3, $z3_1, $z3_2, z2_1, $z3_3, z2_2;
+        java.security.PublicKey r1;
+
+        r8 := @parameter0;
+
+        r0 := @parameter1;
+
+        r1 := @parameter2;
+
+        z2 = 0;
+
+(0)     if r8 == null goto label4;
+
+(1)     if r0 == null goto label4;
+
+        $z0 = staticinvoke org.owasp.webgoat.lessons.cryptography.CryptoUtil.verifyMessage(r8, r0, r1);
+
+        r2 = (java.security.interfaces.RSAPublicKey) r1;
+
+        $i0 = virtualinvoke r8.length();
+
+(2)     if $i0 != 512 goto label1;
+
+        $r7 = "00";
+
+(3)     r8_1 = virtualinvoke $r7.concat(r8);
+
+     label1:
+        r8_2 = Phi(r8 #2, r8_1 #3);
+
+        if $z0 == 0 goto label2;
+
+        $r3 = interfaceinvoke r2.getModulus();
+
+        $r4 = virtualinvoke $r3.toByteArray();
+
+        $r5 = staticinvoke javax.xml.bind.DatatypeConverter.printHexBinary($r4);
+
+        $r6 = virtualinvoke r8_2.toUpperCase();
+
+        $z1 = virtualinvoke $r5.equals($r6);
+
+        if $z1 == 0 goto label2;
+
+        $z3 = 1;
+
+(4)     goto label3;
+
+     label2:
+(5)     $z3_1 = 0;
+
+     label3:
+        $z3_2 = Phi($z3 #4, $z3_1 #5);
+
+(6)     z2_1 = $z3_2;
+
+     label4:
+        $z3_3 = Phi($z3 #0, $z3 #1, $z3_2 #6);
+
+        z2_2 = Phi(z2 #0, z2 #1, z2_1 #6);
+
+        r8_3 = Phi(r8 #0, r8 #1, r8_2 #6);
+
+        return z2_2;
+    }
+
+    public static java.security.PrivateKey getPrivateKeyFromPEM(java.lang.String) throws java.security.NoSuchAlgorithmException, java.security.spec.InvalidKeySpecException
+    {
+        byte[] $r5;
+        java.util.Base64$Decoder $r4;
+        java.security.spec.PKCS8EncodedKeySpec $r6;
+        java.security.KeyFactory $r7;
+        java.security.PrivateKey $r8;
+        java.lang.String $r0, $r1, $r2, $r3, r9;
+
+        r9 := @parameter0;
+
+        $r0 = virtualinvoke r9.replace("-----BEGIN PRIVATE KEY-----", "");
+
+        $r1 = virtualinvoke $r0.replace("-----END PRIVATE KEY-----", "");
+
+        $r2 = virtualinvoke $r1.replace("\n", "");
+
+        $r3 = virtualinvoke $r2.replace("\r", "");
+
+        $r4 = staticinvoke java.util.Base64.getDecoder();
+
+        $r5 = virtualinvoke $r4.decode($r3);
+
+        $r6 = new java.security.spec.PKCS8EncodedKeySpec;
+
+        specialinvoke $r6.<init>($r5);
+
+        $r7 = staticinvoke java.security.KeyFactory.getInstance("RSA");
+
+        $r8 = virtualinvoke $r7.generatePrivate($r6);
+
+        return $r8;
+    }
+
+    static void <clinit>()
+    {
+        org.slf4j.Logger $r0;
+        java.math.BigInteger[] $r1;
+        java.math.BigInteger $r2, $r3, $r4, $r5, $r6;
+
+        $r0 = staticinvoke org.slf4j.LoggerFactory.getLogger(class "Lorg/owasp/webgoat/lessons/cryptography/CryptoUtil;");
+
+        org.owasp.webgoat.lessons.cryptography.CryptoUtil.log = $r0;
+
+        $r1 = newarray (java.math.BigInteger)[5];
+
+        $r2 = staticinvoke java.math.BigInteger.valueOf(3L);
+
+        $r1[0] = $r2;
+
+        $r3 = staticinvoke java.math.BigInteger.valueOf(5L);
+
+        $r1[1] = $r3;
+
+        $r4 = staticinvoke java.math.BigInteger.valueOf(17L);
+
+        $r1[2] = $r4;
+
+        $r5 = staticinvoke java.math.BigInteger.valueOf(257L);
+
+        $r1[3] = $r5;
+
+        $r6 = staticinvoke java.math.BigInteger.valueOf(65537L);
+
+        $r1[4] = $r6;
+
+        org.owasp.webgoat.lessons.cryptography.CryptoUtil.FERMAT_PRIMES = $r1;
+
+        return;
+    }
+}

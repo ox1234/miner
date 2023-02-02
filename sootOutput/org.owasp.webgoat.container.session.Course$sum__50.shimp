@@ -1,0 +1,57 @@
+public final class org.owasp.webgoat.container.session.Course$sum__50 extends java.lang.Object implements java.util.function.BinaryOperator
+{
+
+    public static java.util.function.BinaryOperator bootstrap$()
+    {
+        org.owasp.webgoat.container.session.Course$sum__50 $r0;
+
+        $r0 = new org.owasp.webgoat.container.session.Course$sum__50;
+
+        specialinvoke $r0.<init>();
+
+        return $r0;
+    }
+
+    public void <init>()
+    {
+        org.owasp.webgoat.container.session.Course$sum__50 $r0;
+
+        $r0 := @this;
+
+        specialinvoke $r0.<init>();
+
+        return;
+    }
+
+    public java.lang.Object apply(java.lang.Object, java.lang.Object)
+    {
+        java.lang.Integer $r3, $r4, $r5;
+        org.owasp.webgoat.container.session.Course$sum__50 $r0;
+        int $i0, $i1, $i2, $i3, $i4;
+        java.lang.Object $r1, $r2;
+
+        $r0 := @this;
+
+        $r1 := @parameter0;
+
+        $r2 := @parameter1;
+
+        $r3 = (java.lang.Integer) $r1;
+
+        $r4 = (java.lang.Integer) $r2;
+
+        $i0 = virtualinvoke $r3.intValue();
+
+        $i1 = (int) $i0;
+
+        $i2 = virtualinvoke $r4.intValue();
+
+        $i3 = (int) $i2;
+
+        $i4 = staticinvoke java.lang.Integer.sum($i1, $i3);
+
+        $r5 = staticinvoke java.lang.Integer.valueOf($i4);
+
+        return $r5;
+    }
+}

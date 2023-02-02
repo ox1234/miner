@@ -1,0 +1,284 @@
+public class org.owasp.webgoat.lessons.sqlinjection.introduction.SqlInjectionLesson5b extends org.owasp.webgoat.container.assignments.AssignmentEndpoint
+{
+    private final org.owasp.webgoat.container.LessonDataSource dataSource;
+
+    public void <init>(org.owasp.webgoat.container.LessonDataSource)
+    {
+        org.owasp.webgoat.container.LessonDataSource r1;
+        org.owasp.webgoat.lessons.sqlinjection.introduction.SqlInjectionLesson5b r0;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        specialinvoke r0.<init>();
+
+        r0.dataSource = r1;
+
+        return;
+    }
+
+    public org.owasp.webgoat.container.assignments.AttackResult completed(java.lang.String, java.lang.String, javax.servlet.http.HttpServletRequest) throws java.io.IOException
+    {
+        javax.servlet.http.HttpServletRequest r4;
+        org.owasp.webgoat.lessons.sqlinjection.introduction.SqlInjectionLesson5b r0;
+        org.owasp.webgoat.container.assignments.AttackResult $r3;
+        java.lang.String r1, r2;
+
+        r0 := @this;
+
+        r2 := @parameter0;
+
+        r1 := @parameter1;
+
+        r4 := @parameter2;
+
+        $r3 = virtualinvoke r0.injectableQuery(r1, r2);
+
+        return $r3;
+    }
+
+    protected org.owasp.webgoat.container.assignments.AttackResult injectableQuery(java.lang.String, java.lang.String)
+    {
+        java.sql.Connection $r4;
+        java.sql.ResultSet $r7;
+        boolean $z0;
+        java.sql.PreparedStatement $r5;
+        java.lang.Exception $r32, $r50;
+        org.owasp.webgoat.container.assignments.AttackResult $r13, $r22, $r31, $r40, $r49, $r55;
+        java.lang.StringBuilder $r56;
+        java.sql.ResultSetMetaData $r14;
+        java.lang.Throwable $r41, $r42, $r43;
+        org.owasp.webgoat.container.LessonDataSource $r3;
+        org.owasp.webgoat.container.assignments.AttackResult$AttackResultBuilder $r8, $r9, $r12, $r17, $r21, $r23, $r24, $r27, $r30, $r33, $r39, $r44, $r48, $r51, $r54;
+        java.lang.Object[] $r28;
+        java.sql.SQLException $r57;
+        org.owasp.webgoat.lessons.sqlinjection.introduction.SqlInjectionLesson5b r2;
+        int $i0, $i1;
+        java.lang.String r0, $r1, r6, $r10, $r11, $r16, $r18, $r19, $r20, $r25, $r26, $r29, $r35, $r36, $r37, $r38, $r45, $r46, $r47, $r52, $r53;
+        java.lang.Class $r34;
+
+        r2 := @this;
+
+        r6 := @parameter0;
+
+        r0 := @parameter1;
+
+        $r1 = dynamicinvoke "makeConcatWithConstants" <java.lang.String (java.lang.String)>(r0) java.lang.invoke.StringConcatFactory.makeConcatWithConstants("SELECT * From user_data WHERE Login_Count = ? and userid= \u0001");
+
+     label01:
+        $r3 = r2.dataSource;
+
+        $r4 = virtualinvoke $r3.getConnection();
+
+     label02:
+        $r5 = interfaceinvoke $r4.prepareStatement($r1, 1004, 1007);
+
+     label03:
+        $i0 = staticinvoke java.lang.Integer.parseInt(r6);
+
+     label04:
+        goto label08;
+
+     label05:
+        $r50 := @caughtexception;
+
+        $r51 = virtualinvoke r2.failed(r2);
+
+        $r52 = virtualinvoke $r1.replace("?", r6);
+
+        $r53 = dynamicinvoke "makeConcatWithConstants" <java.lang.String (java.lang.String,java.lang.String)>(r6, $r52) java.lang.invoke.StringConcatFactory.makeConcatWithConstants("Could not parse: \u0001 to a number<br> Your query was: \u0001");
+
+        $r54 = virtualinvoke $r51.output($r53);
+
+        $r55 = virtualinvoke $r54.build();
+
+     label06:
+        if $r4 == null goto label07;
+
+        interfaceinvoke $r4.close();
+
+     label07:
+        return $r55;
+
+     label08:
+        interfaceinvoke $r5.setInt(1, $i0);
+
+     label09:
+        $r7 = interfaceinvoke $r5.executeQuery();
+
+        if $r7 == null goto label15;
+
+        $z0 = interfaceinvoke $r7.first();
+
+        if $z0 != 1 goto label15;
+
+        $r14 = interfaceinvoke $r7.getMetaData();
+
+        $r56 = new java.lang.StringBuilder;
+
+        specialinvoke $r56.<init>();
+
+        $r16 = staticinvoke org.owasp.webgoat.lessons.sqlinjection.introduction.SqlInjectionLesson5a.writeTable($r7, $r14);
+
+        virtualinvoke $r56.append($r16);
+
+        interfaceinvoke $r7.last();
+
+        $i1 = interfaceinvoke $r7.getRow();
+
+        if $i1 < 6 goto label12;
+
+        $r23 = virtualinvoke r2.success(r2);
+
+        $r24 = virtualinvoke $r23.feedback("sql-injection.5b.success");
+
+        $r25 = virtualinvoke $r1.replace("?", r6);
+
+        $r26 = dynamicinvoke "makeConcatWithConstants" <java.lang.String (java.lang.String)>($r25) java.lang.invoke.StringConcatFactory.makeConcatWithConstants("Your query was: \u0001");
+
+        $r27 = virtualinvoke $r24.output($r26);
+
+        $r28 = newarray (java.lang.Object)[1];
+
+        $r29 = virtualinvoke $r56.toString();
+
+        $r28[0] = $r29;
+
+        $r30 = virtualinvoke $r27.feedbackArgs($r28);
+
+        $r31 = virtualinvoke $r30.build();
+
+     label10:
+        if $r4 == null goto label11;
+
+        interfaceinvoke $r4.close();
+
+     label11:
+        return $r31;
+
+     label12:
+        $r17 = virtualinvoke r2.failed(r2);
+
+        $r18 = virtualinvoke $r56.toString();
+
+        $r19 = virtualinvoke $r1.replace("?", r6);
+
+        $r20 = dynamicinvoke "makeConcatWithConstants" <java.lang.String (java.lang.String,java.lang.String)>($r18, $r19) java.lang.invoke.StringConcatFactory.makeConcatWithConstants("\u0001<br> Your query was: \u0001");
+
+        $r21 = virtualinvoke $r17.output($r20);
+
+        $r22 = virtualinvoke $r21.build();
+
+     label13:
+        if $r4 == null goto label14;
+
+        interfaceinvoke $r4.close();
+
+     label14:
+        return $r22;
+
+     label15:
+        $r8 = virtualinvoke r2.failed(r2);
+
+        $r9 = virtualinvoke $r8.feedback("sql-injection.5b.no.results");
+
+        $r10 = virtualinvoke $r1.replace("?", r6);
+
+        $r11 = dynamicinvoke "makeConcatWithConstants" <java.lang.String (java.lang.String)>($r10) java.lang.invoke.StringConcatFactory.makeConcatWithConstants("Your query was: \u0001");
+
+        $r12 = virtualinvoke $r9.output($r11);
+
+        $r13 = virtualinvoke $r12.build();
+
+     label16:
+        if $r4 == null goto label17;
+
+        interfaceinvoke $r4.close();
+
+     label17:
+        return $r13;
+
+     label18:
+        $r43 := @caughtexception;
+
+        $r44 = virtualinvoke r2.failed(r2);
+
+        $r57 = (java.sql.SQLException) $r43;
+
+        $r45 = virtualinvoke $r57.getMessage();
+
+        $r46 = virtualinvoke $r1.replace("?", r6);
+
+        $r47 = dynamicinvoke "makeConcatWithConstants" <java.lang.String (java.lang.String,java.lang.String)>($r45, $r46) java.lang.invoke.StringConcatFactory.makeConcatWithConstants("\u0001<br> Your query was: \u0001");
+
+        $r48 = virtualinvoke $r44.output($r47);
+
+        $r49 = virtualinvoke $r48.build();
+
+     label19:
+        if $r4 == null goto label20;
+
+        interfaceinvoke $r4.close();
+
+     label20:
+        return $r49;
+
+     label21:
+        $r42 := @caughtexception;
+
+        if $r4 == null goto label25;
+
+     label22:
+        interfaceinvoke $r4.close();
+
+     label23:
+        goto label25;
+
+     label24:
+        $r41 := @caughtexception;
+
+        virtualinvoke $r42.addSuppressed($r41);
+
+     label25:
+        throw $r42;
+
+     label26:
+        $r32 := @caughtexception;
+
+        $r33 = virtualinvoke r2.failed(r2);
+
+        $r34 = virtualinvoke r2.getClass();
+
+        $r35 = virtualinvoke $r34.getName();
+
+        $r36 = virtualinvoke $r32.getMessage();
+
+        $r37 = virtualinvoke $r1.replace("?", r6);
+
+        $r38 = dynamicinvoke "makeConcatWithConstants" <java.lang.String (java.lang.String,java.lang.String,java.lang.String)>($r35, $r36, $r37) java.lang.invoke.StringConcatFactory.makeConcatWithConstants("\u0001 : \u0001<br> Your query was: \u0001");
+
+        $r39 = virtualinvoke $r33.output($r38);
+
+        $r40 = virtualinvoke $r39.build();
+
+        return $r40;
+
+        catch java.lang.Exception from label03 to label04 with label05;
+        catch java.sql.SQLException from label09 to label10 with label18;
+        catch java.sql.SQLException from label12 to label13 with label18;
+        catch java.sql.SQLException from label15 to label16 with label18;
+        catch java.lang.Throwable from label02 to label06 with label21;
+        catch java.lang.Throwable from label08 to label10 with label21;
+        catch java.lang.Throwable from label12 to label13 with label21;
+        catch java.lang.Throwable from label15 to label16 with label21;
+        catch java.lang.Throwable from label18 to label19 with label21;
+        catch java.lang.Throwable from label22 to label23 with label24;
+        catch java.lang.Exception from label01 to label07 with label26;
+        catch java.lang.Exception from label08 to label11 with label26;
+        catch java.lang.Exception from label12 to label14 with label26;
+        catch java.lang.Exception from label15 to label17 with label26;
+        catch java.lang.Exception from label18 to label20 with label26;
+        catch java.lang.Exception from label21 to label26 with label26;
+    }
+}

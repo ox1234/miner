@@ -1,0 +1,186 @@
+public class org.owasp.webgoat.container.i18n.PluginMessages extends org.springframework.context.support.ReloadableResourceBundleMessageSource
+{
+    private static final java.lang.String PROPERTIES_SUFFIX;
+    private final org.owasp.webgoat.container.i18n.Language language;
+    private final org.springframework.core.io.support.ResourcePatternResolver resourcePatternResolver;
+
+    public void <init>(org.owasp.webgoat.container.i18n.Messages, org.owasp.webgoat.container.i18n.Language, org.springframework.core.io.support.ResourcePatternResolver)
+    {
+        org.owasp.webgoat.container.i18n.PluginMessages r0;
+        org.owasp.webgoat.container.i18n.Language r1;
+        org.springframework.core.io.support.ResourcePatternResolver r3;
+        org.owasp.webgoat.container.i18n.Messages r2;
+
+        r0 := @this;
+
+        r2 := @parameter0;
+
+        r1 := @parameter1;
+
+        r3 := @parameter2;
+
+        specialinvoke r0.<init>();
+
+        r0.language = r1;
+
+        virtualinvoke r0.setParentMessageSource(r2);
+
+        virtualinvoke r0.setBasename("WebGoatLabels");
+
+        r0.resourcePatternResolver = r3;
+
+        return;
+    }
+
+    protected org.springframework.context.support.ReloadableResourceBundleMessageSource$PropertiesHolder refreshProperties(java.lang.String, org.springframework.context.support.ReloadableResourceBundleMessageSource$PropertiesHolder)
+    {
+        java.lang.Throwable $r12;
+        long $l0;
+        org.springframework.context.support.ReloadableResourceBundleMessageSource$PropertiesHolder $r4, r9, $r10;
+        int i1, i2, i2_1, i2_2, i2_3, i2_4;
+        java.net.URI $r6;
+        java.lang.String $r7, $r8, r14;
+        org.springframework.core.io.Resource r5;
+        java.util.Properties $r0, $r11;
+        org.springframework.core.io.Resource[] $r3;
+        org.owasp.webgoat.container.i18n.PluginMessages r1;
+        org.apache.commons.logging.Log $r13;
+        org.springframework.core.io.support.ResourcePatternResolver $r2;
+
+        r1 := @this;
+
+        r14 := @parameter0;
+
+        r9 := @parameter1;
+
+        $r0 = new java.util.Properties;
+
+        specialinvoke $r0.<init>();
+
+        $l0 = staticinvoke java.lang.System.currentTimeMillis();
+
+     label1:
+(0)     $r2 = r1.resourcePatternResolver;
+
+        $r3 = interfaceinvoke $r2.getResources("classpath:/lessons/**/i18n/WebGoatLabels.properties");
+
+        i1 = lengthof $r3;
+
+(1)     i2 = 0;
+
+     label2:
+        i2_1 = Phi(i2 #1, i2_2 #3);
+
+        if i2_1 >= i1 goto label3;
+
+(2)     r5 = $r3[i2_1];
+
+        $r6 = interfaceinvoke r5.getURI();
+
+        $r7 = virtualinvoke $r6.toString();
+
+        $r8 = virtualinvoke $r7.replace(".properties", "");
+
+        $r10 = specialinvoke r1.refreshProperties($r8, r9);
+
+        $r11 = virtualinvoke $r10.getProperties();
+
+        virtualinvoke $r0.putAll($r11);
+
+        i2_2 = i2_1 + 1;
+
+(3)     goto label2;
+
+     label3:
+(4)     goto label5;
+
+     label4:
+        $r12 := @caughtexception;
+
+        i2_3 = Phi(i2 #0, i2_1 #2);
+
+        $r13 = r1.logger;
+
+(5)     interfaceinvoke $r13.error("Unable to read plugin message", $r12);
+
+     label5:
+        i2_4 = Phi(i2_1 #4, i2_3 #5);
+
+        $r4 = new org.springframework.context.support.ReloadableResourceBundleMessageSource$PropertiesHolder;
+
+        specialinvoke $r4.<init>(r1, $r0, $l0);
+
+        return $r4;
+
+        catch java.io.IOException from label1 to label3 with label4;
+    }
+
+    public java.util.Properties getMessages()
+    {
+        org.springframework.context.support.ReloadableResourceBundleMessageSource$PropertiesHolder $r3;
+        java.util.Properties $r4;
+        org.owasp.webgoat.container.i18n.PluginMessages r0;
+        java.util.Locale $r2;
+        org.owasp.webgoat.container.i18n.Language $r1;
+
+        r0 := @this;
+
+        $r1 = r0.language;
+
+        $r2 = virtualinvoke $r1.getLocale();
+
+        $r3 = virtualinvoke r0.getMergedProperties($r2);
+
+        $r4 = virtualinvoke $r3.getProperties();
+
+        return $r4;
+    }
+
+    public transient java.lang.String getMessage(java.lang.String, java.lang.Object[])
+    {
+        java.lang.Object[] r2;
+        org.owasp.webgoat.container.i18n.PluginMessages r0;
+        java.util.Locale $r4;
+        org.owasp.webgoat.container.i18n.Language $r3;
+        java.lang.String r1, $r5;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        r2 := @parameter1;
+
+        $r3 = r0.language;
+
+        $r4 = virtualinvoke $r3.getLocale();
+
+        $r5 = virtualinvoke r0.getMessage(r1, r2, $r4);
+
+        return $r5;
+    }
+
+    public transient java.lang.String getMessage(java.lang.String, java.lang.String, java.lang.Object[])
+    {
+        java.lang.Object[] r2;
+        org.owasp.webgoat.container.i18n.PluginMessages r0;
+        java.util.Locale $r5;
+        org.owasp.webgoat.container.i18n.Language $r4;
+        java.lang.String r1, r3, $r6;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        r3 := @parameter1;
+
+        r2 := @parameter2;
+
+        $r4 = r0.language;
+
+        $r5 = virtualinvoke $r4.getLocale();
+
+        $r6 = specialinvoke r0.getMessage(r1, r2, r3, $r5);
+
+        return $r6;
+    }
+}

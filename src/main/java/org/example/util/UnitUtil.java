@@ -1,6 +1,7 @@
 package org.example.util;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import soot.SootClass;
 import soot.SootMethod;
 import soot.Unit;
 import soot.tagkit.LineNumberTag;
@@ -35,6 +36,10 @@ public class UnitUtil {
     public static String getIdentityNodeID(SootMethod sootMethod, String name) {
         String methodSig = sootMethod.getSignature();
         return String.format("%s", DigestUtils.sha1Hex(String.format("%s-%s", methodSig, name)));
+    }
+
+    public static String getFieldNodeID(SootClass sootClass, String fieldName) {
+        return String.format("%s", DigestUtils.sha1Hex(String.format("%s-%s", sootClass.getName(), fieldName)));
     }
 
     public static String getParameterNodeID(SootMethod sootMethod, int idx) {

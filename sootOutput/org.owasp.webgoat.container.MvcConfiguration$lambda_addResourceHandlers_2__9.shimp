@@ -1,0 +1,40 @@
+public final class org.owasp.webgoat.container.MvcConfiguration$lambda_addResourceHandlers_2__9 extends java.lang.Object implements java.util.function.IntFunction
+{
+
+    public static java.util.function.IntFunction bootstrap$()
+    {
+        org.owasp.webgoat.container.MvcConfiguration$lambda_addResourceHandlers_2__9 $r0;
+
+        $r0 = new org.owasp.webgoat.container.MvcConfiguration$lambda_addResourceHandlers_2__9;
+
+        specialinvoke $r0.<init>();
+
+        return $r0;
+    }
+
+    public void <init>()
+    {
+        org.owasp.webgoat.container.MvcConfiguration$lambda_addResourceHandlers_2__9 $r0;
+
+        $r0 := @this;
+
+        specialinvoke $r0.<init>();
+
+        return;
+    }
+
+    public java.lang.Object apply(int)
+    {
+        int $i0;
+        java.lang.String[] $r1;
+        org.owasp.webgoat.container.MvcConfiguration$lambda_addResourceHandlers_2__9 $r0;
+
+        $r0 := @this;
+
+        $i0 := @parameter0;
+
+        $r1 = staticinvoke org.owasp.webgoat.container.MvcConfiguration.lambda$addResourceHandlers$2($i0);
+
+        return $r1;
+    }
+}

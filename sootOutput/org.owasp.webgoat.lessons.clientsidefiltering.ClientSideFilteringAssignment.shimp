@@ -1,0 +1,53 @@
+public class org.owasp.webgoat.lessons.clientsidefiltering.ClientSideFilteringAssignment extends org.owasp.webgoat.container.assignments.AssignmentEndpoint
+{
+
+    public void <init>()
+    {
+        org.owasp.webgoat.lessons.clientsidefiltering.ClientSideFilteringAssignment r0;
+
+        r0 := @this;
+
+        specialinvoke r0.<init>();
+
+        return;
+    }
+
+    public org.owasp.webgoat.container.assignments.AttackResult completed(java.lang.String)
+    {
+        org.owasp.webgoat.container.assignments.AttackResult$AttackResultBuilder $r3, $r4, $r5, $r6;
+        org.owasp.webgoat.lessons.clientsidefiltering.ClientSideFilteringAssignment r2;
+        org.owasp.webgoat.container.assignments.AttackResult $r7, $r7_1, $r7_2;
+        java.lang.String r0, $r1;
+        boolean $z0;
+
+        r2 := @this;
+
+        r0 := @parameter0;
+
+        $r1 = "450000";
+
+        $z0 = virtualinvoke $r1.equals(r0);
+
+        if $z0 == 0 goto label1;
+
+        $r5 = virtualinvoke r2.success(r2);
+
+        $r6 = virtualinvoke $r5.feedback("assignment.solved");
+
+        $r7 = virtualinvoke $r6.build();
+
+(0)     goto label2;
+
+     label1:
+        $r3 = virtualinvoke r2.failed(r2);
+
+        $r4 = virtualinvoke $r3.feedback("ClientSideFiltering.incorrect");
+
+(1)     $r7_1 = virtualinvoke $r4.build();
+
+     label2:
+        $r7_2 = Phi($r7 #0, $r7_1 #1);
+
+        return $r7_2;
+    }
+}

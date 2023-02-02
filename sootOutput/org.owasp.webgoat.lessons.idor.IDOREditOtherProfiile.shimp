@@ -1,0 +1,213 @@
+public class org.owasp.webgoat.lessons.idor.IDOREditOtherProfiile extends org.owasp.webgoat.container.assignments.AssignmentEndpoint
+{
+    private org.owasp.webgoat.container.session.UserSessionData userSessionData;
+
+    public void <init>()
+    {
+        org.owasp.webgoat.lessons.idor.IDOREditOtherProfiile r0;
+
+        r0 := @this;
+
+        specialinvoke r0.<init>();
+
+        return;
+    }
+
+    public org.owasp.webgoat.container.assignments.AttackResult completed(java.lang.String, org.owasp.webgoat.lessons.idor.UserProfile)
+    {
+        java.util.Map $r28, $r36, $r44, $r52;
+        org.owasp.webgoat.container.session.UserSessionData $r1, $r15, $r25;
+        org.owasp.webgoat.container.assignments.AttackResult $r12, $r19, $r22, $r31, $r39, $r47, $r55;
+        java.lang.String r3, r5, $r7, $r8, $r9, $r17, $r23, $r24, $r29, $r32, $r33, $r37, $r40, $r41, $r45, $r48, $r49, $r53;
+        org.owasp.webgoat.lessons.idor.UserProfile $r4, r6;
+        boolean $z0, $z1, $z2, $z3, $z4, $z5;
+        org.owasp.webgoat.container.assignments.AttackResult$AttackResultBuilder $r10, $r11, $r13, $r14, $r18, $r20, $r21, $r26, $r27, $r30, $r34, $r35, $r38, $r42, $r43, $r46, $r50, $r51, $r54;
+        int $i0, $i1, $i2, $i3, $i4;
+        org.owasp.webgoat.lessons.idor.IDOREditOtherProfiile r0;
+        java.lang.Object $r2, $r16;
+
+        r0 := @this;
+
+        r5 := @parameter0;
+
+        r6 := @parameter1;
+
+        $r1 = r0.userSessionData;
+
+        $r2 = virtualinvoke $r1.getValue("idor-authenticated-user-id");
+
+        r3 = (java.lang.String) $r2;
+
+        $r4 = new org.owasp.webgoat.lessons.idor.UserProfile;
+
+        specialinvoke $r4.<init>(r5);
+
+        $r7 = virtualinvoke r6.getUserId();
+
+        if $r7 == null goto label4;
+
+        $r23 = virtualinvoke r6.getUserId();
+
+        $z2 = virtualinvoke $r23.equals(r3);
+
+        if $z2 != 0 goto label4;
+
+        $r24 = virtualinvoke r6.getColor();
+
+        virtualinvoke $r4.setColor($r24);
+
+        $i1 = virtualinvoke r6.getRole();
+
+        virtualinvoke $r4.setRole($i1);
+
+        $r25 = r0.userSessionData;
+
+        virtualinvoke $r25.setValue("idor-updated-other-profile", $r4);
+
+        $i2 = virtualinvoke $r4.getRole();
+
+        if $i2 > 1 goto label1;
+
+        $r48 = virtualinvoke $r4.getColor();
+
+        $r49 = virtualinvoke $r48.toLowerCase();
+
+        $z5 = virtualinvoke $r49.equals("red");
+
+        if $z5 == 0 goto label1;
+
+        $r50 = virtualinvoke r0.success(r0);
+
+        $r51 = virtualinvoke $r50.feedback("idor.edit.profile.success1");
+
+        $r52 = virtualinvoke $r4.profileToMap();
+
+        $r53 = virtualinvoke $r52.toString();
+
+        $r54 = virtualinvoke $r51.output($r53);
+
+        $r55 = virtualinvoke $r54.build();
+
+        return $r55;
+
+     label1:
+        $i3 = virtualinvoke $r4.getRole();
+
+        if $i3 <= 1 goto label2;
+
+        $r40 = virtualinvoke $r4.getColor();
+
+        $r41 = virtualinvoke $r40.toLowerCase();
+
+        $z4 = virtualinvoke $r41.equals("red");
+
+        if $z4 == 0 goto label2;
+
+        $r42 = virtualinvoke r0.success(r0);
+
+        $r43 = virtualinvoke $r42.feedback("idor.edit.profile.failure1");
+
+        $r44 = virtualinvoke $r4.profileToMap();
+
+        $r45 = virtualinvoke $r44.toString();
+
+        $r46 = virtualinvoke $r43.output($r45);
+
+        $r47 = virtualinvoke $r46.build();
+
+        return $r47;
+
+     label2:
+        $i4 = virtualinvoke $r4.getRole();
+
+        if $i4 > 1 goto label3;
+
+        $r32 = virtualinvoke $r4.getColor();
+
+        $r33 = virtualinvoke $r32.toLowerCase();
+
+        $z3 = virtualinvoke $r33.equals("red");
+
+        if $z3 != 0 goto label3;
+
+        $r34 = virtualinvoke r0.success(r0);
+
+        $r35 = virtualinvoke $r34.feedback("idor.edit.profile.failure2");
+
+        $r36 = virtualinvoke $r4.profileToMap();
+
+        $r37 = virtualinvoke $r36.toString();
+
+        $r38 = virtualinvoke $r35.output($r37);
+
+        $r39 = virtualinvoke $r38.build();
+
+        return $r39;
+
+     label3:
+        $r26 = virtualinvoke r0.failed(r0);
+
+        $r27 = virtualinvoke $r26.feedback("idor.edit.profile.failure3");
+
+        $r28 = virtualinvoke $r4.profileToMap();
+
+        $r29 = virtualinvoke $r28.toString();
+
+        $r30 = virtualinvoke $r27.output($r29);
+
+        $r31 = virtualinvoke $r30.build();
+
+        return $r31;
+
+     label4:
+        $r8 = virtualinvoke r6.getUserId();
+
+        $z0 = virtualinvoke $r8.equals(r3);
+
+        if $z0 == 0 goto label5;
+
+        $r20 = virtualinvoke r0.failed(r0);
+
+        $r21 = virtualinvoke $r20.feedback("idor.edit.profile.failure4");
+
+        $r22 = virtualinvoke $r21.build();
+
+        return $r22;
+
+     label5:
+        $r9 = virtualinvoke $r4.getColor();
+
+        $z1 = virtualinvoke $r9.equals("black");
+
+        if $z1 == 0 goto label6;
+
+        $i0 = virtualinvoke $r4.getRole();
+
+        if $i0 > 1 goto label6;
+
+        $r13 = virtualinvoke r0.success(r0);
+
+        $r14 = virtualinvoke $r13.feedback("idor.edit.profile.success2");
+
+        $r15 = r0.userSessionData;
+
+        $r16 = virtualinvoke $r15.getValue("idor-updated-own-profile");
+
+        $r17 = virtualinvoke $r16.toString();
+
+        $r18 = virtualinvoke $r14.output($r17);
+
+        $r19 = virtualinvoke $r18.build();
+
+        return $r19;
+
+     label6:
+        $r10 = virtualinvoke r0.failed(r0);
+
+        $r11 = virtualinvoke $r10.feedback("idor.edit.profile.failure3");
+
+        $r12 = virtualinvoke $r11.build();
+
+        return $r12;
+    }
+}

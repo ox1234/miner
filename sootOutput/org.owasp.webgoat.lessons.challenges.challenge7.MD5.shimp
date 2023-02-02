@@ -1,0 +1,1706 @@
+public class org.owasp.webgoat.lessons.challenges.challenge7.MD5 extends java.lang.Object
+{
+    private org.owasp.webgoat.lessons.challenges.challenge7.MD5$MD5State workingState;
+    private org.owasp.webgoat.lessons.challenges.challenge7.MD5$MD5State finalState;
+    private int[] decodeBuffer;
+    private static final byte[] padding;
+
+    public void <init>()
+    {
+        org.owasp.webgoat.lessons.challenges.challenge7.MD5$MD5State $r1, $r2;
+        int[] $r3;
+        org.owasp.webgoat.lessons.challenges.challenge7.MD5 r0;
+
+        r0 := @this;
+
+        specialinvoke r0.<init>();
+
+        $r1 = new org.owasp.webgoat.lessons.challenges.challenge7.MD5$MD5State;
+
+        specialinvoke $r1.<init>(r0);
+
+        r0.workingState = $r1;
+
+        $r2 = new org.owasp.webgoat.lessons.challenges.challenge7.MD5$MD5State;
+
+        specialinvoke $r2.<init>(r0);
+
+        r0.finalState = $r2;
+
+        $r3 = newarray (int)[16];
+
+        r0.decodeBuffer = $r3;
+
+        virtualinvoke r0.reset();
+
+        return;
+    }
+
+    public static void main(java.lang.String[])
+    {
+        java.lang.Throwable $r7;
+        java.lang.String[] r0;
+        int $i0, i1, i2, i2_1, i2_2, i2_3;
+        java.lang.String r1, $r4, $r5, $r9;
+        java.io.PrintStream $r3, $r6, $r8;
+        java.io.IOException $r11;
+        java.io.File $r10;
+
+        r0 := @parameter0;
+
+        $i0 = lengthof r0;
+
+        if $i0 != 0 goto label1;
+
+        $r6 = java.lang.System.err;
+
+        virtualinvoke $r6.println("Please specify a file.");
+
+(0)     goto label7;
+
+     label1:
+        i1 = lengthof r0;
+
+(1)     i2 = 0;
+
+     label2:
+        i2_1 = Phi(i2 #1, i2_2 #3);
+
+(2)     if i2_1 >= i1 goto label7;
+
+        r1 = r0[i2_1];
+
+     label3:
+        $r3 = java.lang.System.out;
+
+        $r10 = new java.io.File;
+
+        specialinvoke $r10.<init>(r1);
+
+        $r4 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.getHashString($r10);
+
+        $r5 = dynamicinvoke "makeConcatWithConstants" <java.lang.String (java.lang.String,java.lang.String)>($r4, r1) java.lang.invoke.StringConcatFactory.makeConcatWithConstants("\u0001 \u0001");
+
+        virtualinvoke $r3.println($r5);
+
+     label4:
+        goto label6;
+
+     label5:
+        $r7 := @caughtexception;
+
+        $r8 = java.lang.System.err;
+
+        $r11 = (java.io.IOException) $r7;
+
+        $r9 = virtualinvoke $r11.getMessage();
+
+        virtualinvoke $r8.println($r9);
+
+     label6:
+        i2_2 = i2_1 + 1;
+
+(3)     goto label2;
+
+     label7:
+        i2_3 = Phi(i2 #0, i2_1 #2);
+
+        return;
+
+        catch java.io.IOException from label3 to label4 with label5;
+    }
+
+    public byte[] getHash()
+    {
+        byte[] $r5, $r8, $r12;
+        long l0, $l1, $l2;
+        org.owasp.webgoat.lessons.challenges.challenge7.MD5 r0;
+        int[] $r11;
+        int i3, $i4, $i4_1, $i4_2, $i4_3;
+        boolean $z0;
+        org.owasp.webgoat.lessons.challenges.challenge7.MD5$MD5State $r1, $r2, $r3, $r4, $r6, $r7, $r9, $r10;
+
+        r0 := @this;
+
+        $r1 = r0.finalState;
+
+        $z0 = $r1.valid;
+
+(0)     if $z0 != 0 goto label3;
+
+        $r3 = r0.finalState;
+
+        $r2 = r0.workingState;
+
+        virtualinvoke $r3.copy($r2);
+
+        $r4 = r0.finalState;
+
+        l0 = $r4.bitCount;
+
+        $l1 = l0 >>> 3;
+
+        $l2 = $l1 & 63L;
+
+        i3 = (int) $l2;
+
+        if i3 >= 56 goto label1;
+
+        $i4 = 56 - i3;
+
+(1)     goto label2;
+
+     label1:
+(2)     $i4_1 = 120 - i3;
+
+     label2:
+        $i4_2 = Phi($i4 #1, $i4_1 #2);
+
+        $r6 = r0.finalState;
+
+        $r5 = org.owasp.webgoat.lessons.challenges.challenge7.MD5.padding;
+
+        virtualinvoke r0.update($r6, $r5, 0, $i4_2);
+
+        $r7 = r0.finalState;
+
+        $r8 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.encode(l0);
+
+        virtualinvoke r0.update($r7, $r8, 0, 8);
+
+        $r9 = r0.finalState;
+
+(3)     $r9.valid = 1;
+
+     label3:
+        $i4_3 = Phi($i4 #0, $i4_2 #3);
+
+        $r10 = r0.finalState;
+
+        $r11 = $r10.state;
+
+        $r12 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.encode($r11, 16);
+
+        return $r12;
+    }
+
+    public java.lang.String getHashString()
+    {
+        byte[] $r1;
+        java.lang.String $r2;
+        org.owasp.webgoat.lessons.challenges.challenge7.MD5 r0;
+
+        r0 := @this;
+
+        $r1 = virtualinvoke r0.getHash();
+
+        $r2 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.toHex($r1);
+
+        return $r2;
+    }
+
+    public static byte[] getHash(byte[])
+    {
+        byte[] r1, $r2;
+        org.owasp.webgoat.lessons.challenges.challenge7.MD5 $r0;
+
+        r1 := @parameter0;
+
+        $r0 = new org.owasp.webgoat.lessons.challenges.challenge7.MD5;
+
+        specialinvoke $r0.<init>();
+
+        virtualinvoke $r0.update(r1);
+
+        $r2 = virtualinvoke $r0.getHash();
+
+        return $r2;
+    }
+
+    public static java.lang.String getHashString(byte[])
+    {
+        byte[] r1;
+        java.lang.String $r2;
+        org.owasp.webgoat.lessons.challenges.challenge7.MD5 $r0;
+
+        r1 := @parameter0;
+
+        $r0 = new org.owasp.webgoat.lessons.challenges.challenge7.MD5;
+
+        specialinvoke $r0.<init>();
+
+        virtualinvoke $r0.update(r1);
+
+        $r2 = virtualinvoke $r0.getHashString();
+
+        return $r2;
+    }
+
+    public static byte[] getHash(java.io.InputStream) throws java.io.IOException
+    {
+        byte[] r1, $r3;
+        int $i0, $i2;
+        org.owasp.webgoat.lessons.challenges.challenge7.MD5 $r4;
+        java.io.InputStream r2;
+
+        r2 := @parameter0;
+
+        $r4 = new org.owasp.webgoat.lessons.challenges.challenge7.MD5;
+
+        specialinvoke $r4.<init>();
+
+        r1 = newarray (byte)[1024];
+
+     label1:
+        $i0 = virtualinvoke r2.read(r1);
+
+        $i2 = (int) -1;
+
+        if $i0 == $i2 goto label2;
+
+        virtualinvoke $r4.update(r1, $i0);
+
+        goto label1;
+
+     label2:
+        $r3 = virtualinvoke $r4.getHash();
+
+        return $r3;
+    }
+
+    public static java.lang.String getHashString(java.io.InputStream) throws java.io.IOException
+    {
+        byte[] r1;
+        int $i0, $i2;
+        java.lang.String $r3;
+        org.owasp.webgoat.lessons.challenges.challenge7.MD5 $r4;
+        java.io.InputStream r2;
+
+        r2 := @parameter0;
+
+        $r4 = new org.owasp.webgoat.lessons.challenges.challenge7.MD5;
+
+        specialinvoke $r4.<init>();
+
+        r1 = newarray (byte)[1024];
+
+     label1:
+        $i0 = virtualinvoke r2.read(r1);
+
+        $i2 = (int) -1;
+
+        if $i0 == $i2 goto label2;
+
+        virtualinvoke $r4.update(r1, $i0);
+
+        goto label1;
+
+     label2:
+        $r3 = virtualinvoke $r4.getHashString();
+
+        return $r3;
+    }
+
+    public static byte[] getHash(java.io.File) throws java.io.IOException
+    {
+        java.lang.Throwable $r3, $r4;
+        byte[] $r2;
+        java.io.FileInputStream $r0;
+        java.io.File r1;
+
+        r1 := @parameter0;
+
+        $r0 = new java.io.FileInputStream;
+
+        specialinvoke $r0.<init>(r1);
+
+     label1:
+        $r2 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.getHash($r0);
+
+     label2:
+        virtualinvoke $r0.close();
+
+        goto label8;
+
+     label3:
+        $r4 := @caughtexception;
+
+     label4:
+        virtualinvoke $r0.close();
+
+     label5:
+        goto label7;
+
+     label6:
+        $r3 := @caughtexception;
+
+        virtualinvoke $r4.addSuppressed($r3);
+
+     label7:
+        throw $r4;
+
+     label8:
+        return $r2;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+        catch java.lang.Throwable from label4 to label5 with label6;
+    }
+
+    public static java.lang.String getHashString(java.io.File) throws java.io.IOException
+    {
+        java.lang.Throwable $r3, $r4;
+        java.io.FileInputStream $r0;
+        java.lang.String $r2;
+        java.io.File r1;
+
+        r1 := @parameter0;
+
+        $r0 = new java.io.FileInputStream;
+
+        specialinvoke $r0.<init>(r1);
+
+     label1:
+        $r2 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.getHashString($r0);
+
+     label2:
+        virtualinvoke $r0.close();
+
+        goto label8;
+
+     label3:
+        $r4 := @caughtexception;
+
+     label4:
+        virtualinvoke $r0.close();
+
+     label5:
+        goto label7;
+
+     label6:
+        $r3 := @caughtexception;
+
+        virtualinvoke $r4.addSuppressed($r3);
+
+     label7:
+        throw $r4;
+
+     label8:
+        return $r2;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+        catch java.lang.Throwable from label4 to label5 with label6;
+    }
+
+    public static byte[] getHash(java.lang.String)
+    {
+        byte[] $r2;
+        java.lang.String r1;
+        org.owasp.webgoat.lessons.challenges.challenge7.MD5 $r0;
+
+        r1 := @parameter0;
+
+        $r0 = new org.owasp.webgoat.lessons.challenges.challenge7.MD5;
+
+        specialinvoke $r0.<init>();
+
+        virtualinvoke $r0.update(r1);
+
+        $r2 = virtualinvoke $r0.getHash();
+
+        return $r2;
+    }
+
+    public static java.lang.String getHashString(java.lang.String)
+    {
+        java.lang.String r1, $r2;
+        org.owasp.webgoat.lessons.challenges.challenge7.MD5 $r0;
+
+        r1 := @parameter0;
+
+        $r0 = new org.owasp.webgoat.lessons.challenges.challenge7.MD5;
+
+        specialinvoke $r0.<init>();
+
+        virtualinvoke $r0.update(r1);
+
+        $r2 = virtualinvoke $r0.getHashString();
+
+        return $r2;
+    }
+
+    public static byte[] getHash(java.lang.String, java.lang.String) throws java.io.UnsupportedEncodingException
+    {
+        byte[] $r3;
+        java.lang.String r1, r2;
+        org.owasp.webgoat.lessons.challenges.challenge7.MD5 $r0;
+
+        r1 := @parameter0;
+
+        r2 := @parameter1;
+
+        $r0 = new org.owasp.webgoat.lessons.challenges.challenge7.MD5;
+
+        specialinvoke $r0.<init>();
+
+        virtualinvoke $r0.update(r1, r2);
+
+        $r3 = virtualinvoke $r0.getHash();
+
+        return $r3;
+    }
+
+    public static java.lang.String getHashString(java.lang.String, java.lang.String) throws java.io.UnsupportedEncodingException
+    {
+        java.lang.String r1, r2, $r3;
+        org.owasp.webgoat.lessons.challenges.challenge7.MD5 $r0;
+
+        r1 := @parameter0;
+
+        r2 := @parameter1;
+
+        $r0 = new org.owasp.webgoat.lessons.challenges.challenge7.MD5;
+
+        specialinvoke $r0.<init>();
+
+        virtualinvoke $r0.update(r1, r2);
+
+        $r3 = virtualinvoke $r0.getHashString();
+
+        return $r3;
+    }
+
+    public void reset()
+    {
+        org.owasp.webgoat.lessons.challenges.challenge7.MD5$MD5State $r1, $r2;
+        org.owasp.webgoat.lessons.challenges.challenge7.MD5 r0;
+
+        r0 := @this;
+
+        $r1 = r0.workingState;
+
+        virtualinvoke $r1.reset();
+
+        $r2 = r0.finalState;
+
+        $r2.valid = 0;
+
+        return;
+    }
+
+    public java.lang.String toString()
+    {
+        java.lang.String $r1;
+        org.owasp.webgoat.lessons.challenges.challenge7.MD5 r0;
+
+        r0 := @this;
+
+        $r1 = virtualinvoke r0.getHashString();
+
+        return $r1;
+    }
+
+    private void update(org.owasp.webgoat.lessons.challenges.challenge7.MD5$MD5State, byte[], int, int)
+    {
+        byte[] r2, $r4, $r5, $r6;
+        byte $b13;
+        int[] $r7, $r8;
+        org.owasp.webgoat.lessons.challenges.challenge7.MD5$MD5State $r1, r3;
+        long $l3, $l4, $l7, $l8, $l9;
+        org.owasp.webgoat.lessons.challenges.challenge7.MD5 r0;
+        int i0, $i1, $i2, $i5, $i6, i10, $i11, $i12, $i14, $i15, $i16, $i17, $i18, i19, i20, i21, i19_1, i19_2, i21_1, i21_2, i21_3, i20_1, i21_4, i20_2, i21_5, i21_6, i21_7;
+
+        r0 := @this;
+
+        r3 := @parameter0;
+
+        r2 := @parameter1;
+
+        i0 := @parameter2;
+
+        i19 := @parameter3;
+
+        $r1 = r0.finalState;
+
+        $r1.valid = 0;
+
+        $i2 = i19 + i0;
+
+        $i1 = lengthof r2;
+
+(0)     if $i2 <= $i1 goto label1;
+
+        $i16 = lengthof r2;
+
+(1)     i19_1 = $i16 - i0;
+
+     label1:
+        i19_2 = Phi(i19 #0, i19_1 #1);
+
+        $l3 = r3.bitCount;
+
+        $l4 = $l3 >>> 3;
+
+        $i5 = (int) $l4;
+
+        $i17 = $i5 & 63;
+
+        i20 = $i17;
+
+        $l8 = r3.bitCount;
+
+        $i6 = i19_2 << 3;
+
+        $l7 = (long) $i6;
+
+        $l9 = $l8 + $l7;
+
+        r3.bitCount = $l9;
+
+        $i18 = 64 - $i17;
+
+        i21 = 0;
+
+(2)     if i19_2 < $i18 goto label4;
+
+        $r5 = r3.buffer;
+
+        staticinvoke java.lang.System.arraycopy(r2, i0, $r5, $i17, $i18);
+
+        $r6 = r3.buffer;
+
+        $r7 = virtualinvoke r0.decode($r6, 64, 0);
+
+        staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.transform(r3, $r7);
+
+(3)     i21_1 = $i18;
+
+     label2:
+        i21_2 = Phi(i21_1 #3, i21_3 #4);
+
+        $i15 = i21_2 + 63;
+
+        if $i15 >= i19_2 goto label3;
+
+        $r8 = virtualinvoke r0.decode(r2, 64, i21_2);
+
+        staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.transform(r3, $r8);
+
+        i21_3 = i21_2 + 64;
+
+(4)     goto label2;
+
+     label3:
+(5)     i20_1 = 0;
+
+     label4:
+        i21_4 = Phi(i21 #2, i21_2 #5);
+
+        i20_2 = Phi(i20 #2, i20_1 #5);
+
+(6)     if i21_4 >= i19_2 goto label6;
+
+(7)     i10 = i21_4;
+
+     label5:
+        i21_5 = Phi(i21_4 #7, i21_6 #9);
+
+(8)     if i21_5 >= i19_2 goto label6;
+
+        $r4 = r3.buffer;
+
+        $i11 = i20_2 + i21_5;
+
+        $i14 = $i11 - i10;
+
+        $i12 = i21_5 + i0;
+
+        $b13 = r2[$i12];
+
+        $r4[$i14] = $b13;
+
+        i21_6 = i21_5 + 1;
+
+(9)     goto label5;
+
+     label6:
+        i21_7 = Phi(i21_4 #6, i21_5 #8);
+
+        return;
+    }
+
+    public void update(byte[], int, int)
+    {
+        byte[] r1;
+        org.owasp.webgoat.lessons.challenges.challenge7.MD5$MD5State $r2;
+        int i0, i1;
+        org.owasp.webgoat.lessons.challenges.challenge7.MD5 r0;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        i0 := @parameter1;
+
+        i1 := @parameter2;
+
+        $r2 = r0.workingState;
+
+        virtualinvoke r0.update($r2, r1, i0, i1);
+
+        return;
+    }
+
+    public void update(byte[], int)
+    {
+        int i0;
+        byte[] r1;
+        org.owasp.webgoat.lessons.challenges.challenge7.MD5 r0;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        i0 := @parameter1;
+
+        virtualinvoke r0.update(r1, 0, i0);
+
+        return;
+    }
+
+    public void update(byte[])
+    {
+        int $i0;
+        byte[] r1;
+        org.owasp.webgoat.lessons.challenges.challenge7.MD5 r0;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        $i0 = lengthof r1;
+
+        virtualinvoke r0.update(r1, 0, $i0);
+
+        return;
+    }
+
+    public void update(byte)
+    {
+        byte[] r0;
+        byte b0;
+        org.owasp.webgoat.lessons.challenges.challenge7.MD5 r1;
+
+        r1 := @this;
+
+        b0 := @parameter0;
+
+        r0 = newarray (byte)[1];
+
+        r0[0] = b0;
+
+        virtualinvoke r1.update(r0, 1);
+
+        return;
+    }
+
+    public void update(java.lang.String)
+    {
+        byte[] $r2;
+        java.lang.String r1;
+        org.owasp.webgoat.lessons.challenges.challenge7.MD5 r0;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        $r2 = virtualinvoke r1.getBytes();
+
+        virtualinvoke r0.update($r2);
+
+        return;
+    }
+
+    public void update(java.lang.String, java.lang.String) throws java.io.UnsupportedEncodingException
+    {
+        byte[] $r3;
+        java.lang.String r1, r2;
+        org.owasp.webgoat.lessons.challenges.challenge7.MD5 r0;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        r2 := @parameter1;
+
+        $r3 = virtualinvoke r1.getBytes(r2);
+
+        virtualinvoke r0.update($r3);
+
+        return;
+    }
+
+    private static java.lang.String toHex(byte[])
+    {
+        byte[] r1;
+        short s4, $s6;
+        byte b3;
+        int $i0, $i1, i2, i5, $i7, $i8, i5_1, i5_2;
+        java.lang.StringBuilder $r4;
+        java.lang.String $r2, $r3;
+
+        r1 := @parameter0;
+
+        $r4 = new java.lang.StringBuilder;
+
+        $i0 = lengthof r1;
+
+        $i1 = $i0 * 2;
+
+        specialinvoke $r4.<init>($i1);
+
+        i2 = lengthof r1;
+
+(0)     i5 = 0;
+
+     label1:
+        i5_1 = Phi(i5 #0, i5_2 #1);
+
+        if i5_1 >= i2 goto label3;
+
+        b3 = r1[i5_1];
+
+        $s6 = (short) b3;
+
+        s4 = $s6 & 255;
+
+        $i7 = (int) s4;
+
+        if $i7 >= 16 goto label2;
+
+        virtualinvoke $r4.append("0");
+
+     label2:
+        $i8 = (int) s4;
+
+        $r3 = staticinvoke java.lang.Integer.toHexString($i8);
+
+        virtualinvoke $r4.append($r3);
+
+        i5_2 = i5_1 + 1;
+
+(1)     goto label1;
+
+     label3:
+        $r2 = virtualinvoke $r4.toString();
+
+        return $r2;
+    }
+
+    private static int FF(int, int, int, int, int, int, int)
+    {
+        int i0, i1, i2, $i3, $i4, $i5, $i6, i7, i8, i9, $i10, $i11, $i12, $i13, i14, i15, i16, i17, i18, $i20;
+
+        i14 := @parameter0;
+
+        i0 := @parameter1;
+
+        i1 := @parameter2;
+
+        i2 := @parameter3;
+
+        i7 := @parameter4;
+
+        i9 := @parameter5;
+
+        i8 := @parameter6;
+
+        $i5 = i0 & i1;
+
+        $i20 = (int) -1;
+
+        $i3 = i0 ^ $i20;
+
+        $i4 = $i3 & i2;
+
+        $i6 = $i5 | $i4;
+
+        i15 = i14 + $i6;
+
+        i16 = i15 + i7;
+
+        i17 = i16 + i8;
+
+        $i12 = i17 << i9;
+
+        $i10 = 32 - i9;
+
+        $i11 = i17 >>> $i10;
+
+        i18 = $i12 | $i11;
+
+        $i13 = i18 + i0;
+
+        return $i13;
+    }
+
+    private static int GG(int, int, int, int, int, int, int)
+    {
+        int i0, i1, i2, $i3, $i4, $i5, $i6, i7, i8, i9, $i10, $i11, $i12, $i13, i14, i15, i16, i17, i18, $i20;
+
+        i14 := @parameter0;
+
+        i0 := @parameter1;
+
+        i2 := @parameter2;
+
+        i1 := @parameter3;
+
+        i7 := @parameter4;
+
+        i9 := @parameter5;
+
+        i8 := @parameter6;
+
+        $i5 = i0 & i1;
+
+        $i20 = (int) -1;
+
+        $i3 = i1 ^ $i20;
+
+        $i4 = i2 & $i3;
+
+        $i6 = $i5 | $i4;
+
+        i15 = i14 + $i6;
+
+        i16 = i15 + i7;
+
+        i17 = i16 + i8;
+
+        $i12 = i17 << i9;
+
+        $i10 = 32 - i9;
+
+        $i11 = i17 >>> $i10;
+
+        i18 = $i12 | $i11;
+
+        $i13 = i18 + i0;
+
+        return $i13;
+    }
+
+    private static int HH(int, int, int, int, int, int, int)
+    {
+        int i0, i1, i2, $i3, $i4, i5, i6, i7, $i8, $i9, $i10, $i11, i12, i13, i14, i15, i16;
+
+        i12 := @parameter0;
+
+        i0 := @parameter1;
+
+        i1 := @parameter2;
+
+        i2 := @parameter3;
+
+        i5 := @parameter4;
+
+        i7 := @parameter5;
+
+        i6 := @parameter6;
+
+        $i3 = i0 ^ i1;
+
+        $i4 = $i3 ^ i2;
+
+        i13 = i12 + $i4;
+
+        i14 = i13 + i5;
+
+        i15 = i14 + i6;
+
+        $i10 = i15 << i7;
+
+        $i8 = 32 - i7;
+
+        $i9 = i15 >>> $i8;
+
+        i16 = $i10 | $i9;
+
+        $i11 = i16 + i0;
+
+        return $i11;
+    }
+
+    private static int II(int, int, int, int, int, int, int)
+    {
+        int i0, i1, i2, $i3, $i4, $i5, i6, i7, i8, $i9, $i10, $i11, $i12, i13, i14, i15, i16, i17, $i19;
+
+        i13 := @parameter0;
+
+        i1 := @parameter1;
+
+        i0 := @parameter2;
+
+        i2 := @parameter3;
+
+        i6 := @parameter4;
+
+        i8 := @parameter5;
+
+        i7 := @parameter6;
+
+        $i19 = (int) -1;
+
+        $i3 = i2 ^ $i19;
+
+        $i4 = i1 | $i3;
+
+        $i5 = i0 ^ $i4;
+
+        i14 = i13 + $i5;
+
+        i15 = i14 + i6;
+
+        i16 = i15 + i7;
+
+        $i11 = i16 << i8;
+
+        $i9 = 32 - i8;
+
+        $i10 = i16 >>> $i9;
+
+        i17 = $i11 | $i10;
+
+        $i12 = i17 + i1;
+
+        return $i12;
+    }
+
+    private static byte[] encode(long)
+    {
+        byte[] r0;
+        byte $b3, $b7, $b11, $b15, $b19, $b23, $b27, $b31;
+        long l0, $l1, $l4, $l5, $l8, $l9, $l12, $l13, $l16, $l17, $l20, $l21, $l24, $l25, $l28, $l29;
+        int $i2, $i6, $i10, $i14, $i18, $i22, $i26, $i30;
+
+        l0 := @parameter0;
+
+        r0 = newarray (byte)[8];
+
+        $l1 = l0 & 255L;
+
+        $i2 = (int) $l1;
+
+        $b3 = (byte) $i2;
+
+        r0[0] = $b3;
+
+        $l4 = l0 >>> 8;
+
+        $l5 = $l4 & 255L;
+
+        $i6 = (int) $l5;
+
+        $b7 = (byte) $i6;
+
+        r0[1] = $b7;
+
+        $l8 = l0 >>> 16;
+
+        $l9 = $l8 & 255L;
+
+        $i10 = (int) $l9;
+
+        $b11 = (byte) $i10;
+
+        r0[2] = $b11;
+
+        $l12 = l0 >>> 24;
+
+        $l13 = $l12 & 255L;
+
+        $i14 = (int) $l13;
+
+        $b15 = (byte) $i14;
+
+        r0[3] = $b15;
+
+        $l16 = l0 >>> 32;
+
+        $l17 = $l16 & 255L;
+
+        $i18 = (int) $l17;
+
+        $b19 = (byte) $i18;
+
+        r0[4] = $b19;
+
+        $l20 = l0 >>> 40;
+
+        $l21 = $l20 & 255L;
+
+        $i22 = (int) $l21;
+
+        $b23 = (byte) $i22;
+
+        r0[5] = $b23;
+
+        $l24 = l0 >>> 48;
+
+        $l25 = $l24 & 255L;
+
+        $i26 = (int) $l25;
+
+        $b27 = (byte) $i26;
+
+        r0[6] = $b27;
+
+        $l28 = l0 >>> 56;
+
+        $l29 = $l28 & 255L;
+
+        $i30 = (int) $l29;
+
+        $b31 = (byte) $i30;
+
+        r0[7] = $b31;
+
+        return r0;
+    }
+
+    private static byte[] encode(int[], int)
+    {
+        byte[] r0;
+        byte $b3, $b7, $b12, $b17;
+        int[] r1;
+        int i0, $i1, $i2, $i4, $i5, $i6, $i8, $i9, $i10, $i11, $i13, $i14, $i15, $i16, $i18, i19, i20, i20_1, i19_1, i20_2, i19_2;
+
+        r1 := @parameter0;
+
+        i0 := @parameter1;
+
+        r0 = newarray (byte)[i0];
+
+        i19 = 0;
+
+(0)     i20 = 0;
+
+     label1:
+        i20_1 = Phi(i20 #0, i20_2 #1);
+
+        i19_1 = Phi(i19 #0, i19_2 #1);
+
+        if i19_1 >= i0 goto label2;
+
+        $i1 = r1[i20_1];
+
+        $i2 = $i1 & 255;
+
+        $b3 = (byte) $i2;
+
+        r0[i19_1] = $b3;
+
+        $i8 = i19_1 + 1;
+
+        $i4 = r1[i20_1];
+
+        $i5 = $i4 >>> 8;
+
+        $i6 = $i5 & 255;
+
+        $b7 = (byte) $i6;
+
+        r0[$i8] = $b7;
+
+        $i13 = i19_1 + 2;
+
+        $i9 = r1[i20_1];
+
+        $i10 = $i9 >>> 16;
+
+        $i11 = $i10 & 255;
+
+        $b12 = (byte) $i11;
+
+        r0[$i13] = $b12;
+
+        $i18 = i19_1 + 3;
+
+        $i14 = r1[i20_1];
+
+        $i15 = $i14 >>> 24;
+
+        $i16 = $i15 & 255;
+
+        $b17 = (byte) $i16;
+
+        r0[$i18] = $b17;
+
+        i20_2 = i20_1 + 1;
+
+        i19_2 = i19_1 + 4;
+
+(1)     goto label1;
+
+     label2:
+        return r0;
+    }
+
+    private int[] decode(byte[], int, int)
+    {
+        byte[] r2;
+        byte $b3, $b6, $b12, $b18;
+        int[] $r1, $r3;
+        org.owasp.webgoat.lessons.challenges.challenge7.MD5 r0;
+        short $s7, $s9, $s13, $s19, $s25, $s26, $s29, $s31;
+        int i0, i1, $i2, $i4, $i5, $i8, $i10, $i11, $i14, $i15, $i16, $i17, $i20, $i21, $i22, i23, i24, $i27, $i28, $i30, $i32, i24_1, i23_1, i24_2, i23_2;
+
+        r0 := @this;
+
+        r2 := @parameter0;
+
+        i0 := @parameter1;
+
+        i1 := @parameter2;
+
+        i23 = 0;
+
+(0)     i24 = 0;
+
+     label1:
+        i24_1 = Phi(i24 #0, i24_2 #1);
+
+        i23_1 = Phi(i23 #0, i23_2 #1);
+
+        if i23_1 >= i0 goto label2;
+
+        $r3 = r0.decodeBuffer;
+
+        $i2 = i23_1 + i1;
+
+        $b3 = r2[$i2];
+
+        $s25 = (short) $b3;
+
+        $s9 = $s25 & 255;
+
+        $i4 = i23_1 + 1;
+
+        $i5 = $i4 + i1;
+
+        $b6 = r2[$i5];
+
+        $s26 = (short) $b6;
+
+        $s7 = $s26 & 255;
+
+        $i27 = (int) $s7;
+
+        $i8 = $i27 << 8;
+
+        $i28 = (int) $s9;
+
+        $i15 = $i28 | $i8;
+
+        $i10 = i23_1 + 2;
+
+        $i11 = $i10 + i1;
+
+        $b12 = r2[$i11];
+
+        $s29 = (short) $b12;
+
+        $s13 = $s29 & 255;
+
+        $i30 = (int) $s13;
+
+        $i14 = $i30 << 16;
+
+        $i21 = $i15 | $i14;
+
+        $i16 = i23_1 + 3;
+
+        $i17 = $i16 + i1;
+
+        $b18 = r2[$i17];
+
+        $s31 = (short) $b18;
+
+        $s19 = $s31 & 255;
+
+        $i32 = (int) $s19;
+
+        $i20 = $i32 << 24;
+
+        $i22 = $i21 | $i20;
+
+        $r3[i24_1] = $i22;
+
+        i24_2 = i24_1 + 1;
+
+        i23_2 = i23_1 + 4;
+
+(1)     goto label1;
+
+     label2:
+        $r1 = r0.decodeBuffer;
+
+        return $r1;
+    }
+
+    private static void transform(org.owasp.webgoat.lessons.challenges.challenge7.MD5$MD5State, int[])
+    {
+        int[] $r1, $r2, $r3, $r4, r5, $r6, $r7, $r8, $r9;
+        org.owasp.webgoat.lessons.challenges.challenge7.MD5$MD5State r0;
+        int $i0, $i1, $i2, $i3, $i4, $i5, $i6, $i7, $i8, $i9, $i10, $i11, $i12, $i13, $i14, $i15, $i16, $i17, $i18, $i19, $i20, $i21, $i22, $i23, $i24, $i25, $i26, $i27, $i28, $i29, $i30, $i31, $i32, $i33, $i34, $i35, $i36, $i37, $i38, $i39, $i40, $i41, $i42, $i43, $i44, $i45, $i46, $i47, $i48, $i49, $i50, $i51, $i52, $i53, $i54, $i55, $i56, $i57, $i58, $i59, $i60, $i61, $i62, $i63, $i64, $i65, $i66, $i67, $i68, $i69, $i70, $i71, $i72, $i73, $i74, $i75, $i76, $i77, $i78, $i79, $i80, $i81, $i82, $i83, $i84, $i85, $i86, $i87, $i88, $i89, $i90, $i91, $i92, $i93, $i94, $i95, $i96, $i97, $i98, $i99, $i100, $i101, $i102, $i103, $i104, $i105, $i106, $i107, $i108, $i109, $i110, $i111, $i112, $i113, $i114, $i115, $i116, $i117, $i118, $i119, $i120, $i121, $i122, $i123, $i124, $i125, $i126, $i127, $i128, $i129, $i130, $i131, $i132, $i133, $i134, $i135, i136, i137, i138, i139;
+
+        r0 := @parameter0;
+
+        r5 := @parameter1;
+
+        $r1 = r0.state;
+
+        i136 = $r1[0];
+
+        $r2 = r0.state;
+
+        i137 = $r2[1];
+
+        $r3 = r0.state;
+
+        i138 = $r3[2];
+
+        $r4 = r0.state;
+
+        i139 = $r4[3];
+
+        $i0 = r5[0];
+
+        $i1 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.FF(i136, i137, i138, i139, $i0, 7, -680876936);
+
+        $i2 = r5[1];
+
+        $i3 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.FF(i139, $i1, i137, i138, $i2, 12, -389564586);
+
+        $i4 = r5[2];
+
+        $i5 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.FF(i138, $i3, $i1, i137, $i4, 17, 606105819);
+
+        $i6 = r5[3];
+
+        $i7 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.FF(i137, $i5, $i3, $i1, $i6, 22, -1044525330);
+
+        $i8 = r5[4];
+
+        $i9 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.FF($i1, $i7, $i5, $i3, $i8, 7, -176418897);
+
+        $i10 = r5[5];
+
+        $i11 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.FF($i3, $i9, $i7, $i5, $i10, 12, 1200080426);
+
+        $i12 = r5[6];
+
+        $i13 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.FF($i5, $i11, $i9, $i7, $i12, 17, -1473231341);
+
+        $i14 = r5[7];
+
+        $i15 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.FF($i7, $i13, $i11, $i9, $i14, 22, -45705983);
+
+        $i16 = r5[8];
+
+        $i17 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.FF($i9, $i15, $i13, $i11, $i16, 7, 1770035416);
+
+        $i18 = r5[9];
+
+        $i19 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.FF($i11, $i17, $i15, $i13, $i18, 12, -1958414417);
+
+        $i20 = r5[10];
+
+        $i21 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.FF($i13, $i19, $i17, $i15, $i20, 17, -42063);
+
+        $i22 = r5[11];
+
+        $i23 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.FF($i15, $i21, $i19, $i17, $i22, 22, -1990404162);
+
+        $i24 = r5[12];
+
+        $i25 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.FF($i17, $i23, $i21, $i19, $i24, 7, 1804603682);
+
+        $i26 = r5[13];
+
+        $i27 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.FF($i19, $i25, $i23, $i21, $i26, 12, -40341101);
+
+        $i28 = r5[14];
+
+        $i29 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.FF($i21, $i27, $i25, $i23, $i28, 17, -1502002290);
+
+        $i30 = r5[15];
+
+        $i31 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.FF($i23, $i29, $i27, $i25, $i30, 22, 1236535329);
+
+        $i32 = r5[1];
+
+        $i33 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.GG($i25, $i31, $i29, $i27, $i32, 5, -165796510);
+
+        $i34 = r5[6];
+
+        $i35 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.GG($i27, $i33, $i31, $i29, $i34, 9, -1069501632);
+
+        $i36 = r5[11];
+
+        $i37 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.GG($i29, $i35, $i33, $i31, $i36, 14, 643717713);
+
+        $i38 = r5[0];
+
+        $i39 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.GG($i31, $i37, $i35, $i33, $i38, 20, -373897302);
+
+        $i40 = r5[5];
+
+        $i41 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.GG($i33, $i39, $i37, $i35, $i40, 5, -701558691);
+
+        $i42 = r5[10];
+
+        $i43 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.GG($i35, $i41, $i39, $i37, $i42, 9, 38016083);
+
+        $i44 = r5[15];
+
+        $i45 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.GG($i37, $i43, $i41, $i39, $i44, 14, -660478335);
+
+        $i46 = r5[4];
+
+        $i47 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.GG($i39, $i45, $i43, $i41, $i46, 20, -405537848);
+
+        $i48 = r5[9];
+
+        $i49 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.GG($i41, $i47, $i45, $i43, $i48, 5, 568446438);
+
+        $i50 = r5[14];
+
+        $i51 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.GG($i43, $i49, $i47, $i45, $i50, 9, -1019803690);
+
+        $i52 = r5[3];
+
+        $i53 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.GG($i45, $i51, $i49, $i47, $i52, 14, -187363961);
+
+        $i54 = r5[8];
+
+        $i55 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.GG($i47, $i53, $i51, $i49, $i54, 20, 1163531501);
+
+        $i56 = r5[13];
+
+        $i57 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.GG($i49, $i55, $i53, $i51, $i56, 5, -1444681467);
+
+        $i58 = r5[2];
+
+        $i59 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.GG($i51, $i57, $i55, $i53, $i58, 9, -51403784);
+
+        $i60 = r5[7];
+
+        $i61 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.GG($i53, $i59, $i57, $i55, $i60, 14, 1735328473);
+
+        $i62 = r5[12];
+
+        $i63 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.GG($i55, $i61, $i59, $i57, $i62, 20, -1926607734);
+
+        $i64 = r5[5];
+
+        $i65 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.HH($i57, $i63, $i61, $i59, $i64, 4, -378558);
+
+        $i66 = r5[8];
+
+        $i67 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.HH($i59, $i65, $i63, $i61, $i66, 11, -2022574463);
+
+        $i68 = r5[11];
+
+        $i69 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.HH($i61, $i67, $i65, $i63, $i68, 16, 1839030562);
+
+        $i70 = r5[14];
+
+        $i71 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.HH($i63, $i69, $i67, $i65, $i70, 23, -35309556);
+
+        $i72 = r5[1];
+
+        $i73 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.HH($i65, $i71, $i69, $i67, $i72, 4, -1530992060);
+
+        $i74 = r5[4];
+
+        $i75 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.HH($i67, $i73, $i71, $i69, $i74, 11, 1272893353);
+
+        $i76 = r5[7];
+
+        $i77 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.HH($i69, $i75, $i73, $i71, $i76, 16, -155497632);
+
+        $i78 = r5[10];
+
+        $i79 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.HH($i71, $i77, $i75, $i73, $i78, 23, -1094730640);
+
+        $i80 = r5[13];
+
+        $i81 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.HH($i73, $i79, $i77, $i75, $i80, 4, 681279174);
+
+        $i82 = r5[0];
+
+        $i83 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.HH($i75, $i81, $i79, $i77, $i82, 11, -358537222);
+
+        $i84 = r5[3];
+
+        $i85 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.HH($i77, $i83, $i81, $i79, $i84, 16, -722521979);
+
+        $i86 = r5[6];
+
+        $i87 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.HH($i79, $i85, $i83, $i81, $i86, 23, 76029189);
+
+        $i88 = r5[9];
+
+        $i89 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.HH($i81, $i87, $i85, $i83, $i88, 4, -640364487);
+
+        $i90 = r5[12];
+
+        $i91 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.HH($i83, $i89, $i87, $i85, $i90, 11, -421815835);
+
+        $i92 = r5[15];
+
+        $i93 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.HH($i85, $i91, $i89, $i87, $i92, 16, 530742520);
+
+        $i94 = r5[2];
+
+        $i95 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.HH($i87, $i93, $i91, $i89, $i94, 23, -995338651);
+
+        $i96 = r5[0];
+
+        $i97 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.II($i89, $i95, $i93, $i91, $i96, 6, -198630844);
+
+        $i98 = r5[7];
+
+        $i99 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.II($i91, $i97, $i95, $i93, $i98, 10, 1126891415);
+
+        $i100 = r5[14];
+
+        $i101 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.II($i93, $i99, $i97, $i95, $i100, 15, -1416354905);
+
+        $i102 = r5[5];
+
+        $i103 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.II($i95, $i101, $i99, $i97, $i102, 21, -57434055);
+
+        $i104 = r5[12];
+
+        $i105 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.II($i97, $i103, $i101, $i99, $i104, 6, 1700485571);
+
+        $i106 = r5[3];
+
+        $i107 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.II($i99, $i105, $i103, $i101, $i106, 10, -1894986606);
+
+        $i108 = r5[10];
+
+        $i109 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.II($i101, $i107, $i105, $i103, $i108, 15, -1051523);
+
+        $i110 = r5[1];
+
+        $i111 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.II($i103, $i109, $i107, $i105, $i110, 21, -2054922799);
+
+        $i112 = r5[8];
+
+        $i113 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.II($i105, $i111, $i109, $i107, $i112, 6, 1873313359);
+
+        $i114 = r5[15];
+
+        $i115 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.II($i107, $i113, $i111, $i109, $i114, 10, -30611744);
+
+        $i116 = r5[6];
+
+        $i117 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.II($i109, $i115, $i113, $i111, $i116, 15, -1560198380);
+
+        $i118 = r5[13];
+
+        $i119 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.II($i111, $i117, $i115, $i113, $i118, 21, 1309151649);
+
+        $i120 = r5[4];
+
+        $i121 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.II($i113, $i119, $i117, $i115, $i120, 6, -145523070);
+
+        $i122 = r5[11];
+
+        $i123 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.II($i115, $i121, $i119, $i117, $i122, 10, -1120210379);
+
+        $i124 = r5[2];
+
+        $i125 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.II($i117, $i123, $i121, $i119, $i124, 15, 718787259);
+
+        $i126 = r5[9];
+
+        $i127 = staticinvoke org.owasp.webgoat.lessons.challenges.challenge7.MD5.II($i119, $i125, $i123, $i121, $i126, 21, -343485551);
+
+        $r6 = r0.state;
+
+        $i128 = $r6[0];
+
+        $i129 = $i128 + $i121;
+
+        $r6[0] = $i129;
+
+        $r7 = r0.state;
+
+        $i130 = $r7[1];
+
+        $i131 = $i130 + $i127;
+
+        $r7[1] = $i131;
+
+        $r8 = r0.state;
+
+        $i132 = $r8[2];
+
+        $i133 = $i132 + $i125;
+
+        $r8[2] = $i133;
+
+        $r9 = r0.state;
+
+        $i134 = $r9[3];
+
+        $i135 = $i134 + $i123;
+
+        $r9[3] = $i135;
+
+        return;
+    }
+
+    static void <clinit>()
+    {
+        byte[] $r0;
+
+        $r0 = newarray (byte)[64];
+
+        $r0[0] = -128;
+
+        $r0[1] = 0;
+
+        $r0[2] = 0;
+
+        $r0[3] = 0;
+
+        $r0[4] = 0;
+
+        $r0[5] = 0;
+
+        $r0[6] = 0;
+
+        $r0[7] = 0;
+
+        $r0[8] = 0;
+
+        $r0[9] = 0;
+
+        $r0[10] = 0;
+
+        $r0[11] = 0;
+
+        $r0[12] = 0;
+
+        $r0[13] = 0;
+
+        $r0[14] = 0;
+
+        $r0[15] = 0;
+
+        $r0[16] = 0;
+
+        $r0[17] = 0;
+
+        $r0[18] = 0;
+
+        $r0[19] = 0;
+
+        $r0[20] = 0;
+
+        $r0[21] = 0;
+
+        $r0[22] = 0;
+
+        $r0[23] = 0;
+
+        $r0[24] = 0;
+
+        $r0[25] = 0;
+
+        $r0[26] = 0;
+
+        $r0[27] = 0;
+
+        $r0[28] = 0;
+
+        $r0[29] = 0;
+
+        $r0[30] = 0;
+
+        $r0[31] = 0;
+
+        $r0[32] = 0;
+
+        $r0[33] = 0;
+
+        $r0[34] = 0;
+
+        $r0[35] = 0;
+
+        $r0[36] = 0;
+
+        $r0[37] = 0;
+
+        $r0[38] = 0;
+
+        $r0[39] = 0;
+
+        $r0[40] = 0;
+
+        $r0[41] = 0;
+
+        $r0[42] = 0;
+
+        $r0[43] = 0;
+
+        $r0[44] = 0;
+
+        $r0[45] = 0;
+
+        $r0[46] = 0;
+
+        $r0[47] = 0;
+
+        $r0[48] = 0;
+
+        $r0[49] = 0;
+
+        $r0[50] = 0;
+
+        $r0[51] = 0;
+
+        $r0[52] = 0;
+
+        $r0[53] = 0;
+
+        $r0[54] = 0;
+
+        $r0[55] = 0;
+
+        $r0[56] = 0;
+
+        $r0[57] = 0;
+
+        $r0[58] = 0;
+
+        $r0[59] = 0;
+
+        $r0[60] = 0;
+
+        $r0[61] = 0;
+
+        $r0[62] = 0;
+
+        $r0[63] = 0;
+
+        org.owasp.webgoat.lessons.challenges.challenge7.MD5.padding = $r0;
+
+        return;
+    }
+}

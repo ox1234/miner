@@ -1,0 +1,139 @@
+public class org.owasp.webgoat.container.LessonTemplateResolver extends org.thymeleaf.templateresolver.FileTemplateResolver
+{
+    private static final org.slf4j.Logger log;
+    private static final java.lang.String PREFIX;
+    private org.springframework.core.io.ResourceLoader resourceLoader;
+    private java.util.Map resources;
+
+    public void <init>(org.springframework.core.io.ResourceLoader)
+    {
+        org.springframework.core.io.ResourceLoader r2;
+        org.owasp.webgoat.container.LessonTemplateResolver r0;
+        java.util.Set $r3;
+        java.util.HashMap $r1;
+
+        r0 := @this;
+
+        r2 := @parameter0;
+
+        specialinvoke r0.<init>();
+
+        $r1 = new java.util.HashMap;
+
+        specialinvoke $r1.<init>();
+
+        r0.resources = $r1;
+
+        r0.resourceLoader = r2;
+
+        $r3 = staticinvoke java.util.Set.of("lesson:*");
+
+        virtualinvoke r0.setResolvablePatterns($r3);
+
+        return;
+    }
+
+    protected org.thymeleaf.templateresource.ITemplateResource computeTemplateResource(org.thymeleaf.IEngineConfiguration, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.util.Map)
+    {
+        java.lang.Throwable $r11;
+        byte[] r18, r18_1, r18_2, r18_3, r18_4;
+        org.thymeleaf.IEngineConfiguration r14;
+        org.owasp.webgoat.container.LessonTemplateResolver r3;
+        org.thymeleaf.templateresource.StringTemplateResource $r19;
+        java.nio.charset.Charset $r21;
+        java.util.Map $r4, $r10, r17;
+        int $i0;
+        java.lang.String r0, $r1, $r2, $r7, r12, r15, r16, $r20;
+        org.springframework.core.io.Resource $r8;
+        org.springframework.core.io.ResourceLoader $r6;
+        org.slf4j.Logger $r13;
+        java.lang.Object $r5;
+        java.io.InputStream $r9;
+
+        r3 := @this;
+
+        r14 := @parameter0;
+
+        r15 := @parameter1;
+
+        r12 := @parameter2;
+
+        r0 := @parameter3;
+
+        r16 := @parameter4;
+
+        r17 := @parameter5;
+
+        $r1 = "lesson:";
+
+        $i0 = virtualinvoke $r1.length();
+
+        $r2 = virtualinvoke r0.substring($i0);
+
+        $r4 = r3.resources;
+
+        $r5 = interfaceinvoke $r4.get($r2);
+
+        r18 = (byte[]) $r5;
+
+(0)     if r18 != null goto label5;
+
+     label1:
+        $r6 = r3.resourceLoader;
+
+(1)     $r7 = dynamicinvoke "makeConcatWithConstants" <java.lang.String (java.lang.String)>($r2) java.lang.invoke.StringConcatFactory.makeConcatWithConstants("classpath:/\u0001");
+
+        $r8 = interfaceinvoke $r6.getResource($r7);
+
+        $r9 = interfaceinvoke $r8.getInputStream();
+
+(2)     r18_1 = virtualinvoke $r9.readAllBytes();
+
+     label2:
+(3)     goto label4;
+
+     label3:
+        $r11 := @caughtexception;
+
+        r18_2 = Phi(r18 #1, r18_1 #2);
+
+        $r13 = org.owasp.webgoat.container.LessonTemplateResolver.log;
+
+(4)     interfaceinvoke $r13.error("Unable to find lesson HTML: {}", r12);
+
+     label4:
+        r18_3 = Phi(r18_1 #3, r18_2 #4);
+
+        $r10 = r3.resources;
+
+(5)     interfaceinvoke $r10.put($r2, r18_3);
+
+     label5:
+        r18_4 = Phi(r18 #0, r18_3 #5);
+
+        $r19 = new org.thymeleaf.templateresource.StringTemplateResource;
+
+        $r20 = new java.lang.String;
+
+        $r21 = java.nio.charset.StandardCharsets.UTF_8;
+
+        specialinvoke $r20.<init>(r18_4, $r21);
+
+        specialinvoke $r19.<init>($r20);
+
+        return $r19;
+
+        catch java.io.IOException from label1 to label2 with label3;
+    }
+
+    static void <clinit>()
+    {
+        org.slf4j.Logger $r0;
+
+        $r0 = staticinvoke org.slf4j.LoggerFactory.getLogger(class "Lorg/owasp/webgoat/container/LessonTemplateResolver;");
+
+        org.owasp.webgoat.container.LessonTemplateResolver.log = $r0;
+
+        return;
+    }
+}

@@ -1,0 +1,75 @@
+public class org.owasp.webgoat.container.service.LabelService extends java.lang.Object
+{
+    private static final org.slf4j.Logger log;
+    public static final java.lang.String URL_LABELS_MVC;
+    private final org.owasp.webgoat.container.i18n.Messages messages;
+    private final org.owasp.webgoat.container.i18n.PluginMessages pluginMessages;
+
+    public org.springframework.http.ResponseEntity fetchLabels()
+    {
+        java.util.Properties $r0, $r3, $r5;
+        org.owasp.webgoat.container.service.LabelService r1;
+        org.springframework.http.HttpStatus $r7;
+        org.owasp.webgoat.container.i18n.PluginMessages $r4;
+        org.springframework.http.ResponseEntity $r6;
+        org.owasp.webgoat.container.i18n.Messages $r2;
+
+        r1 := @this;
+
+        $r0 = new java.util.Properties;
+
+        specialinvoke $r0.<init>();
+
+        $r2 = r1.messages;
+
+        $r3 = virtualinvoke $r2.getMessages();
+
+        virtualinvoke $r0.putAll($r3);
+
+        $r4 = r1.pluginMessages;
+
+        $r5 = virtualinvoke $r4.getMessages();
+
+        virtualinvoke $r0.putAll($r5);
+
+        $r6 = new org.springframework.http.ResponseEntity;
+
+        $r7 = org.springframework.http.HttpStatus.OK;
+
+        specialinvoke $r6.<init>($r0, $r7);
+
+        return $r6;
+    }
+
+    public void <init>(org.owasp.webgoat.container.i18n.Messages, org.owasp.webgoat.container.i18n.PluginMessages)
+    {
+        org.owasp.webgoat.container.service.LabelService r0;
+        org.owasp.webgoat.container.i18n.Messages r1;
+        org.owasp.webgoat.container.i18n.PluginMessages r2;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        r2 := @parameter1;
+
+        specialinvoke r0.<init>();
+
+        r0.messages = r1;
+
+        r0.pluginMessages = r2;
+
+        return;
+    }
+
+    static void <clinit>()
+    {
+        org.slf4j.Logger $r0;
+
+        $r0 = staticinvoke org.slf4j.LoggerFactory.getLogger(class "Lorg/owasp/webgoat/container/service/LabelService;");
+
+        org.owasp.webgoat.container.service.LabelService.log = $r0;
+
+        return;
+    }
+}

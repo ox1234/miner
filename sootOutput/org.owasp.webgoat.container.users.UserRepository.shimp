@@ -1,0 +1,21 @@
+public interface  org.owasp.webgoat.container.users.UserRepository extends java.lang.Object implements org.springframework.data.jpa.repository.JpaRepository
+{
+
+    public abstract org.owasp.webgoat.container.users.WebGoatUser findByUsername(java.lang.String);
+
+    public abstract java.util.List findAll();
+
+    public abstract boolean existsByUsername(java.lang.String);
+
+    public volatile java.lang.Iterable findAll()
+    {
+        org.owasp.webgoat.container.users.UserRepository r0;
+        java.util.List $r1;
+
+        r0 := @this;
+
+        $r1 = interfaceinvoke r0.findAll();
+
+        return $r1;
+    }
+}

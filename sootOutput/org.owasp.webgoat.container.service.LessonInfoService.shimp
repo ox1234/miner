@@ -1,0 +1,43 @@
+public class org.owasp.webgoat.container.service.LessonInfoService extends java.lang.Object
+{
+    private final org.owasp.webgoat.container.session.WebSession webSession;
+
+    public org.owasp.webgoat.container.lessons.LessonInfoModel getLessonInfo()
+    {
+        org.owasp.webgoat.container.service.LessonInfoService r0;
+        org.owasp.webgoat.container.lessons.LessonInfoModel $r3;
+        java.lang.String $r4;
+        org.owasp.webgoat.container.session.WebSession $r1;
+        org.owasp.webgoat.container.lessons.Lesson $r2;
+
+        r0 := @this;
+
+        $r1 = r0.webSession;
+
+        $r2 = virtualinvoke $r1.getCurrentLesson();
+
+        $r3 = new org.owasp.webgoat.container.lessons.LessonInfoModel;
+
+        $r4 = virtualinvoke $r2.getTitle();
+
+        specialinvoke $r3.<init>($r4, 0, 0, 0);
+
+        return $r3;
+    }
+
+    public void <init>(org.owasp.webgoat.container.session.WebSession)
+    {
+        org.owasp.webgoat.container.service.LessonInfoService r0;
+        org.owasp.webgoat.container.session.WebSession r1;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        specialinvoke r0.<init>();
+
+        r0.webSession = r1;
+
+        return;
+    }
+}
