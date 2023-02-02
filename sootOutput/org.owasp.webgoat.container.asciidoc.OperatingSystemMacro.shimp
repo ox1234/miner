@@ -1,0 +1,57 @@
+public class org.owasp.webgoat.container.asciidoc.OperatingSystemMacro extends org.asciidoctor.extension.InlineMacroProcessor
+{
+
+    public void <init>(java.lang.String)
+    {
+        org.owasp.webgoat.container.asciidoc.OperatingSystemMacro r0;
+        java.lang.String r1;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        specialinvoke r0.<init>(r1);
+
+        return;
+    }
+
+    public void <init>(java.lang.String, java.util.Map)
+    {
+        org.owasp.webgoat.container.asciidoc.OperatingSystemMacro r0;
+        java.lang.String r1;
+        java.util.Map r2;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        r2 := @parameter1;
+
+        specialinvoke r0.<init>(r1, r2);
+
+        return;
+    }
+
+    public java.lang.Object process(org.asciidoctor.ast.ContentNode, java.lang.String, java.util.Map)
+    {
+        org.owasp.webgoat.container.asciidoc.OperatingSystemMacro r1;
+        org.asciidoctor.ast.ContentNode r2;
+        org.asciidoctor.ast.PhraseNode $r3;
+        java.util.Map r5;
+        java.lang.String $r0, r4;
+
+        r1 := @this;
+
+        r2 := @parameter0;
+
+        r4 := @parameter1;
+
+        r5 := @parameter2;
+
+        $r0 = staticinvoke java.lang.System.getProperty("os.name");
+
+        $r3 = virtualinvoke r1.createPhraseNode(r2, "quoted", $r0);
+
+        return $r3;
+    }
+}

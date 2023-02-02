@@ -1,0 +1,111 @@
+public class org.owasp.webgoat.lessons.csrf.CSRFLogin extends org.owasp.webgoat.container.assignments.AssignmentEndpoint
+{
+    private final org.owasp.webgoat.container.users.UserTrackerRepository userTrackerRepository;
+
+    public void <init>(org.owasp.webgoat.container.users.UserTrackerRepository)
+    {
+        org.owasp.webgoat.lessons.csrf.CSRFLogin r0;
+        org.owasp.webgoat.container.users.UserTrackerRepository r1;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        specialinvoke r0.<init>();
+
+        r0.userTrackerRepository = r1;
+
+        return;
+    }
+
+    public org.owasp.webgoat.container.assignments.AttackResult completed(javax.servlet.http.HttpServletRequest)
+    {
+        org.owasp.webgoat.lessons.csrf.CSRFLogin r3;
+        org.owasp.webgoat.container.assignments.AttackResult$AttackResultBuilder $r4, $r5, $r7, $r11, $r12;
+        java.lang.Object[] $r6;
+        javax.servlet.http.HttpServletRequest r0;
+        int $i0;
+        java.lang.String $r2, $r9, $r10;
+        boolean $z0;
+        java.security.Principal $r1;
+        org.owasp.webgoat.container.assignments.AttackResult $r8, $r13;
+
+        r3 := @this;
+
+        r0 := @parameter0;
+
+        $r1 = interfaceinvoke r0.getUserPrincipal();
+
+        $r2 = interfaceinvoke $r1.getName();
+
+        $z0 = virtualinvoke $r2.startsWith("csrf");
+
+        if $z0 == 0 goto label1;
+
+        $r9 = "csrf-";
+
+        $i0 = virtualinvoke $r9.length();
+
+        $r10 = virtualinvoke $r2.substring($i0);
+
+        virtualinvoke r3.markAssignmentSolvedWithRealUser($r10);
+
+        $r11 = virtualinvoke r3.success(r3);
+
+        $r12 = virtualinvoke $r11.feedback("csrf-login-success");
+
+        $r13 = virtualinvoke $r12.build();
+
+        return $r13;
+
+     label1:
+        $r4 = virtualinvoke r3.failed(r3);
+
+        $r5 = virtualinvoke $r4.feedback("csrf-login-failed");
+
+        $r6 = newarray (java.lang.Object)[1];
+
+        $r6[0] = $r2;
+
+        $r7 = virtualinvoke $r5.feedbackArgs($r6);
+
+        $r8 = virtualinvoke $r7.build();
+
+        return $r8;
+    }
+
+    private void markAssignmentSolvedWithRealUser(java.lang.String)
+    {
+        org.owasp.webgoat.lessons.csrf.CSRFLogin r0;
+        org.owasp.webgoat.container.users.UserTrackerRepository $r2, $r8;
+        org.owasp.webgoat.container.users.UserTracker $r3;
+        org.owasp.webgoat.container.session.WebSession $r4;
+        org.owasp.webgoat.container.lessons.Lesson $r5;
+        java.lang.Class $r6;
+        java.lang.String r1, $r7;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        $r2 = r0.userTrackerRepository;
+
+        $r3 = interfaceinvoke $r2.findByUser(r1);
+
+        $r4 = virtualinvoke r0.getWebSession();
+
+        $r5 = virtualinvoke $r4.getCurrentLesson();
+
+        $r6 = virtualinvoke r0.getClass();
+
+        $r7 = virtualinvoke $r6.getSimpleName();
+
+        virtualinvoke $r3.assignmentSolved($r5, $r7);
+
+        $r8 = r0.userTrackerRepository;
+
+        interfaceinvoke $r8.save($r3);
+
+        return;
+    }
+}

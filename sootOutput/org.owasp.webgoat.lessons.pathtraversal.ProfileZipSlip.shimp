@@ -1,0 +1,260 @@
+public class org.owasp.webgoat.lessons.pathtraversal.ProfileZipSlip extends org.owasp.webgoat.lessons.pathtraversal.ProfileUploadBase
+{
+    private static final org.slf4j.Logger log;
+
+    public void <init>(java.lang.String, org.owasp.webgoat.container.session.WebSession)
+    {
+        java.lang.String r1;
+        org.owasp.webgoat.lessons.pathtraversal.ProfileZipSlip r0;
+        org.owasp.webgoat.container.session.WebSession r2;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        r2 := @parameter1;
+
+        specialinvoke r0.<init>(r1, r2);
+
+        return;
+    }
+
+    public org.owasp.webgoat.container.assignments.AttackResult uploadFileHandler(org.springframework.web.multipart.MultipartFile)
+    {
+        org.owasp.webgoat.container.assignments.AttackResult$AttackResultBuilder $r5, $r6;
+        org.owasp.webgoat.lessons.pathtraversal.ProfileZipSlip r3;
+        org.owasp.webgoat.container.assignments.AttackResult $r4, $r7;
+        org.springframework.web.multipart.MultipartFile r0;
+        java.lang.String $r1, $r2;
+        boolean $z0;
+
+        r3 := @this;
+
+        r0 := @parameter0;
+
+        $r1 = interfaceinvoke r0.getOriginalFilename();
+
+        $r2 = virtualinvoke $r1.toLowerCase();
+
+        $z0 = virtualinvoke $r2.endsWith(".zip");
+
+        if $z0 != 0 goto label1;
+
+        $r5 = virtualinvoke r3.failed(r3);
+
+        $r6 = virtualinvoke $r5.feedback("path-traversal-zip-slip.no-zip");
+
+        $r7 = virtualinvoke $r6.build();
+
+        return $r7;
+
+     label1:
+        $r4 = virtualinvoke r3.processZipUpload(r0);
+
+        return $r4;
+    }
+
+    private org.owasp.webgoat.container.assignments.AttackResult processZipUpload(org.springframework.web.multipart.MultipartFile)
+    {
+        byte[] $r5, $r9, $r14;
+        java.util.Enumeration $r13;
+        java.nio.file.attribute.FileAttribute[] $r3;
+        java.util.zip.ZipFile $r31;
+        java.nio.file.Path $r4, $r8, $r22;
+        java.util.zip.ZipEntry r17;
+        boolean $z0;
+        org.owasp.webgoat.lessons.pathtraversal.ProfileZipSlip r0;
+        org.owasp.webgoat.container.assignments.AttackResult $r15, $r30;
+        java.lang.Throwable $r25, $r26;
+        java.nio.file.CopyOption[] $r33;
+        java.lang.Object[] $r23;
+        org.owasp.webgoat.container.assignments.AttackResult$AttackResultBuilder $r27, $r29;
+        java.nio.file.StandardCopyOption $r24;
+        java.lang.String $r2, $r7, $r20, $r28;
+        java.io.IOException $r34;
+        org.owasp.webgoat.container.session.WebSession $r1;
+        java.io.File $r10, $r12, $r19, $r32;
+        org.springframework.web.multipart.MultipartFile r6;
+        java.lang.Object $r16;
+        java.io.InputStream $r21;
+
+        r0 := @this;
+
+        r6 := @parameter0;
+
+     label1:
+        $r1 = virtualinvoke r0.getWebSession();
+
+        $r2 = virtualinvoke $r1.getUserName();
+
+        $r3 = newarray (java.nio.file.attribute.FileAttribute)[0];
+
+        $r4 = staticinvoke java.nio.file.Files.createTempDirectory($r2, $r3);
+
+        virtualinvoke r0.cleanupAndCreateDirectoryForUser();
+
+        $r5 = virtualinvoke r0.getProfilePictureAsBase64();
+
+     label2:
+        $r7 = interfaceinvoke r6.getOriginalFilename();
+
+        $r8 = interfaceinvoke $r4.resolve($r7);
+
+        $r9 = interfaceinvoke r6.getBytes();
+
+        $r10 = interfaceinvoke $r8.toFile();
+
+        staticinvoke org.springframework.util.FileCopyUtils.copy($r9, $r10);
+
+        $r31 = new java.util.zip.ZipFile;
+
+        $r12 = interfaceinvoke $r8.toFile();
+
+        specialinvoke $r31.<init>($r12);
+
+        $r13 = virtualinvoke $r31.entries();
+
+     label3:
+        $z0 = interfaceinvoke $r13.hasMoreElements();
+
+        if $z0 == 0 goto label4;
+
+        $r16 = interfaceinvoke $r13.nextElement();
+
+        r17 = (java.util.zip.ZipEntry) $r16;
+
+        $r32 = new java.io.File;
+
+        $r19 = interfaceinvoke $r4.toFile();
+
+        $r20 = virtualinvoke r17.getName();
+
+        specialinvoke $r32.<init>($r19, $r20);
+
+        $r21 = virtualinvoke $r31.getInputStream(r17);
+
+        $r22 = virtualinvoke $r32.toPath();
+
+        $r23 = newarray (java.nio.file.CopyOption)[1];
+
+        $r24 = java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+
+        $r23[0] = $r24;
+
+        $r33 = (java.nio.file.CopyOption[]) $r23;
+
+        staticinvoke java.nio.file.Files.copy($r21, $r22, $r33);
+
+        goto label3;
+
+     label4:
+        $r14 = virtualinvoke r0.getProfilePictureAsBase64();
+
+        $r15 = virtualinvoke r0.isSolved($r5, $r14);
+
+     label5:
+        return $r15;
+
+     label6:
+        $r26 := @caughtexception;
+
+        $r27 = virtualinvoke r0.failed(r0);
+
+        $r34 = (java.io.IOException) $r26;
+
+        $r28 = virtualinvoke $r34.getMessage();
+
+        $r29 = virtualinvoke $r27.output($r28);
+
+        $r30 = virtualinvoke $r29.build();
+
+     label7:
+        return $r30;
+
+     label8:
+        $r25 := @caughtexception;
+
+        throw $r25;
+
+        catch java.io.IOException from label2 to label5 with label6;
+        catch java.lang.Throwable from label1 to label5 with label8;
+        catch java.lang.Throwable from label6 to label7 with label8;
+    }
+
+    private org.owasp.webgoat.container.assignments.AttackResult isSolved(byte[], byte[])
+    {
+        byte[] r0, r1;
+        org.owasp.webgoat.container.assignments.AttackResult$AttackResultBuilder $r3, $r4, $r6, $r7;
+        org.owasp.webgoat.lessons.pathtraversal.ProfileZipSlip r2;
+        org.owasp.webgoat.container.assignments.AttackResult $r5, $r8;
+        boolean $z0;
+
+        r2 := @this;
+
+        r0 := @parameter0;
+
+        r1 := @parameter1;
+
+        $z0 = staticinvoke java.util.Arrays.equals(r0, r1);
+
+        if $z0 == 0 goto label1;
+
+        $r6 = virtualinvoke r2.failed(r2);
+
+        $r7 = virtualinvoke $r6.output("path-traversal-zip-slip.extracted");
+
+        $r8 = virtualinvoke $r7.build();
+
+        return $r8;
+
+     label1:
+        $r3 = virtualinvoke r2.success(r2);
+
+        $r4 = virtualinvoke $r3.output("path-traversal-zip-slip.extracted");
+
+        $r5 = virtualinvoke $r4.build();
+
+        return $r5;
+    }
+
+    public org.springframework.http.ResponseEntity getProfilePicture()
+    {
+        org.springframework.http.ResponseEntity $r1;
+        org.owasp.webgoat.lessons.pathtraversal.ProfileZipSlip r0;
+
+        r0 := @this;
+
+        $r1 = specialinvoke r0.getProfilePicture();
+
+        return $r1;
+    }
+
+    public org.springframework.http.ResponseEntity getProfilePicture(java.lang.String)
+    {
+        org.owasp.webgoat.lessons.pathtraversal.ProfileZipSlip r2;
+        org.springframework.http.ResponseEntity$HeadersBuilder $r0;
+        org.springframework.http.ResponseEntity $r1;
+        java.lang.String r3;
+
+        r2 := @this;
+
+        r3 := @parameter0;
+
+        $r0 = staticinvoke org.springframework.http.ResponseEntity.notFound();
+
+        $r1 = interfaceinvoke $r0.build();
+
+        return $r1;
+    }
+
+    static void <clinit>()
+    {
+        org.slf4j.Logger $r0;
+
+        $r0 = staticinvoke org.slf4j.LoggerFactory.getLogger(class "Lorg/owasp/webgoat/lessons/pathtraversal/ProfileZipSlip;");
+
+        org.owasp.webgoat.lessons.pathtraversal.ProfileZipSlip.log = $r0;
+
+        return;
+    }
+}

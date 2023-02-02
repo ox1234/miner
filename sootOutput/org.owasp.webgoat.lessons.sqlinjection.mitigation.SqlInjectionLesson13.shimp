@@ -1,0 +1,167 @@
+public class org.owasp.webgoat.lessons.sqlinjection.mitigation.SqlInjectionLesson13 extends org.owasp.webgoat.container.assignments.AssignmentEndpoint
+{
+    private static final org.slf4j.Logger log;
+    private final org.owasp.webgoat.container.LessonDataSource dataSource;
+
+    public void <init>(org.owasp.webgoat.container.LessonDataSource)
+    {
+        org.owasp.webgoat.container.LessonDataSource r1;
+        org.owasp.webgoat.lessons.sqlinjection.mitigation.SqlInjectionLesson13 r0;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        specialinvoke r0.<init>();
+
+        r0.dataSource = r1;
+
+        return;
+    }
+
+    public org.owasp.webgoat.container.assignments.AttackResult completed(java.lang.String)
+    {
+        java.lang.Throwable $r10, $r14, $r15, $r16, $r17;
+        org.owasp.webgoat.container.LessonDataSource $r1;
+        java.sql.Connection $r2;
+        org.owasp.webgoat.container.assignments.AttackResult$AttackResultBuilder $r6, $r8, $r12;
+        org.owasp.webgoat.lessons.sqlinjection.mitigation.SqlInjectionLesson13 r0;
+        java.sql.ResultSet $r5;
+        java.lang.String r4;
+        boolean $z0;
+        org.slf4j.Logger $r11;
+        java.sql.PreparedStatement $r3;
+        org.owasp.webgoat.container.assignments.AttackResult $r7, $r9, $r13;
+
+        r0 := @this;
+
+        r4 := @parameter0;
+
+     label01:
+        $r1 = r0.dataSource;
+
+        $r2 = virtualinvoke $r1.getConnection();
+
+     label02:
+        $r3 = interfaceinvoke $r2.prepareStatement("select ip from servers where ip = ? and hostname = ?");
+
+     label03:
+        interfaceinvoke $r3.setString(1, r4);
+
+        interfaceinvoke $r3.setString(2, "webgoat-prd");
+
+        $r5 = interfaceinvoke $r3.executeQuery();
+
+        $z0 = interfaceinvoke $r5.next();
+
+        if $z0 == 0 goto label07;
+
+        $r8 = virtualinvoke r0.success(r0);
+
+        $r9 = virtualinvoke $r8.build();
+
+     label04:
+        if $r3 == null goto label05;
+
+        interfaceinvoke $r3.close();
+
+     label05:
+        if $r2 == null goto label06;
+
+        interfaceinvoke $r2.close();
+
+     label06:
+        return $r9;
+
+     label07:
+        $r6 = virtualinvoke r0.failed(r0);
+
+        $r7 = virtualinvoke $r6.build();
+
+     label08:
+        if $r3 == null goto label09;
+
+        interfaceinvoke $r3.close();
+
+     label09:
+        if $r2 == null goto label10;
+
+        interfaceinvoke $r2.close();
+
+     label10:
+        return $r7;
+
+     label11:
+        $r17 := @caughtexception;
+
+        if $r3 == null goto label15;
+
+     label12:
+        interfaceinvoke $r3.close();
+
+     label13:
+        goto label15;
+
+     label14:
+        $r16 := @caughtexception;
+
+        virtualinvoke $r17.addSuppressed($r16);
+
+     label15:
+        throw $r17;
+
+     label16:
+        $r15 := @caughtexception;
+
+        if $r2 == null goto label20;
+
+     label17:
+        interfaceinvoke $r2.close();
+
+     label18:
+        goto label20;
+
+     label19:
+        $r14 := @caughtexception;
+
+        virtualinvoke $r15.addSuppressed($r14);
+
+     label20:
+        throw $r15;
+
+     label21:
+        $r10 := @caughtexception;
+
+        $r11 = org.owasp.webgoat.lessons.sqlinjection.mitigation.SqlInjectionLesson13.log;
+
+        interfaceinvoke $r11.error("Failed", $r10);
+
+        $r12 = virtualinvoke r0.failed(r0);
+
+        $r13 = virtualinvoke $r12.build();
+
+        return $r13;
+
+        catch java.lang.Throwable from label03 to label04 with label11;
+        catch java.lang.Throwable from label07 to label08 with label11;
+        catch java.lang.Throwable from label12 to label13 with label14;
+        catch java.lang.Throwable from label02 to label05 with label16;
+        catch java.lang.Throwable from label07 to label09 with label16;
+        catch java.lang.Throwable from label11 to label16 with label16;
+        catch java.lang.Throwable from label17 to label18 with label19;
+        catch java.sql.SQLException from label01 to label06 with label21;
+        catch java.sql.SQLException from label07 to label10 with label21;
+        catch java.sql.SQLException from label11 to label21 with label21;
+    }
+
+    static void <clinit>()
+    {
+        org.slf4j.Logger $r0;
+
+        $r0 = staticinvoke org.slf4j.LoggerFactory.getLogger(class "Lorg/owasp/webgoat/lessons/sqlinjection/mitigation/SqlInjectionLesson13;");
+
+        org.owasp.webgoat.lessons.sqlinjection.mitigation.SqlInjectionLesson13.log = $r0;
+
+        return;
+    }
+}

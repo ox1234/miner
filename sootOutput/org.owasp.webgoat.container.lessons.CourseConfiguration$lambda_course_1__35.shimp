@@ -1,0 +1,54 @@
+public final class org.owasp.webgoat.container.lessons.CourseConfiguration$lambda_course_1__35 extends java.lang.Object implements java.util.function.Consumer
+{
+    org.owasp.webgoat.container.lessons.CourseConfiguration cap0;
+
+    public static java.util.function.Consumer bootstrap$(org.owasp.webgoat.container.lessons.CourseConfiguration)
+    {
+        org.owasp.webgoat.container.lessons.CourseConfiguration $r0;
+        org.owasp.webgoat.container.lessons.CourseConfiguration$lambda_course_1__35 $r1;
+
+        $r0 := @parameter0;
+
+        $r1 = new org.owasp.webgoat.container.lessons.CourseConfiguration$lambda_course_1__35;
+
+        specialinvoke $r1.<init>($r0);
+
+        return $r1;
+    }
+
+    public void <init>(org.owasp.webgoat.container.lessons.CourseConfiguration)
+    {
+        org.owasp.webgoat.container.lessons.CourseConfiguration $r1;
+        org.owasp.webgoat.container.lessons.CourseConfiguration$lambda_course_1__35 $r0;
+
+        $r0 := @this;
+
+        $r1 := @parameter0;
+
+        specialinvoke $r0.<init>();
+
+        $r0.cap0 = $r1;
+
+        return;
+    }
+
+    public void accept(java.lang.Object)
+    {
+        org.owasp.webgoat.container.lessons.CourseConfiguration $r3;
+        org.owasp.webgoat.container.lessons.CourseConfiguration$lambda_course_1__35 $r0;
+        java.lang.Object $r1;
+        org.owasp.webgoat.container.lessons.Lesson $r2;
+
+        $r0 := @this;
+
+        $r1 := @parameter0;
+
+        $r2 = (org.owasp.webgoat.container.lessons.Lesson) $r1;
+
+        $r3 = $r0.cap0;
+
+        virtualinvoke $r3.lambda$course$1($r2);
+
+        return;
+    }
+}

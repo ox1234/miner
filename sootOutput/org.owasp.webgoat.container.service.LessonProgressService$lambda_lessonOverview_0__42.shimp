@@ -1,0 +1,43 @@
+public final class org.owasp.webgoat.container.service.LessonProgressService$lambda_lessonOverview_0__42 extends java.lang.Object implements java.util.function.Function
+{
+
+    public static java.util.function.Function bootstrap$()
+    {
+        org.owasp.webgoat.container.service.LessonProgressService$lambda_lessonOverview_0__42 $r0;
+
+        $r0 = new org.owasp.webgoat.container.service.LessonProgressService$lambda_lessonOverview_0__42;
+
+        specialinvoke $r0.<init>();
+
+        return $r0;
+    }
+
+    public void <init>()
+    {
+        org.owasp.webgoat.container.service.LessonProgressService$lambda_lessonOverview_0__42 $r0;
+
+        $r0 := @this;
+
+        specialinvoke $r0.<init>();
+
+        return;
+    }
+
+    public java.lang.Object apply(java.lang.Object)
+    {
+        org.owasp.webgoat.container.service.LessonProgressService$LessonOverview $r3;
+        java.util.Map$Entry $r2;
+        org.owasp.webgoat.container.service.LessonProgressService$lambda_lessonOverview_0__42 $r0;
+        java.lang.Object $r1;
+
+        $r0 := @this;
+
+        $r1 := @parameter0;
+
+        $r2 = (java.util.Map$Entry) $r1;
+
+        $r3 = staticinvoke org.owasp.webgoat.container.service.LessonProgressService.lambda$lessonOverview$0($r2);
+
+        return $r3;
+    }
+}

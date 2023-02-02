@@ -1,0 +1,120 @@
+public class org.owasp.webgoat.lessons.hijacksession.HijackSessionAssignment extends org.owasp.webgoat.container.assignments.AssignmentEndpoint
+{
+    private static final java.lang.String COOKIE_NAME;
+    org.owasp.webgoat.lessons.hijacksession.cas.HijackSessionAuthenticationProvider provider;
+
+    public void <init>()
+    {
+        org.owasp.webgoat.lessons.hijacksession.HijackSessionAssignment r0;
+
+        r0 := @this;
+
+        specialinvoke r0.<init>();
+
+        return;
+    }
+
+    public org.owasp.webgoat.container.assignments.AttackResult login(java.lang.String, java.lang.String, java.lang.String, javax.servlet.http.HttpServletResponse)
+    {
+        org.owasp.webgoat.container.assignments.AttackResult$AttackResultBuilder $r6, $r8;
+        org.owasp.webgoat.lessons.hijacksession.cas.Authentication$AuthenticationBuilder $r3, $r4, $r11, $r13, $r15;
+        org.owasp.webgoat.lessons.hijacksession.cas.Authentication $r5, $r16, $r17, r20, r20_1, r20_2;
+        java.lang.String r0, r12, r14, $r19;
+        boolean $z0, $z1;
+        javax.servlet.http.HttpServletResponse r18;
+        org.owasp.webgoat.lessons.hijacksession.cas.HijackSessionAuthenticationProvider $r2, $r10;
+        org.owasp.webgoat.lessons.hijacksession.HijackSessionAssignment r1;
+        org.owasp.webgoat.container.assignments.AttackResult $r7, $r9;
+
+        r1 := @this;
+
+        r12 := @parameter0;
+
+        r14 := @parameter1;
+
+        r0 := @parameter2;
+
+        r18 := @parameter3;
+
+        $z0 = staticinvoke org.apache.commons.lang3.StringUtils.isEmpty(r0);
+
+        if $z0 == 0 goto label1;
+
+        $r10 = r1.provider;
+
+        $r11 = staticinvoke org.owasp.webgoat.lessons.hijacksession.cas.Authentication.builder();
+
+        $r13 = virtualinvoke $r11.name(r12);
+
+        $r15 = virtualinvoke $r13.credentials(r14);
+
+        $r16 = virtualinvoke $r15.build();
+
+        $r17 = virtualinvoke $r10.authenticate($r16);
+
+        r20 = $r17;
+
+        $r19 = virtualinvoke $r17.getId();
+
+        virtualinvoke r1.setCookie(r18, $r19);
+
+(0)     goto label2;
+
+     label1:
+        $r2 = r1.provider;
+
+        $r3 = staticinvoke org.owasp.webgoat.lessons.hijacksession.cas.Authentication.builder();
+
+        $r4 = virtualinvoke $r3.id(r0);
+
+        $r5 = virtualinvoke $r4.build();
+
+(1)     r20_1 = virtualinvoke $r2.authenticate($r5);
+
+     label2:
+        r20_2 = Phi(r20 #0, r20_1 #1);
+
+        $z1 = virtualinvoke r20_2.isAuthenticated();
+
+        if $z1 == 0 goto label3;
+
+        $r8 = virtualinvoke r1.success(r1);
+
+        $r9 = virtualinvoke $r8.build();
+
+        return $r9;
+
+     label3:
+        $r6 = virtualinvoke r1.failed(r1);
+
+        $r7 = virtualinvoke $r6.build();
+
+        return $r7;
+    }
+
+    private void setCookie(javax.servlet.http.HttpServletResponse, java.lang.String)
+    {
+        org.owasp.webgoat.lessons.hijacksession.HijackSessionAssignment r3;
+        javax.servlet.http.HttpServletResponse r2;
+        java.lang.String r1;
+        javax.servlet.http.Cookie $r0;
+
+        r3 := @this;
+
+        r2 := @parameter0;
+
+        r1 := @parameter1;
+
+        $r0 = new javax.servlet.http.Cookie;
+
+        specialinvoke $r0.<init>("hijack_cookie", r1);
+
+        virtualinvoke $r0.setPath("/WebGoat");
+
+        virtualinvoke $r0.setSecure(1);
+
+        interfaceinvoke r2.addCookie($r0);
+
+        return;
+    }
+}

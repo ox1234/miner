@@ -1,0 +1,195 @@
+public class org.owasp.webgoat.webwolf.jwt.JWTToken$JWTTokenBuilder extends java.lang.Object
+{
+    private java.lang.String encoded;
+    private java.lang.String secretKey;
+    private java.lang.String header;
+    private boolean validHeader;
+    private boolean validPayload;
+    private boolean validToken;
+    private java.lang.String payload;
+    private boolean signatureValid;
+
+    void <init>()
+    {
+        org.owasp.webgoat.webwolf.jwt.JWTToken$JWTTokenBuilder r0;
+
+        r0 := @this;
+
+        specialinvoke r0.<init>();
+
+        return;
+    }
+
+    public org.owasp.webgoat.webwolf.jwt.JWTToken$JWTTokenBuilder encoded(java.lang.String)
+    {
+        java.lang.String r1;
+        org.owasp.webgoat.webwolf.jwt.JWTToken$JWTTokenBuilder r0;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        r0.encoded = r1;
+
+        return r0;
+    }
+
+    public org.owasp.webgoat.webwolf.jwt.JWTToken$JWTTokenBuilder secretKey(java.lang.String)
+    {
+        java.lang.String r1;
+        org.owasp.webgoat.webwolf.jwt.JWTToken$JWTTokenBuilder r0;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        r0.secretKey = r1;
+
+        return r0;
+    }
+
+    public org.owasp.webgoat.webwolf.jwt.JWTToken$JWTTokenBuilder header(java.lang.String)
+    {
+        java.lang.String r1;
+        org.owasp.webgoat.webwolf.jwt.JWTToken$JWTTokenBuilder r0;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        r0.header = r1;
+
+        return r0;
+    }
+
+    public org.owasp.webgoat.webwolf.jwt.JWTToken$JWTTokenBuilder validHeader(boolean)
+    {
+        org.owasp.webgoat.webwolf.jwt.JWTToken$JWTTokenBuilder r0;
+        boolean z0;
+
+        r0 := @this;
+
+        z0 := @parameter0;
+
+        r0.validHeader = z0;
+
+        return r0;
+    }
+
+    public org.owasp.webgoat.webwolf.jwt.JWTToken$JWTTokenBuilder validPayload(boolean)
+    {
+        org.owasp.webgoat.webwolf.jwt.JWTToken$JWTTokenBuilder r0;
+        boolean z0;
+
+        r0 := @this;
+
+        z0 := @parameter0;
+
+        r0.validPayload = z0;
+
+        return r0;
+    }
+
+    public org.owasp.webgoat.webwolf.jwt.JWTToken$JWTTokenBuilder validToken(boolean)
+    {
+        org.owasp.webgoat.webwolf.jwt.JWTToken$JWTTokenBuilder r0;
+        boolean z0;
+
+        r0 := @this;
+
+        z0 := @parameter0;
+
+        r0.validToken = z0;
+
+        return r0;
+    }
+
+    public org.owasp.webgoat.webwolf.jwt.JWTToken$JWTTokenBuilder payload(java.lang.String)
+    {
+        java.lang.String r1;
+        org.owasp.webgoat.webwolf.jwt.JWTToken$JWTTokenBuilder r0;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        r0.payload = r1;
+
+        return r0;
+    }
+
+    public org.owasp.webgoat.webwolf.jwt.JWTToken$JWTTokenBuilder signatureValid(boolean)
+    {
+        org.owasp.webgoat.webwolf.jwt.JWTToken$JWTTokenBuilder r0;
+        boolean z0;
+
+        r0 := @this;
+
+        z0 := @parameter0;
+
+        r0.signatureValid = z0;
+
+        return r0;
+    }
+
+    public org.owasp.webgoat.webwolf.jwt.JWTToken build()
+    {
+        org.owasp.webgoat.webwolf.jwt.JWTToken$JWTTokenBuilder r1;
+        java.lang.String $r2, $r3, $r4, $r5;
+        org.owasp.webgoat.webwolf.jwt.JWTToken $r0;
+        boolean $z0, $z1, $z2, $z3;
+
+        r1 := @this;
+
+        $r0 = new org.owasp.webgoat.webwolf.jwt.JWTToken;
+
+        $r5 = r1.encoded;
+
+        $r4 = r1.secretKey;
+
+        $r3 = r1.header;
+
+        $z3 = r1.validHeader;
+
+        $z2 = r1.validPayload;
+
+        $z1 = r1.validToken;
+
+        $r2 = r1.payload;
+
+        $z0 = r1.signatureValid;
+
+        specialinvoke $r0.<init>($r5, $r4, $r3, $z3, $z2, $z1, $r2, $z0);
+
+        return $r0;
+    }
+
+    public java.lang.String toString()
+    {
+        org.owasp.webgoat.webwolf.jwt.JWTToken$JWTTokenBuilder r0;
+        java.lang.String $r1, $r2, $r3, $r4, $r5;
+        boolean $z0, $z1, $z2, $z3;
+
+        r0 := @this;
+
+        $r4 = r0.encoded;
+
+        $r3 = r0.secretKey;
+
+        $r2 = r0.header;
+
+        $z3 = r0.validHeader;
+
+        $z2 = r0.validPayload;
+
+        $z1 = r0.validToken;
+
+        $r1 = r0.payload;
+
+        $z0 = r0.signatureValid;
+
+        $r5 = dynamicinvoke "makeConcatWithConstants" <java.lang.String (java.lang.String,java.lang.String,java.lang.String,boolean,boolean,boolean,java.lang.String,boolean)>($r4, $r3, $r2, $z3, $z2, $z1, $r1, $z0) java.lang.invoke.StringConcatFactory.makeConcatWithConstants("JWTToken.JWTTokenBuilder(encoded=\u0001, secretKey=\u0001, header=\u0001, validHeader=\u0001, validPayload=\u0001, validToken=\u0001, payload=\u0001, signatureValid=\u0001)");
+
+        return $r5;
+    }
+}

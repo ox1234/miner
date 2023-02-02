@@ -1,0 +1,105 @@
+public final enum class org.owasp.webgoat.container.lessons.LessonMenuItemType extends java.lang.Enum
+{
+    public static final enum org.owasp.webgoat.container.lessons.LessonMenuItemType CATEGORY;
+    public static final enum org.owasp.webgoat.container.lessons.LessonMenuItemType LESSON;
+    public static final enum org.owasp.webgoat.container.lessons.LessonMenuItemType STAGE;
+    private static final org.owasp.webgoat.container.lessons.LessonMenuItemType[] $VALUES;
+
+    public static org.owasp.webgoat.container.lessons.LessonMenuItemType[] values()
+    {
+        java.lang.Object $r1;
+        org.owasp.webgoat.container.lessons.LessonMenuItemType[] $r0, $r2;
+
+        $r0 = org.owasp.webgoat.container.lessons.LessonMenuItemType.$VALUES;
+
+        $r1 = virtualinvoke $r0.clone();
+
+        $r2 = (org.owasp.webgoat.container.lessons.LessonMenuItemType[]) $r1;
+
+        return $r2;
+    }
+
+    public static org.owasp.webgoat.container.lessons.LessonMenuItemType valueOf(java.lang.String)
+    {
+        org.owasp.webgoat.container.lessons.LessonMenuItemType $r2;
+        java.lang.String r0;
+        java.lang.Enum $r1;
+
+        r0 := @parameter0;
+
+        $r1 = staticinvoke java.lang.Enum.valueOf(class "Lorg/owasp/webgoat/container/lessons/LessonMenuItemType;", r0);
+
+        $r2 = (org.owasp.webgoat.container.lessons.LessonMenuItemType) $r1;
+
+        return $r2;
+    }
+
+    private void <init>(java.lang.String, int)
+    {
+        org.owasp.webgoat.container.lessons.LessonMenuItemType r0;
+        int i0;
+        java.lang.String r1;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        i0 := @parameter1;
+
+        specialinvoke r0.<init>(r1, i0);
+
+        return;
+    }
+
+    private static org.owasp.webgoat.container.lessons.LessonMenuItemType[] $values()
+    {
+        org.owasp.webgoat.container.lessons.LessonMenuItemType $r1, $r2, $r3;
+        org.owasp.webgoat.container.lessons.LessonMenuItemType[] $r0;
+
+        $r0 = newarray (org.owasp.webgoat.container.lessons.LessonMenuItemType)[3];
+
+        $r1 = org.owasp.webgoat.container.lessons.LessonMenuItemType.CATEGORY;
+
+        $r0[0] = $r1;
+
+        $r2 = org.owasp.webgoat.container.lessons.LessonMenuItemType.LESSON;
+
+        $r0[1] = $r2;
+
+        $r3 = org.owasp.webgoat.container.lessons.LessonMenuItemType.STAGE;
+
+        $r0[2] = $r3;
+
+        return $r0;
+    }
+
+    static void <clinit>()
+    {
+        org.owasp.webgoat.container.lessons.LessonMenuItemType $r0, $r1, $r2;
+        org.owasp.webgoat.container.lessons.LessonMenuItemType[] $r3;
+
+        $r0 = new org.owasp.webgoat.container.lessons.LessonMenuItemType;
+
+        specialinvoke $r0.<init>("CATEGORY", 0);
+
+        org.owasp.webgoat.container.lessons.LessonMenuItemType.CATEGORY = $r0;
+
+        $r1 = new org.owasp.webgoat.container.lessons.LessonMenuItemType;
+
+        specialinvoke $r1.<init>("LESSON", 1);
+
+        org.owasp.webgoat.container.lessons.LessonMenuItemType.LESSON = $r1;
+
+        $r2 = new org.owasp.webgoat.container.lessons.LessonMenuItemType;
+
+        specialinvoke $r2.<init>("STAGE", 2);
+
+        org.owasp.webgoat.container.lessons.LessonMenuItemType.STAGE = $r2;
+
+        $r3 = staticinvoke org.owasp.webgoat.container.lessons.LessonMenuItemType.$values();
+
+        org.owasp.webgoat.container.lessons.LessonMenuItemType.$VALUES = $r3;
+
+        return;
+    }
+}

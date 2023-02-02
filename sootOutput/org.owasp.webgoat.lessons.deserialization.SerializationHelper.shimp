@@ -1,0 +1,188 @@
+public class org.owasp.webgoat.lessons.deserialization.SerializationHelper extends java.lang.Object
+{
+    private static final char[] hexArray;
+
+    public void <init>()
+    {
+        org.owasp.webgoat.lessons.deserialization.SerializationHelper r0;
+
+        r0 := @this;
+
+        specialinvoke r0.<init>();
+
+        return;
+    }
+
+    public static java.lang.Object fromString(java.lang.String) throws java.io.IOException, java.lang.ClassNotFoundException
+    {
+        byte[] $r2;
+        java.util.Base64$Decoder $r0;
+        java.io.ByteArrayInputStream $r4;
+        java.io.ObjectInputStream $r3;
+        java.lang.Object $r5;
+        java.lang.String r1;
+
+        r1 := @parameter0;
+
+        $r0 = staticinvoke java.util.Base64.getDecoder();
+
+        $r2 = virtualinvoke $r0.decode(r1);
+
+        $r3 = new java.io.ObjectInputStream;
+
+        $r4 = new java.io.ByteArrayInputStream;
+
+        specialinvoke $r4.<init>($r2);
+
+        specialinvoke $r3.<init>($r4);
+
+        $r5 = virtualinvoke $r3.readObject();
+
+        virtualinvoke $r3.close();
+
+        return $r5;
+    }
+
+    public static java.lang.String toString(java.io.Serializable) throws java.io.IOException
+    {
+        byte[] $r4;
+        java.io.ByteArrayOutputStream $r0;
+        java.io.ObjectOutputStream $r1;
+        java.util.Base64$Encoder $r3;
+        java.lang.String $r5;
+        java.io.Serializable r2;
+
+        r2 := @parameter0;
+
+        $r0 = new java.io.ByteArrayOutputStream;
+
+        specialinvoke $r0.<init>();
+
+        $r1 = new java.io.ObjectOutputStream;
+
+        specialinvoke $r1.<init>($r0);
+
+        virtualinvoke $r1.writeObject(r2);
+
+        virtualinvoke $r1.close();
+
+        $r3 = staticinvoke java.util.Base64.getEncoder();
+
+        $r4 = virtualinvoke $r0.toByteArray();
+
+        $r5 = virtualinvoke $r3.encodeToString($r4);
+
+        return $r5;
+    }
+
+    public static java.lang.String show() throws java.io.IOException
+    {
+        byte[] $r2;
+        java.io.ByteArrayOutputStream $r0;
+        java.io.DataOutputStream $r1;
+        java.lang.String $r3;
+
+        $r0 = new java.io.ByteArrayOutputStream;
+
+        specialinvoke $r0.<init>();
+
+        $r1 = new java.io.DataOutputStream;
+
+        specialinvoke $r1.<init>($r0);
+
+        virtualinvoke $r1.writeLong(-8699352886133051976L);
+
+        virtualinvoke $r1.close();
+
+        $r2 = virtualinvoke $r0.toByteArray();
+
+        $r3 = staticinvoke org.owasp.webgoat.lessons.deserialization.SerializationHelper.bytesToHex($r2);
+
+        return $r3;
+    }
+
+    public static java.lang.String bytesToHex(byte[])
+    {
+        byte[] r0;
+        short s4, $s9, $s13;
+        byte $b3;
+        int $i0, $i1, $i2, $i5, $i7, $i8, $i11, i12, $i14, $i15, i12_1, i12_2;
+        java.lang.String $r5;
+        char $c6, $c10;
+        char[] r1, $r3, $r4;
+
+        r0 := @parameter0;
+
+        $i0 = lengthof r0;
+
+        $i1 = $i0 * 2;
+
+        r1 = newarray (char)[$i1];
+
+(0)     i12 = 0;
+
+     label1:
+        i12_1 = Phi(i12 #0, i12_2 #1);
+
+        $i2 = lengthof r0;
+
+        if i12_1 >= $i2 goto label2;
+
+        $b3 = r0[i12_1];
+
+        $s13 = (short) $b3;
+
+        s4 = $s13 & 255;
+
+        $i7 = i12_1 * 2;
+
+        $r3 = org.owasp.webgoat.lessons.deserialization.SerializationHelper.hexArray;
+
+        $i14 = (int) s4;
+
+        $i5 = $i14 >>> 4;
+
+        $c6 = $r3[$i5];
+
+        r1[$i7] = $c6;
+
+        $i8 = i12_1 * 2;
+
+        $i11 = $i8 + 1;
+
+        $r4 = org.owasp.webgoat.lessons.deserialization.SerializationHelper.hexArray;
+
+        $s9 = s4 & 15;
+
+        $i15 = (int) $s9;
+
+        $c10 = $r4[$i15];
+
+        r1[$i11] = $c10;
+
+        i12_2 = i12_1 + 1;
+
+(1)     goto label1;
+
+     label2:
+        $r5 = new java.lang.String;
+
+        specialinvoke $r5.<init>(r1);
+
+        return $r5;
+    }
+
+    static void <clinit>()
+    {
+        char[] $r1;
+        java.lang.String $r0;
+
+        $r0 = "0123456789ABCDEF";
+
+        $r1 = virtualinvoke $r0.toCharArray();
+
+        org.owasp.webgoat.lessons.deserialization.SerializationHelper.hexArray = $r1;
+
+        return;
+    }
+}

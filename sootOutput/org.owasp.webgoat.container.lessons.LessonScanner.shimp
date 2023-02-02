@@ -1,0 +1,176 @@
+public class org.owasp.webgoat.container.lessons.LessonScanner extends java.lang.Object
+{
+    private static final org.slf4j.Logger log;
+    private static final java.util.regex.Pattern lessonPattern;
+    private final java.util.Set lessons;
+
+    public void <init>(org.springframework.core.io.support.ResourcePatternResolver)
+    {
+        java.lang.Throwable $r14;
+        java.net.URL $r8;
+        java.lang.Integer $r6;
+        java.util.HashSet $r1;
+        java.util.regex.Matcher $r11;
+        int i0, $i1, i2, i2_1, i2_2, i2_3, i2_4;
+        java.lang.String $r10, $r13;
+        org.springframework.core.io.Resource r7;
+        boolean $z0;
+        org.slf4j.Logger $r5, $r15;
+        java.util.Set $r4, $r12;
+        org.springframework.core.io.Resource[] $r3;
+        org.owasp.webgoat.container.lessons.LessonScanner r0;
+        org.springframework.core.io.support.ResourcePatternResolver r2;
+        java.util.regex.Pattern $r9;
+
+        r0 := @this;
+
+        r2 := @parameter0;
+
+        specialinvoke r0.<init>();
+
+        $r1 = new java.util.HashSet;
+
+        specialinvoke $r1.<init>();
+
+(0)     r0.lessons = $r1;
+
+     label1:
+        $r3 = interfaceinvoke r2.getResources("classpath:/lessons/*/*");
+
+        i0 = lengthof $r3;
+
+(1)     i2 = 0;
+
+     label2:
+        i2_1 = Phi(i2 #1, i2_2 #3);
+
+        if i2_1 >= i0 goto label4;
+
+(2)     r7 = $r3[i2_1];
+
+        $r8 = interfaceinvoke r7.getURL();
+
+        $r9 = org.owasp.webgoat.container.lessons.LessonScanner.lessonPattern;
+
+        $r10 = virtualinvoke $r8.toString();
+
+        $r11 = virtualinvoke $r9.matcher($r10);
+
+        $z0 = virtualinvoke $r11.matches();
+
+        if $z0 == 0 goto label3;
+
+        $r12 = r0.lessons;
+
+        $r13 = virtualinvoke $r11.group(1);
+
+        interfaceinvoke $r12.add($r13);
+
+     label3:
+        i2_2 = i2_1 + 1;
+
+(3)     goto label2;
+
+     label4:
+        $r5 = org.owasp.webgoat.container.lessons.LessonScanner.log;
+
+(4)     $r4 = r0.lessons;
+
+        $i1 = interfaceinvoke $r4.size();
+
+        $r6 = staticinvoke java.lang.Integer.valueOf($i1);
+
+        interfaceinvoke $r5.debug("Found {} lessons", $r6);
+
+     label5:
+(5)     goto label7;
+
+     label6:
+        $r14 := @caughtexception;
+
+        i2_3 = Phi(i2 #0, i2_1 #2, i2_1 #4);
+
+        $r15 = org.owasp.webgoat.container.lessons.LessonScanner.log;
+
+(6)     interfaceinvoke $r15.warn("No lessons found...");
+
+     label7:
+        i2_4 = Phi(i2_1 #5, i2_3 #6);
+
+        return;
+
+        catch java.io.IOException from label1 to label5 with label6;
+    }
+
+    public java.util.List applyPattern(java.lang.String)
+    {
+        java.util.List $r6;
+        java.util.stream.Stream $r2, $r5;
+        org.owasp.webgoat.container.lessons.LessonScanner r0;
+        java.util.Set $r1;
+        java.lang.String r3;
+        java.util.function.Function $r4;
+
+        r0 := @this;
+
+        r3 := @parameter0;
+
+        $r1 = r0.lessons;
+
+        $r2 = interfaceinvoke $r1.stream();
+
+        $r4 = staticinvoke org.owasp.webgoat.container.lessons.LessonScanner$lambda_applyPattern_0__38.bootstrap$(r3);
+
+        $r5 = interfaceinvoke $r2.map($r4);
+
+        $r6 = interfaceinvoke $r5.toList();
+
+        return $r6;
+    }
+
+    public java.util.Set getLessons()
+    {
+        org.owasp.webgoat.container.lessons.LessonScanner r0;
+        java.util.Set $r1;
+
+        r0 := @this;
+
+        $r1 = r0.lessons;
+
+        return $r1;
+    }
+
+    public static java.lang.String lambda$applyPattern$0(java.lang.String, java.lang.String)
+    {
+        java.lang.Object[] $r1;
+        java.lang.String r0, r2, $r3;
+
+        r0 := @parameter0;
+
+        r2 := @parameter1;
+
+        $r1 = newarray (java.lang.Object)[1];
+
+        $r1[0] = r2;
+
+        $r3 = staticinvoke java.lang.String.format(r0, $r1);
+
+        return $r3;
+    }
+
+    static void <clinit>()
+    {
+        org.slf4j.Logger $r0;
+        java.util.regex.Pattern $r1;
+
+        $r0 = staticinvoke org.slf4j.LoggerFactory.getLogger(class "Lorg/owasp/webgoat/container/lessons/LessonScanner;");
+
+        org.owasp.webgoat.container.lessons.LessonScanner.log = $r0;
+
+        $r1 = staticinvoke java.util.regex.Pattern.compile("^.*/lessons/([^/]*)/.*$");
+
+        org.owasp.webgoat.container.lessons.LessonScanner.lessonPattern = $r1;
+
+        return;
+    }
+}

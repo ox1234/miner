@@ -1,0 +1,134 @@
+public class org.owasp.webgoat.container.service.LabelDebugService extends java.lang.Object
+{
+    private static final org.slf4j.Logger log;
+    private static final java.lang.String URL_DEBUG_LABELS_MVC;
+    private static final java.lang.String KEY_ENABLED;
+    private static final java.lang.String KEY_SUCCESS;
+    private org.owasp.webgoat.container.session.LabelDebugger labelDebugger;
+
+    public org.springframework.http.ResponseEntity checkDebuggingStatus()
+    {
+        org.slf4j.Logger $r2;
+        org.owasp.webgoat.container.service.LabelDebugService r0;
+        org.springframework.http.HttpStatus $r8;
+        java.util.Map $r6;
+        java.lang.Boolean $r3, $r5;
+        org.springframework.http.ResponseEntity $r7;
+        org.owasp.webgoat.container.session.LabelDebugger $r1, $r4;
+        boolean $z0, $z1;
+
+        r0 := @this;
+
+        $r2 = org.owasp.webgoat.container.service.LabelDebugService.log;
+
+        $r1 = r0.labelDebugger;
+
+        $z0 = virtualinvoke $r1.isEnabled();
+
+        $r3 = staticinvoke java.lang.Boolean.valueOf($z0);
+
+        interfaceinvoke $r2.debug("Checking label debugging, it is {}", $r3);
+
+        $r4 = r0.labelDebugger;
+
+        $z1 = virtualinvoke $r4.isEnabled();
+
+        $r5 = staticinvoke java.lang.Boolean.valueOf($z1);
+
+        $r6 = virtualinvoke r0.createResponse($r5);
+
+        $r7 = new org.springframework.http.ResponseEntity;
+
+        $r8 = org.springframework.http.HttpStatus.OK;
+
+        specialinvoke $r7.<init>($r6, $r8);
+
+        return $r7;
+    }
+
+    public org.springframework.http.ResponseEntity setDebuggingStatus(java.lang.Boolean)
+    {
+        org.slf4j.Logger $r2;
+        org.owasp.webgoat.container.service.LabelDebugService r0;
+        org.springframework.http.HttpStatus $r8;
+        java.util.Map $r5;
+        java.lang.Boolean $r3, r4;
+        org.springframework.http.ResponseEntity $r7;
+        org.owasp.webgoat.container.session.LabelDebugger $r1, $r6;
+        boolean $z0, $z1;
+
+        r0 := @this;
+
+        r4 := @parameter0;
+
+        $r2 = org.owasp.webgoat.container.service.LabelDebugService.log;
+
+        $r1 = r0.labelDebugger;
+
+        $z0 = virtualinvoke $r1.isEnabled();
+
+        $r3 = staticinvoke java.lang.Boolean.valueOf($z0);
+
+        interfaceinvoke $r2.debug("Setting label debugging to {} ", $r3);
+
+        $r5 = virtualinvoke r0.createResponse(r4);
+
+        $r6 = r0.labelDebugger;
+
+        $z1 = virtualinvoke r4.booleanValue();
+
+        virtualinvoke $r6.setEnabled($z1);
+
+        $r7 = new org.springframework.http.ResponseEntity;
+
+        $r8 = org.springframework.http.HttpStatus.OK;
+
+        specialinvoke $r7.<init>($r5, $r8);
+
+        return $r7;
+    }
+
+    private java.util.Map createResponse(java.lang.Boolean)
+    {
+        java.util.Map $r2;
+        java.lang.Boolean r0, $r1;
+        org.owasp.webgoat.container.service.LabelDebugService r3;
+
+        r3 := @this;
+
+        r0 := @parameter0;
+
+        $r1 = java.lang.Boolean.TRUE;
+
+        $r2 = staticinvoke java.util.Map.of("success", $r1, "enabled", r0);
+
+        return $r2;
+    }
+
+    public void <init>(org.owasp.webgoat.container.session.LabelDebugger)
+    {
+        org.owasp.webgoat.container.service.LabelDebugService r0;
+        org.owasp.webgoat.container.session.LabelDebugger r1;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        specialinvoke r0.<init>();
+
+        r0.labelDebugger = r1;
+
+        return;
+    }
+
+    static void <clinit>()
+    {
+        org.slf4j.Logger $r0;
+
+        $r0 = staticinvoke org.slf4j.LoggerFactory.getLogger(class "Lorg/owasp/webgoat/container/service/LabelDebugService;");
+
+        org.owasp.webgoat.container.service.LabelDebugService.log = $r0;
+
+        return;
+    }
+}

@@ -1,0 +1,86 @@
+public class org.owasp.webgoat.lessons.logging.LogSpoofingTask extends org.owasp.webgoat.container.assignments.AssignmentEndpoint
+{
+
+    public void <init>()
+    {
+        org.owasp.webgoat.lessons.logging.LogSpoofingTask r0;
+
+        r0 := @this;
+
+        specialinvoke r0.<init>();
+
+        return;
+    }
+
+    public org.owasp.webgoat.container.assignments.AttackResult completed(java.lang.String, java.lang.String)
+    {
+        org.owasp.webgoat.container.assignments.AttackResult$AttackResultBuilder $r2, $r3, $r5, $r6, $r8, $r9, $r11, $r12;
+        org.owasp.webgoat.lessons.logging.LogSpoofingTask r1;
+        int $i0, $i1;
+        java.lang.String $r0, r14, r15;
+        boolean $z0, $z1, $z2;
+        org.owasp.webgoat.container.assignments.AttackResult $r4, $r7, $r10, $r13;
+
+        r1 := @this;
+
+        r15 := @parameter0;
+
+        r14 := @parameter1;
+
+        $z0 = staticinvoke org.apache.logging.log4j.util.Strings.isEmpty(r15);
+
+        if $z0 == 0 goto label1;
+
+        $r11 = virtualinvoke r1.failed(r1);
+
+        $r12 = virtualinvoke $r11.output(r15);
+
+        $r13 = virtualinvoke $r12.build();
+
+        return $r13;
+
+     label1:
+        $r0 = virtualinvoke r15.replace("\n", "<br/>");
+
+        $z1 = virtualinvoke $r0.contains("<p>");
+
+        if $z1 != 0 goto label2;
+
+        $z2 = virtualinvoke $r0.contains("<div>");
+
+        if $z2 == 0 goto label3;
+
+     label2:
+        $r2 = virtualinvoke r1.failed(r1);
+
+        $r3 = virtualinvoke $r2.output("Try to think of something simple ");
+
+        $r4 = virtualinvoke $r3.build();
+
+        return $r4;
+
+     label3:
+        $i0 = virtualinvoke $r0.indexOf("<br/>");
+
+        $i1 = virtualinvoke $r0.indexOf("admin");
+
+        if $i0 >= $i1 goto label4;
+
+        $r8 = virtualinvoke r1.success(r1);
+
+        $r9 = virtualinvoke $r8.output($r0);
+
+        $r10 = virtualinvoke $r9.build();
+
+        return $r10;
+
+     label4:
+        $r5 = virtualinvoke r1.failed(r1);
+
+        $r6 = virtualinvoke $r5.output($r0);
+
+        $r7 = virtualinvoke $r6.build();
+
+        return $r7;
+    }
+}

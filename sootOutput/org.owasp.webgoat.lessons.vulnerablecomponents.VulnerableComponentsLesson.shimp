@@ -1,0 +1,145 @@
+public class org.owasp.webgoat.lessons.vulnerablecomponents.VulnerableComponentsLesson extends org.owasp.webgoat.container.assignments.AssignmentEndpoint
+{
+
+    public void <init>()
+    {
+        org.owasp.webgoat.lessons.vulnerablecomponents.VulnerableComponentsLesson r0;
+
+        r0 := @this;
+
+        specialinvoke r0.<init>();
+
+        return;
+    }
+
+    public org.owasp.webgoat.container.assignments.AttackResult completed(java.lang.String)
+    {
+        com.thoughtworks.xstream.XStream $r0;
+        boolean $z0, $z1;
+        java.lang.Exception $r18, $r24;
+        org.owasp.webgoat.container.assignments.AttackResult $r9, $r12, $r23, $r29;
+        java.lang.ClassLoader $r2;
+        org.owasp.webgoat.container.assignments.AttackResult$AttackResultBuilder $r5, $r6, $r8, $r10, $r11, $r19, $r20, $r22, $r25, $r26, $r28;
+        java.lang.Object[] $r7;
+        org.owasp.webgoat.lessons.vulnerablecomponents.Contact $r17;
+        org.owasp.webgoat.lessons.vulnerablecomponents.VulnerableComponentsLesson r4;
+        java.lang.String $r13, $r14, $r15, $r16, $r21, $r27, r30, r30_1, r30_2, r30_3;
+        java.lang.Class $r1;
+        java.lang.Object $r3;
+
+        r4 := @this;
+
+        r30 := @parameter0;
+
+        $r0 = new com.thoughtworks.xstream.XStream;
+
+        specialinvoke $r0.<init>();
+
+        $r1 = class "Lorg/owasp/webgoat/lessons/vulnerablecomponents/Contact;";
+
+        $r2 = virtualinvoke $r1.getClassLoader();
+
+        virtualinvoke $r0.setClassLoader($r2);
+
+        virtualinvoke $r0.alias("contact", class "Lorg/owasp/webgoat/lessons/vulnerablecomponents/ContactImpl;");
+
+(0)     virtualinvoke $r0.ignoreUnknownElements();
+
+     label01:
+        $z0 = staticinvoke org.apache.commons.lang3.StringUtils.isEmpty(r30);
+
+(1)     if $z0 != 0 goto label02;
+
+        $r13 = virtualinvoke r30.replace("+", "");
+
+        $r14 = virtualinvoke $r13.replace("\r", "");
+
+        $r15 = virtualinvoke $r14.replace("\n", "");
+
+        $r16 = virtualinvoke $r15.replace("> ", ">");
+
+(2)     r30_1 = virtualinvoke $r16.replace(" <", "<");
+
+     label02:
+        r30_2 = Phi(r30 #1, r30_1 #2);
+
+(3)     $r3 = virtualinvoke $r0.fromXML(r30_2);
+
+        $r17 = (org.owasp.webgoat.lessons.vulnerablecomponents.Contact) $r3;
+
+     label03:
+        goto label05;
+
+     label04:
+        $r24 := @caughtexception;
+
+        r30_3 = Phi(r30 #0, r30_1 #2, r30_2 #3);
+
+        $r25 = virtualinvoke r4.failed(r4);
+
+        $r26 = virtualinvoke $r25.feedback("vulnerable-components.close");
+
+        $r27 = virtualinvoke $r24.getMessage();
+
+        $r28 = virtualinvoke $r26.output($r27);
+
+        $r29 = virtualinvoke $r28.build();
+
+        return $r29;
+
+     label05:
+        if null == $r17 goto label06;
+
+        interfaceinvoke $r17.getFirstName();
+
+     label06:
+        $z1 = $r17 instanceof org.owasp.webgoat.lessons.vulnerablecomponents.ContactImpl;
+
+        if $z1 != 0 goto label08;
+
+        $r10 = virtualinvoke r4.success(r4);
+
+        $r11 = virtualinvoke $r10.feedback("vulnerable-components.success");
+
+        $r12 = virtualinvoke $r11.build();
+
+     label07:
+        return $r12;
+
+     label08:
+        goto label10;
+
+     label09:
+        $r18 := @caughtexception;
+
+        $r19 = virtualinvoke r4.success(r4);
+
+        $r20 = virtualinvoke $r19.feedback("vulnerable-components.success");
+
+        $r21 = virtualinvoke $r18.getMessage();
+
+        $r22 = virtualinvoke $r20.output($r21);
+
+        $r23 = virtualinvoke $r22.build();
+
+        return $r23;
+
+     label10:
+        $r5 = virtualinvoke r4.failed(r4);
+
+        $r6 = virtualinvoke $r5.feedback("vulnerable-components.fromXML");
+
+        $r7 = newarray (java.lang.Object)[1];
+
+        $r7[0] = $r17;
+
+        $r8 = virtualinvoke $r6.feedbackArgs($r7);
+
+        $r9 = virtualinvoke $r8.build();
+
+        return $r9;
+
+        catch java.lang.Exception from label01 to label03 with label04;
+        catch java.lang.Exception from label05 to label07 with label09;
+    }
+}

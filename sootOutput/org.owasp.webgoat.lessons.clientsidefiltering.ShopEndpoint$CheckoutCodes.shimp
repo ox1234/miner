@@ -1,0 +1,81 @@
+class org.owasp.webgoat.lessons.clientsidefiltering.ShopEndpoint$CheckoutCodes extends java.lang.Object
+{
+    private java.util.List codes;
+    final org.owasp.webgoat.lessons.clientsidefiltering.ShopEndpoint this$0;
+
+    public java.util.Optional get(java.lang.String)
+    {
+        java.util.List $r1;
+        java.util.stream.Stream $r2, $r5;
+        org.owasp.webgoat.lessons.clientsidefiltering.ShopEndpoint$CheckoutCodes r0;
+        java.util.function.Predicate $r4;
+        java.util.Optional $r6;
+        java.lang.String r3;
+
+        r0 := @this;
+
+        r3 := @parameter0;
+
+        $r1 = r0.codes;
+
+        $r2 = interfaceinvoke $r1.stream();
+
+        $r4 = staticinvoke org.owasp.webgoat.lessons.clientsidefiltering.ShopEndpoint$CheckoutCodes$lambda_get_0__56.bootstrap$(r3);
+
+        $r5 = interfaceinvoke $r2.filter($r4);
+
+        $r6 = interfaceinvoke $r5.findFirst();
+
+        return $r6;
+    }
+
+    public void <init>(org.owasp.webgoat.lessons.clientsidefiltering.ShopEndpoint, java.util.List)
+    {
+        java.util.List r2;
+        org.owasp.webgoat.lessons.clientsidefiltering.ShopEndpoint$CheckoutCodes r0;
+        org.owasp.webgoat.lessons.clientsidefiltering.ShopEndpoint r1;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        r2 := @parameter1;
+
+        r0.this$0 = r1;
+
+        specialinvoke r0.<init>();
+
+        r0.codes = r2;
+
+        return;
+    }
+
+    public java.util.List getCodes()
+    {
+        java.util.List $r1;
+        org.owasp.webgoat.lessons.clientsidefiltering.ShopEndpoint$CheckoutCodes r0;
+
+        r0 := @this;
+
+        $r1 = r0.codes;
+
+        return $r1;
+    }
+
+    public static boolean lambda$get$0(java.lang.String, org.owasp.webgoat.lessons.clientsidefiltering.ShopEndpoint$CheckoutCode)
+    {
+        org.owasp.webgoat.lessons.clientsidefiltering.ShopEndpoint$CheckoutCode r0;
+        java.lang.String $r1, r2;
+        boolean $z0;
+
+        r2 := @parameter0;
+
+        r0 := @parameter1;
+
+        $r1 = virtualinvoke r0.getCode();
+
+        $z0 = virtualinvoke $r1.equals(r2);
+
+        return $z0;
+    }
+}

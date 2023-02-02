@@ -1,0 +1,63 @@
+public class org.owasp.webgoat.lessons.insecurelogin.InsecureLoginTask extends org.owasp.webgoat.container.assignments.AssignmentEndpoint
+{
+
+    public void <init>()
+    {
+        org.owasp.webgoat.lessons.insecurelogin.InsecureLoginTask r0;
+
+        r0 := @this;
+
+        specialinvoke r0.<init>();
+
+        return;
+    }
+
+    public org.owasp.webgoat.container.assignments.AttackResult completed(java.lang.String, java.lang.String)
+    {
+        org.owasp.webgoat.lessons.insecurelogin.InsecureLoginTask r2;
+        org.owasp.webgoat.container.assignments.AttackResult$AttackResultBuilder $r3, $r7;
+        org.owasp.webgoat.container.assignments.AttackResult $r4, $r8;
+        java.lang.String r0, $r1, r5, $r6;
+        boolean $z0, $z1;
+
+        r2 := @this;
+
+        r0 := @parameter0;
+
+        r5 := @parameter1;
+
+        $r1 = "CaptainJack";
+
+        $z0 = virtualinvoke $r1.equals(r0);
+
+        if $z0 == 0 goto label1;
+
+        $r6 = "BlackPearl";
+
+        $z1 = virtualinvoke $r6.equals(r5);
+
+        if $z1 == 0 goto label1;
+
+        $r7 = virtualinvoke r2.success(r2);
+
+        $r8 = virtualinvoke $r7.build();
+
+        return $r8;
+
+     label1:
+        $r3 = virtualinvoke r2.failed(r2);
+
+        $r4 = virtualinvoke $r3.build();
+
+        return $r4;
+    }
+
+    public void login()
+    {
+        org.owasp.webgoat.lessons.insecurelogin.InsecureLoginTask r0;
+
+        r0 := @this;
+
+        return;
+    }
+}

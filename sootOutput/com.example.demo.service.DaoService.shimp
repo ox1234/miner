@@ -1,0 +1,47 @@
+public class com.example.demo.service.DaoService extends java.lang.Object
+{
+    public java.lang.String a;
+
+    public void <init>()
+    {
+        com.example.demo.service.DaoService r0;
+
+        r0 := @this;
+
+        specialinvoke r0.<init>();
+
+        return;
+    }
+
+    public int query(java.lang.String)
+    {
+        java.lang.Runtime $r0;
+        java.lang.String $r2, r4;
+        com.example.demo.service.DaoService r1;
+        java.lang.Exception $r3;
+
+        r1 := @this;
+
+        r4 := @parameter0;
+
+     label1:
+        $r0 = staticinvoke java.lang.Runtime.getRuntime();
+
+        $r2 = r1.a;
+
+        virtualinvoke $r0.exec($r2);
+
+     label2:
+        goto label4;
+
+     label3:
+        $r3 := @caughtexception;
+
+        virtualinvoke $r3.printStackTrace();
+
+     label4:
+        return 0;
+
+        catch java.lang.Exception from label1 to label2 with label3;
+    }
+}

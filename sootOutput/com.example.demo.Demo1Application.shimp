@@ -1,0 +1,25 @@
+public class com.example.demo.Demo1Application extends java.lang.Object
+{
+
+    public void <init>()
+    {
+        com.example.demo.Demo1Application r0;
+
+        r0 := @this;
+
+        specialinvoke r0.<init>();
+
+        return;
+    }
+
+    public static void main(java.lang.String[])
+    {
+        java.lang.String[] r0;
+
+        r0 := @parameter0;
+
+        staticinvoke org.springframework.boot.SpringApplication.run(class "Lcom/example/demo/Demo1Application;", r0);
+
+        return;
+    }
+}

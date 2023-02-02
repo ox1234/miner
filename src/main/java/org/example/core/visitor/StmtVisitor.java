@@ -1,19 +1,15 @@
 package org.example.core.visitor;
 
 import org.example.config.FlowRepository;
-import org.example.config.NodeRepository;
 import org.example.core.basic.Node;
-import org.example.core.basic.identity.Identity;
-import org.example.core.basic.identity.ParameterIdentify;
-import org.example.core.basic.identity.RetNodeIdentity;
-import org.example.util.NodeUtil;
+import org.example.core.basic.Site;
+import org.example.core.basic.identity.UnifyReturn;
 import soot.SootMethod;
 import soot.Unit;
 import soot.Value;
 import soot.jimple.*;
 
 import java.util.List;
-import java.util.Set;
 
 public class StmtVisitor extends AbstractStmtSwitch<Void> {
     private static final StmtVisitor instance = new StmtVisitor();
@@ -32,19 +28,14 @@ public class StmtVisitor extends AbstractStmtSwitch<Void> {
 
     @Override
     public void caseIdentityStmt(IdentityStmt stmt) {
-        if (stmt instanceof ParameterRef) {
-            ParameterRef param = (ParameterRef) stmt;
-            stmt.getLeftOp().apply(valueVisitor);
-            List<Node> nodeList = valueVisitor.getResult();
-            assert nodeList.size() == 1 && nodeList.get(0) instanceof Identity;
-
-        }
         handleDefinitionStmt(stmt);
     }
 
     @Override
     public void caseInvokeStmt(InvokeStmt stmt) {
         stmt.getInvokeExpr().apply(valueVisitor);
+        List<Node> nodeSet = valueVisitor.getResult();
+        FlowRepository.addFlow(null, nodeSet);
     }
 
     @Override
@@ -53,9 +44,69 @@ public class StmtVisitor extends AbstractStmtSwitch<Void> {
         op.apply(valueVisitor);
 
         List<Node> nodeSet = valueVisitor.getResult();
-        Node node = new RetNodeIdentity(currentMethod, currentUnit);
-        NodeRepository.addNode(node);
-        FlowRepository.addTaintFlow(node.getNodeID(), NodeUtil.getNodeID(nodeSet));
+        Node node = Site.getNodeInstance(UnifyReturn.class, currentMethod, currentMethod.getReturnType().toString());
+
+        FlowRepository.addFlow(node, nodeSet);
+    }
+
+    @Override
+    public void caseBreakpointStmt(BreakpointStmt stmt) {
+        // do nothing
+    }
+
+    @Override
+    public void caseEnterMonitorStmt(EnterMonitorStmt stmt) {
+        stmt.getOp().apply(valueVisitor);
+    }
+
+    @Override
+    public void caseExitMonitorStmt(ExitMonitorStmt stmt) {
+        stmt.getOp().apply(valueVisitor);
+    }
+
+    @Override
+    public void caseGotoStmt(GotoStmt stmt) {
+        stmt.getTarget().apply(this);
+    }
+
+    @Override
+    public void caseIfStmt(IfStmt stmt) {
+        Value op = stmt.getCondition();
+        op.apply(valueVisitor);
+        stmt.getTarget().apply(this);
+    }
+
+    @Override
+    public void caseLookupSwitchStmt(LookupSwitchStmt stmt) {
+        for (IntConstant lookupValue : stmt.getLookupValues()) {
+            stmt.getTarget(lookupValue.value).apply(this);
+        }
+    }
+
+    @Override
+    public void caseNopStmt(NopStmt stmt) {
+        // do nothing
+    }
+
+    @Override
+    public void caseRetStmt(RetStmt stmt) {
+        stmt.getStmtAddress().apply(valueVisitor);
+    }
+
+    @Override
+    public void caseReturnVoidStmt(ReturnVoidStmt stmt) {
+        // do nothing
+    }
+
+    @Override
+    public void caseTableSwitchStmt(TableSwitchStmt stmt) {
+        // do nothing
+    }
+
+    @Override
+    public void caseThrowStmt(ThrowStmt stmt) {
+        Value op = stmt.getOp();
+        op.apply(valueVisitor);
     }
 
     public void handleDefinitionStmt(DefinitionStmt stmt) {
@@ -69,7 +120,7 @@ public class StmtVisitor extends AbstractStmtSwitch<Void> {
         rightVal.apply(valueVisitor);
         List<Node> rightNode = valueVisitor.getResult();
 
-        FlowRepository.addTaintFlow(leftNodes.get(0).getNodeID(), NodeUtil.getNodeID(rightNode));
+        FlowRepository.addFlow(leftNodes.get(0), rightNode);
     }
 
 

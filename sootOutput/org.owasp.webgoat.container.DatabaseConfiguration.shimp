@@ -1,0 +1,200 @@
+public class org.owasp.webgoat.container.DatabaseConfiguration extends java.lang.Object
+{
+    private static final org.slf4j.Logger log;
+    private final org.springframework.boot.autoconfigure.jdbc.DataSourceProperties properties;
+    private final org.owasp.webgoat.container.lessons.LessonScanner lessonScanner;
+
+    public javax.sql.DataSource dataSource()
+    {
+        org.owasp.webgoat.container.DatabaseConfiguration r1;
+        org.springframework.boot.autoconfigure.jdbc.DataSourceProperties $r2, $r4, $r6, $r8;
+        org.springframework.jdbc.datasource.DriverManagerDataSource $r0;
+        java.lang.String $r3, $r5, $r7, $r9;
+
+        r1 := @this;
+
+        $r0 = new org.springframework.jdbc.datasource.DriverManagerDataSource;
+
+        specialinvoke $r0.<init>();
+
+        $r2 = r1.properties;
+
+        $r3 = virtualinvoke $r2.getDriverClassName();
+
+        virtualinvoke $r0.setDriverClassName($r3);
+
+        $r4 = r1.properties;
+
+        $r5 = virtualinvoke $r4.getUrl();
+
+        virtualinvoke $r0.setUrl($r5);
+
+        $r6 = r1.properties;
+
+        $r7 = virtualinvoke $r6.getUsername();
+
+        virtualinvoke $r0.setUsername($r7);
+
+        $r8 = r1.properties;
+
+        $r9 = virtualinvoke $r8.getPassword();
+
+        virtualinvoke $r0.setPassword($r9);
+
+        return $r0;
+    }
+
+    public org.flywaydb.core.Flyway flyWayContainer()
+    {
+        org.owasp.webgoat.container.DatabaseConfiguration r1;
+        org.springframework.boot.autoconfigure.jdbc.DataSourceProperties $r2;
+        java.lang.String[] $r8, $r10;
+        org.flywaydb.core.api.configuration.FluentConfiguration $r0, $r5, $r7, $r9, $r11;
+        java.util.Map $r4;
+        javax.sql.DataSource $r6;
+        org.flywaydb.core.Flyway $r12;
+        java.lang.String $r3;
+
+        r1 := @this;
+
+        $r0 = staticinvoke org.flywaydb.core.Flyway.configure();
+
+        $r2 = r1.properties;
+
+        $r3 = virtualinvoke $r2.getDriverClassName();
+
+        $r4 = staticinvoke java.util.Map.of("driver", $r3);
+
+        $r5 = virtualinvoke $r0.configuration($r4);
+
+        $r6 = virtualinvoke r1.dataSource();
+
+        $r7 = virtualinvoke $r5.dataSource($r6);
+
+        $r8 = newarray (java.lang.String)[1];
+
+        $r8[0] = "container";
+
+        $r9 = virtualinvoke $r7.schemas($r8);
+
+        $r10 = newarray (java.lang.String)[1];
+
+        $r10[0] = "db/container";
+
+        $r11 = virtualinvoke $r9.locations($r10);
+
+        $r12 = virtualinvoke $r11.load();
+
+        return $r12;
+    }
+
+    public java.util.function.Function flywayLessons(org.owasp.webgoat.container.LessonDataSource)
+    {
+        org.owasp.webgoat.container.DatabaseConfiguration r0;
+        org.owasp.webgoat.container.LessonDataSource r1;
+        java.util.function.Function $r2;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        $r2 = staticinvoke org.owasp.webgoat.container.DatabaseConfiguration$lambda_flywayLessons_0__46.bootstrap$(r0, r1);
+
+        return $r2;
+    }
+
+    public org.owasp.webgoat.container.LessonDataSource lessonDataSource()
+    {
+        javax.sql.DataSource $r2;
+        org.owasp.webgoat.container.DatabaseConfiguration r1;
+        org.owasp.webgoat.container.LessonDataSource $r0;
+
+        r1 := @this;
+
+        $r0 = new org.owasp.webgoat.container.LessonDataSource;
+
+        $r2 = virtualinvoke r1.dataSource();
+
+        specialinvoke $r0.<init>($r2);
+
+        return $r0;
+    }
+
+    public void <init>(org.springframework.boot.autoconfigure.jdbc.DataSourceProperties, org.owasp.webgoat.container.lessons.LessonScanner)
+    {
+        org.owasp.webgoat.container.DatabaseConfiguration r0;
+        org.springframework.boot.autoconfigure.jdbc.DataSourceProperties r1;
+        org.owasp.webgoat.container.lessons.LessonScanner r2;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        r2 := @parameter1;
+
+        specialinvoke r0.<init>();
+
+        r0.properties = r1;
+
+        r0.lessonScanner = r2;
+
+        return;
+    }
+
+    private org.flywaydb.core.Flyway lambda$flywayLessons$0(org.owasp.webgoat.container.LessonDataSource, java.lang.String)
+    {
+        org.owasp.webgoat.container.LessonDataSource r9;
+        org.owasp.webgoat.container.DatabaseConfiguration r1;
+        org.springframework.boot.autoconfigure.jdbc.DataSourceProperties $r2;
+        java.lang.String[] $r6, $r11;
+        org.flywaydb.core.api.configuration.FluentConfiguration $r0, $r5, $r8, $r10, $r12;
+        java.util.Map $r4;
+        org.flywaydb.core.Flyway $r13;
+        java.lang.String $r3, r7;
+
+        r1 := @this;
+
+        r9 := @parameter0;
+
+        r7 := @parameter1;
+
+        $r0 = staticinvoke org.flywaydb.core.Flyway.configure();
+
+        $r2 = r1.properties;
+
+        $r3 = virtualinvoke $r2.getDriverClassName();
+
+        $r4 = staticinvoke java.util.Map.of("driver", $r3);
+
+        $r5 = virtualinvoke $r0.configuration($r4);
+
+        $r6 = newarray (java.lang.String)[1];
+
+        $r6[0] = r7;
+
+        $r8 = virtualinvoke $r5.schemas($r6);
+
+        $r10 = virtualinvoke $r8.dataSource(r9);
+
+        $r11 = newarray (java.lang.String)[1];
+
+        $r11[0] = "lessons";
+
+        $r12 = virtualinvoke $r10.locations($r11);
+
+        $r13 = virtualinvoke $r12.load();
+
+        return $r13;
+    }
+
+    static void <clinit>()
+    {
+        org.slf4j.Logger $r0;
+
+        $r0 = staticinvoke org.slf4j.LoggerFactory.getLogger(class "Lorg/owasp/webgoat/container/DatabaseConfiguration;");
+
+        org.owasp.webgoat.container.DatabaseConfiguration.log = $r0;
+
+        return;
+    }
+}

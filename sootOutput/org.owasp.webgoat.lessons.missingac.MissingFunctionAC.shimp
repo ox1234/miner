@@ -1,0 +1,37 @@
+public class org.owasp.webgoat.lessons.missingac.MissingFunctionAC extends org.owasp.webgoat.container.lessons.Lesson
+{
+    public static final java.lang.String PASSWORD_SALT_SIMPLE;
+    public static final java.lang.String PASSWORD_SALT_ADMIN;
+
+    public void <init>()
+    {
+        org.owasp.webgoat.lessons.missingac.MissingFunctionAC r0;
+
+        r0 := @this;
+
+        specialinvoke r0.<init>();
+
+        return;
+    }
+
+    public org.owasp.webgoat.container.lessons.Category getDefaultCategory()
+    {
+        org.owasp.webgoat.lessons.missingac.MissingFunctionAC r1;
+        org.owasp.webgoat.container.lessons.Category $r0;
+
+        r1 := @this;
+
+        $r0 = org.owasp.webgoat.container.lessons.Category.A1;
+
+        return $r0;
+    }
+
+    public java.lang.String getTitle()
+    {
+        org.owasp.webgoat.lessons.missingac.MissingFunctionAC r0;
+
+        r0 := @this;
+
+        return "missing-function-access-control.title";
+    }
+}

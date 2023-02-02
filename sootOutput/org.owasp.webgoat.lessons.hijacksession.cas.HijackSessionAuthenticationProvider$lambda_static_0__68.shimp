@@ -1,0 +1,40 @@
+public final class org.owasp.webgoat.lessons.hijacksession.cas.HijackSessionAuthenticationProvider$lambda_static_0__68 extends java.lang.Object implements java.util.function.DoublePredicate
+{
+
+    public static java.util.function.DoublePredicate bootstrap$()
+    {
+        org.owasp.webgoat.lessons.hijacksession.cas.HijackSessionAuthenticationProvider$lambda_static_0__68 $r0;
+
+        $r0 = new org.owasp.webgoat.lessons.hijacksession.cas.HijackSessionAuthenticationProvider$lambda_static_0__68;
+
+        specialinvoke $r0.<init>();
+
+        return $r0;
+    }
+
+    public void <init>()
+    {
+        org.owasp.webgoat.lessons.hijacksession.cas.HijackSessionAuthenticationProvider$lambda_static_0__68 $r0;
+
+        $r0 := @this;
+
+        specialinvoke $r0.<init>();
+
+        return;
+    }
+
+    public boolean test(double)
+    {
+        org.owasp.webgoat.lessons.hijacksession.cas.HijackSessionAuthenticationProvider$lambda_static_0__68 $r0;
+        double $d0;
+        boolean $z0;
+
+        $r0 := @this;
+
+        $d0 := @parameter0;
+
+        $z0 = staticinvoke org.owasp.webgoat.lessons.hijacksession.cas.HijackSessionAuthenticationProvider.lambda$static$0($d0);
+
+        return $z0;
+    }
+}

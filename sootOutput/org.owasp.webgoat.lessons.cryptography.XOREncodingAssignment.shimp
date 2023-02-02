@@ -1,0 +1,50 @@
+public class org.owasp.webgoat.lessons.cryptography.XOREncodingAssignment extends org.owasp.webgoat.container.assignments.AssignmentEndpoint
+{
+
+    public void <init>()
+    {
+        org.owasp.webgoat.lessons.cryptography.XOREncodingAssignment r0;
+
+        r0 := @this;
+
+        specialinvoke r0.<init>();
+
+        return;
+    }
+
+    public org.owasp.webgoat.container.assignments.AttackResult completed(java.lang.String)
+    {
+        org.owasp.webgoat.container.assignments.AttackResult$AttackResultBuilder $r2, $r3, $r5, $r6;
+        org.owasp.webgoat.lessons.cryptography.XOREncodingAssignment r1;
+        org.owasp.webgoat.container.assignments.AttackResult $r4, $r7;
+        java.lang.String r0;
+        boolean $z0;
+
+        r1 := @this;
+
+        r0 := @parameter0;
+
+        if r0 == null goto label1;
+
+        $z0 = virtualinvoke r0.equals("databasepassword");
+
+        if $z0 == 0 goto label1;
+
+        $r5 = virtualinvoke r1.success(r1);
+
+        $r6 = virtualinvoke $r5.feedback("crypto-encoding-xor.success");
+
+        $r7 = virtualinvoke $r6.build();
+
+        return $r7;
+
+     label1:
+        $r2 = virtualinvoke r1.failed(r1);
+
+        $r3 = virtualinvoke $r2.feedback("crypto-encoding-xor.empty");
+
+        $r4 = virtualinvoke $r3.build();
+
+        return $r4;
+    }
+}

@@ -1,0 +1,257 @@
+public class org.owasp.webgoat.lessons.missingac.MissingFunctionACUsers extends java.lang.Object
+{
+    private static final org.slf4j.Logger log;
+    private final org.owasp.webgoat.lessons.missingac.MissingAccessControlUserRepository userRepository;
+    private final org.owasp.webgoat.container.session.WebSession webSession;
+
+    public org.springframework.web.servlet.ModelAndView listUsers()
+    {
+        java.util.Iterator $r6;
+        org.owasp.webgoat.lessons.missingac.MissingFunctionACUsers r1;
+        java.lang.Integer $r4;
+        java.util.ArrayList $r5;
+        org.springframework.web.servlet.ModelAndView $r0;
+        java.util.List $r3;
+        org.owasp.webgoat.lessons.missingac.User r8;
+        int $i0;
+        org.owasp.webgoat.lessons.missingac.DisplayUser $r9;
+        java.lang.Object $r7;
+        org.owasp.webgoat.lessons.missingac.MissingAccessControlUserRepository $r2;
+        boolean $z0;
+
+        r1 := @this;
+
+        $r0 = new org.springframework.web.servlet.ModelAndView;
+
+        specialinvoke $r0.<init>();
+
+        virtualinvoke $r0.setViewName("list_users");
+
+        $r2 = r1.userRepository;
+
+        $r3 = virtualinvoke $r2.findAllUsers();
+
+        $i0 = interfaceinvoke $r3.size();
+
+        $r4 = staticinvoke java.lang.Integer.valueOf($i0);
+
+        virtualinvoke $r0.addObject("numUsers", $r4);
+
+        $r5 = new java.util.ArrayList;
+
+        specialinvoke $r5.<init>();
+
+        $r6 = interfaceinvoke $r3.iterator();
+
+     label1:
+        $z0 = interfaceinvoke $r6.hasNext();
+
+        if $z0 == 0 goto label2;
+
+        $r7 = interfaceinvoke $r6.next();
+
+        r8 = (org.owasp.webgoat.lessons.missingac.User) $r7;
+
+        $r9 = new org.owasp.webgoat.lessons.missingac.DisplayUser;
+
+        specialinvoke $r9.<init>(r8, "DeliberatelyInsecure1234");
+
+        interfaceinvoke $r5.add($r9);
+
+        goto label1;
+
+     label2:
+        virtualinvoke $r0.addObject("allUsers", $r5);
+
+        return $r0;
+    }
+
+    public org.springframework.http.ResponseEntity usersService()
+    {
+        org.owasp.webgoat.lessons.missingac.MissingFunctionACUsers r0;
+        java.util.function.Function $r4;
+        java.util.List $r2, $r8;
+        java.util.stream.Stream $r3, $r5;
+        java.lang.Object $r7;
+        org.springframework.http.ResponseEntity $r9;
+        java.util.stream.Collector $r6;
+        org.owasp.webgoat.lessons.missingac.MissingAccessControlUserRepository $r1;
+
+        r0 := @this;
+
+        $r1 = r0.userRepository;
+
+        $r2 = virtualinvoke $r1.findAllUsers();
+
+        $r3 = interfaceinvoke $r2.stream();
+
+        $r4 = staticinvoke org.owasp.webgoat.lessons.missingac.MissingFunctionACUsers$lambda_usersService_0__63.bootstrap$();
+
+        $r5 = interfaceinvoke $r3.map($r4);
+
+        $r6 = staticinvoke java.util.stream.Collectors.toList();
+
+        $r7 = interfaceinvoke $r5.collect($r6);
+
+        $r8 = (java.util.List) $r7;
+
+        $r9 = staticinvoke org.springframework.http.ResponseEntity.ok($r8);
+
+        return $r9;
+    }
+
+    public org.springframework.http.ResponseEntity usersFixed()
+    {
+        org.owasp.webgoat.lessons.missingac.MissingFunctionACUsers r0;
+        org.springframework.http.ResponseEntity$BodyBuilder $r6;
+        java.util.function.Function $r11;
+        java.lang.String $r3;
+        java.util.stream.Collector $r13;
+        org.owasp.webgoat.lessons.missingac.MissingAccessControlUserRepository $r2, $r8;
+        boolean $z0;
+        org.owasp.webgoat.container.session.WebSession $r1;
+        org.springframework.http.HttpStatus $r5;
+        java.util.List $r9, $r15;
+        java.util.stream.Stream $r10, $r12;
+        org.owasp.webgoat.lessons.missingac.User $r4;
+        org.springframework.http.ResponseEntity $r7, $r16;
+        java.lang.Object $r14;
+
+        r0 := @this;
+
+        $r2 = r0.userRepository;
+
+        $r1 = r0.webSession;
+
+        $r3 = virtualinvoke $r1.getUserName();
+
+        $r4 = virtualinvoke $r2.findByUsername($r3);
+
+        if $r4 == null goto label1;
+
+        $z0 = virtualinvoke $r4.isAdmin();
+
+        if $z0 == 0 goto label1;
+
+        $r8 = r0.userRepository;
+
+        $r9 = virtualinvoke $r8.findAllUsers();
+
+        $r10 = interfaceinvoke $r9.stream();
+
+        $r11 = staticinvoke org.owasp.webgoat.lessons.missingac.MissingFunctionACUsers$lambda_usersFixed_1__64.bootstrap$();
+
+        $r12 = interfaceinvoke $r10.map($r11);
+
+        $r13 = staticinvoke java.util.stream.Collectors.toList();
+
+        $r14 = interfaceinvoke $r12.collect($r13);
+
+        $r15 = (java.util.List) $r14;
+
+        $r16 = staticinvoke org.springframework.http.ResponseEntity.ok($r15);
+
+        return $r16;
+
+     label1:
+        $r5 = org.springframework.http.HttpStatus.FORBIDDEN;
+
+        $r6 = staticinvoke org.springframework.http.ResponseEntity.status($r5);
+
+        $r7 = interfaceinvoke $r6.build();
+
+        return $r7;
+    }
+
+    public org.owasp.webgoat.lessons.missingac.User addUser(org.owasp.webgoat.lessons.missingac.User)
+    {
+        org.slf4j.Logger $r4;
+        org.owasp.webgoat.lessons.missingac.User r1;
+        org.owasp.webgoat.lessons.missingac.MissingFunctionACUsers r0;
+        java.lang.Exception $r3;
+        org.owasp.webgoat.lessons.missingac.MissingAccessControlUserRepository $r2;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+     label1:
+        $r2 = r0.userRepository;
+
+        virtualinvoke $r2.save(r1);
+
+     label2:
+        return r1;
+
+     label3:
+        $r3 := @caughtexception;
+
+        $r4 = org.owasp.webgoat.lessons.missingac.MissingFunctionACUsers.log;
+
+        interfaceinvoke $r4.error("Error creating new User", $r3);
+
+        return null;
+
+        catch java.lang.Exception from label1 to label2 with label3;
+    }
+
+    public void <init>(org.owasp.webgoat.lessons.missingac.MissingAccessControlUserRepository, org.owasp.webgoat.container.session.WebSession)
+    {
+        org.owasp.webgoat.lessons.missingac.MissingFunctionACUsers r0;
+        org.owasp.webgoat.container.session.WebSession r2;
+        org.owasp.webgoat.lessons.missingac.MissingAccessControlUserRepository r1;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        r2 := @parameter1;
+
+        specialinvoke r0.<init>();
+
+        r0.userRepository = r1;
+
+        r0.webSession = r2;
+
+        return;
+    }
+
+    public static org.owasp.webgoat.lessons.missingac.DisplayUser lambda$usersFixed$1(org.owasp.webgoat.lessons.missingac.User)
+    {
+        org.owasp.webgoat.lessons.missingac.DisplayUser $r0;
+        org.owasp.webgoat.lessons.missingac.User r1;
+
+        r1 := @parameter0;
+
+        $r0 = new org.owasp.webgoat.lessons.missingac.DisplayUser;
+
+        specialinvoke $r0.<init>(r1, "DeliberatelyInsecure1235");
+
+        return $r0;
+    }
+
+    public static org.owasp.webgoat.lessons.missingac.DisplayUser lambda$usersService$0(org.owasp.webgoat.lessons.missingac.User)
+    {
+        org.owasp.webgoat.lessons.missingac.DisplayUser $r0;
+        org.owasp.webgoat.lessons.missingac.User r1;
+
+        r1 := @parameter0;
+
+        $r0 = new org.owasp.webgoat.lessons.missingac.DisplayUser;
+
+        specialinvoke $r0.<init>(r1, "DeliberatelyInsecure1234");
+
+        return $r0;
+    }
+
+    static void <clinit>()
+    {
+        org.slf4j.Logger $r0;
+
+        $r0 = staticinvoke org.slf4j.LoggerFactory.getLogger(class "Lorg/owasp/webgoat/lessons/missingac/MissingFunctionACUsers;");
+
+        org.owasp.webgoat.lessons.missingac.MissingFunctionACUsers.log = $r0;
+
+        return;
+    }
+}

@@ -1,0 +1,114 @@
+class org.owasp.webgoat.container.MvcConfiguration$1 extends org.thymeleaf.templateresolver.FileTemplateResolver
+{
+    final org.springframework.core.io.ResourceLoader val$resourceLoader;
+    final org.owasp.webgoat.container.MvcConfiguration this$0;
+
+    void <init>(org.owasp.webgoat.container.MvcConfiguration, org.springframework.core.io.ResourceLoader)
+    {
+        org.owasp.webgoat.container.MvcConfiguration r1;
+        org.owasp.webgoat.container.MvcConfiguration$1 r0;
+        org.springframework.core.io.ResourceLoader r2;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        r2 := @parameter1;
+
+        r0.this$0 = r1;
+
+        r0.val$resourceLoader = r2;
+
+        specialinvoke r0.<init>();
+
+        return;
+    }
+
+    protected org.thymeleaf.templateresource.ITemplateResource computeTemplateResource(org.thymeleaf.IEngineConfiguration, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.util.Map)
+    {
+        java.lang.Throwable $r10, $r11, $r12;
+        byte[] $r8;
+        org.thymeleaf.IEngineConfiguration r13;
+        org.thymeleaf.templateresource.StringTemplateResource $r6;
+        java.nio.charset.Charset $r9;
+        java.util.Map r17;
+        java.lang.String r1, $r3, $r7, r14, r15, r16;
+        org.springframework.core.io.Resource $r4;
+        org.springframework.core.io.ResourceLoader $r2;
+        org.owasp.webgoat.container.MvcConfiguration$1 r0;
+        java.io.InputStream $r5;
+
+        r0 := @this;
+
+        r13 := @parameter0;
+
+        r14 := @parameter1;
+
+        r15 := @parameter2;
+
+        r1 := @parameter3;
+
+        r16 := @parameter4;
+
+        r17 := @parameter5;
+
+     label01:
+        $r2 = r0.val$resourceLoader;
+
+        $r3 = dynamicinvoke "makeConcatWithConstants" <java.lang.String (java.lang.String)>(r1) java.lang.invoke.StringConcatFactory.makeConcatWithConstants("classpath:\u0001");
+
+        $r4 = interfaceinvoke $r2.getResource($r3);
+
+        $r5 = interfaceinvoke $r4.getInputStream();
+
+     label02:
+        $r6 = new org.thymeleaf.templateresource.StringTemplateResource;
+
+        $r7 = new java.lang.String;
+
+        $r8 = virtualinvoke $r5.readAllBytes();
+
+        $r9 = java.nio.charset.StandardCharsets.UTF_8;
+
+        specialinvoke $r7.<init>($r8, $r9);
+
+        specialinvoke $r6.<init>($r7);
+
+     label03:
+        if $r5 == null goto label04;
+
+        virtualinvoke $r5.close();
+
+     label04:
+        return $r6;
+
+     label05:
+        $r12 := @caughtexception;
+
+        if $r5 == null goto label09;
+
+     label06:
+        virtualinvoke $r5.close();
+
+     label07:
+        goto label09;
+
+     label08:
+        $r11 := @caughtexception;
+
+        virtualinvoke $r12.addSuppressed($r11);
+
+     label09:
+        throw $r12;
+
+     label10:
+        $r10 := @caughtexception;
+
+        return null;
+
+        catch java.lang.Throwable from label02 to label03 with label05;
+        catch java.lang.Throwable from label06 to label07 with label08;
+        catch java.io.IOException from label01 to label04 with label10;
+        catch java.io.IOException from label05 to label10 with label10;
+    }
+}

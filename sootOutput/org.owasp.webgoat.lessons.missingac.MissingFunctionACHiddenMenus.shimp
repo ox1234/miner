@@ -1,0 +1,77 @@
+public class org.owasp.webgoat.lessons.missingac.MissingFunctionACHiddenMenus extends org.owasp.webgoat.container.assignments.AssignmentEndpoint
+{
+
+    public void <init>()
+    {
+        org.owasp.webgoat.lessons.missingac.MissingFunctionACHiddenMenus r0;
+
+        r0 := @this;
+
+        specialinvoke r0.<init>();
+
+        return;
+    }
+
+    public org.owasp.webgoat.container.assignments.AttackResult completed(java.lang.String, java.lang.String)
+    {
+        org.owasp.webgoat.container.assignments.AttackResult$AttackResultBuilder $r2, $r3, $r4, $r7, $r8, $r9, $r11, $r12, $r13;
+        org.owasp.webgoat.lessons.missingac.MissingFunctionACHiddenMenus r1;
+        java.lang.String r0, r6;
+        boolean $z0, $z1, $z2, $z3;
+        org.owasp.webgoat.container.assignments.AttackResult $r5, $r10, $r14;
+
+        r1 := @this;
+
+        r0 := @parameter0;
+
+        r6 := @parameter1;
+
+        $z0 = virtualinvoke r0.equals("Users");
+
+        if $z0 == 0 goto label1;
+
+        $z3 = virtualinvoke r6.equals("Config");
+
+        if $z3 == 0 goto label1;
+
+        $r11 = virtualinvoke r1.success(r1);
+
+        $r12 = virtualinvoke $r11.output("");
+
+        $r13 = virtualinvoke $r12.feedback("access-control.hidden-menus.success");
+
+        $r14 = virtualinvoke $r13.build();
+
+        return $r14;
+
+     label1:
+        $z1 = virtualinvoke r0.equals("Config");
+
+        if $z1 == 0 goto label2;
+
+        $z2 = virtualinvoke r6.equals("Users");
+
+        if $z2 == 0 goto label2;
+
+        $r7 = virtualinvoke r1.failed(r1);
+
+        $r8 = virtualinvoke $r7.output("");
+
+        $r9 = virtualinvoke $r8.feedback("access-control.hidden-menus.close");
+
+        $r10 = virtualinvoke $r9.build();
+
+        return $r10;
+
+     label2:
+        $r2 = virtualinvoke r1.failed(r1);
+
+        $r3 = virtualinvoke $r2.feedback("access-control.hidden-menus.failure");
+
+        $r4 = virtualinvoke $r3.output("");
+
+        $r5 = virtualinvoke $r4.build();
+
+        return $r5;
+    }
+}

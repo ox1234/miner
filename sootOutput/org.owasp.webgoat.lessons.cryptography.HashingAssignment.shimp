@@ -1,0 +1,262 @@
+public class org.owasp.webgoat.lessons.cryptography.HashingAssignment extends org.owasp.webgoat.container.assignments.AssignmentEndpoint
+{
+    public static final java.lang.String[] SECRETS;
+
+    public void <init>()
+    {
+        org.owasp.webgoat.lessons.cryptography.HashingAssignment r0;
+
+        r0 := @this;
+
+        specialinvoke r0.<init>();
+
+        return;
+    }
+
+    public java.lang.String getMd5(javax.servlet.http.HttpServletRequest) throws java.security.NoSuchAlgorithmException
+    {
+        byte[] $r8, $r9;
+        java.security.MessageDigest $r7;
+        java.util.Random $r3;
+        java.lang.String[] $r4, $r5;
+        javax.servlet.http.HttpServletRequest r0;
+        int $i0, $i1;
+        java.lang.String r6, $r10, $r11, r15, r15_1, r15_2;
+        javax.servlet.http.HttpSession $r1, $r12, $r13;
+        org.owasp.webgoat.lessons.cryptography.HashingAssignment r14;
+        java.lang.Object $r2;
+
+        r14 := @this;
+
+        r0 := @parameter0;
+
+        $r1 = interfaceinvoke r0.getSession();
+
+        $r2 = interfaceinvoke $r1.getAttribute("md5Hash");
+
+        r15 = (java.lang.String) $r2;
+
+(0)     if r15 != null goto label1;
+
+        $r4 = org.owasp.webgoat.lessons.cryptography.HashingAssignment.SECRETS;
+
+        $r3 = new java.util.Random;
+
+        specialinvoke $r3.<init>();
+
+        $r5 = org.owasp.webgoat.lessons.cryptography.HashingAssignment.SECRETS;
+
+        $i0 = lengthof $r5;
+
+        $i1 = virtualinvoke $r3.nextInt($i0);
+
+        r6 = $r4[$i1];
+
+        $r7 = staticinvoke java.security.MessageDigest.getInstance("MD5");
+
+        $r8 = virtualinvoke r6.getBytes();
+
+        virtualinvoke $r7.update($r8);
+
+        $r9 = virtualinvoke $r7.digest();
+
+        $r10 = staticinvoke javax.xml.bind.DatatypeConverter.printHexBinary($r9);
+
+        $r11 = virtualinvoke $r10.toUpperCase();
+
+        r15_1 = $r11;
+
+        $r12 = interfaceinvoke r0.getSession();
+
+        interfaceinvoke $r12.setAttribute("md5Hash", $r11);
+
+        $r13 = interfaceinvoke r0.getSession();
+
+(1)     interfaceinvoke $r13.setAttribute("md5Secret", r6);
+
+     label1:
+        r15_2 = Phi(r15 #0, r15_1 #1);
+
+        return r15_2;
+    }
+
+    public java.lang.String getSha256(javax.servlet.http.HttpServletRequest) throws java.security.NoSuchAlgorithmException
+    {
+        java.util.Random $r3;
+        java.lang.String[] $r4, $r5;
+        javax.servlet.http.HttpServletRequest r0;
+        int $i0, $i1;
+        java.lang.String r6, $r7, r11, r11_1, r11_2;
+        javax.servlet.http.HttpSession $r1, $r8, $r9;
+        org.owasp.webgoat.lessons.cryptography.HashingAssignment r10;
+        java.lang.Object $r2;
+
+        r10 := @this;
+
+        r0 := @parameter0;
+
+        $r1 = interfaceinvoke r0.getSession();
+
+        $r2 = interfaceinvoke $r1.getAttribute("sha256");
+
+        r11 = (java.lang.String) $r2;
+
+(0)     if r11 != null goto label1;
+
+        $r4 = org.owasp.webgoat.lessons.cryptography.HashingAssignment.SECRETS;
+
+        $r3 = new java.util.Random;
+
+        specialinvoke $r3.<init>();
+
+        $r5 = org.owasp.webgoat.lessons.cryptography.HashingAssignment.SECRETS;
+
+        $i0 = lengthof $r5;
+
+        $i1 = virtualinvoke $r3.nextInt($i0);
+
+        r6 = $r4[$i1];
+
+        $r7 = staticinvoke org.owasp.webgoat.lessons.cryptography.HashingAssignment.getHash(r6, "SHA-256");
+
+        r11_1 = $r7;
+
+        $r8 = interfaceinvoke r0.getSession();
+
+        interfaceinvoke $r8.setAttribute("sha256Hash", $r7);
+
+        $r9 = interfaceinvoke r0.getSession();
+
+(1)     interfaceinvoke $r9.setAttribute("sha256Secret", r6);
+
+     label1:
+        r11_2 = Phi(r11 #0, r11_1 #1);
+
+        return r11_2;
+    }
+
+    public org.owasp.webgoat.container.assignments.AttackResult completed(javax.servlet.http.HttpServletRequest, java.lang.String, java.lang.String)
+    {
+        org.owasp.webgoat.container.assignments.AttackResult$AttackResultBuilder $r10, $r11, $r13, $r14, $r16, $r17;
+        javax.servlet.http.HttpServletRequest r0;
+        java.lang.String r3, r6, r7, r9;
+        boolean $z0, $z1, $z2, $z3;
+        javax.servlet.http.HttpSession $r1, $r4;
+        org.owasp.webgoat.lessons.cryptography.HashingAssignment r8;
+        org.owasp.webgoat.container.assignments.AttackResult $r12, $r15, $r18;
+        java.lang.Object $r2, $r5;
+
+        r8 := @this;
+
+        r0 := @parameter0;
+
+        r7 := @parameter1;
+
+        r9 := @parameter2;
+
+        $r1 = interfaceinvoke r0.getSession();
+
+        $r2 = interfaceinvoke $r1.getAttribute("md5Secret");
+
+        r3 = (java.lang.String) $r2;
+
+        $r4 = interfaceinvoke r0.getSession();
+
+        $r5 = interfaceinvoke $r4.getAttribute("sha256Secret");
+
+        r6 = (java.lang.String) $r5;
+
+        if r7 == null goto label3;
+
+        if r9 == null goto label3;
+
+        $z0 = virtualinvoke r7.equals(r3);
+
+        if $z0 == 0 goto label1;
+
+        $z3 = virtualinvoke r9.equals(r6);
+
+        if $z3 == 0 goto label1;
+
+        $r13 = virtualinvoke r8.success(r8);
+
+        $r14 = virtualinvoke $r13.feedback("crypto-hashing.success");
+
+        $r15 = virtualinvoke $r14.build();
+
+        return $r15;
+
+     label1:
+        $z1 = virtualinvoke r7.equals(r3);
+
+        if $z1 != 0 goto label2;
+
+        $z2 = virtualinvoke r9.equals(r6);
+
+        if $z2 == 0 goto label3;
+
+     label2:
+        $r10 = virtualinvoke r8.failed(r8);
+
+        $r11 = virtualinvoke $r10.feedback("crypto-hashing.oneok");
+
+        $r12 = virtualinvoke $r11.build();
+
+        return $r12;
+
+     label3:
+        $r16 = virtualinvoke r8.failed(r8);
+
+        $r17 = virtualinvoke $r16.feedback("crypto-hashing.empty");
+
+        $r18 = virtualinvoke $r17.build();
+
+        return $r18;
+    }
+
+    public static java.lang.String getHash(java.lang.String, java.lang.String) throws java.security.NoSuchAlgorithmException
+    {
+        byte[] $r3, $r4;
+        java.security.MessageDigest $r1;
+        java.lang.String r0, r2, $r5, $r6;
+
+        r2 := @parameter0;
+
+        r0 := @parameter1;
+
+        $r1 = staticinvoke java.security.MessageDigest.getInstance(r0);
+
+        $r3 = virtualinvoke r2.getBytes();
+
+        virtualinvoke $r1.update($r3);
+
+        $r4 = virtualinvoke $r1.digest();
+
+        $r5 = staticinvoke javax.xml.bind.DatatypeConverter.printHexBinary($r4);
+
+        $r6 = virtualinvoke $r5.toUpperCase();
+
+        return $r6;
+    }
+
+    static void <clinit>()
+    {
+        java.lang.String[] $r0;
+
+        $r0 = newarray (java.lang.String)[5];
+
+        $r0[0] = "secret";
+
+        $r0[1] = "admin";
+
+        $r0[2] = "password";
+
+        $r0[3] = "123456";
+
+        $r0[4] = "passw0rd";
+
+        org.owasp.webgoat.lessons.cryptography.HashingAssignment.SECRETS = $r0;
+
+        return;
+    }
+}

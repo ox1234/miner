@@ -1,0 +1,136 @@
+public abstract class org.owasp.webgoat.container.assignments.AssignmentEndpoint extends java.lang.Object implements org.owasp.webgoat.container.lessons.Initializeable
+{
+    private org.owasp.webgoat.container.session.WebSession webSession;
+    private org.owasp.webgoat.container.session.UserSessionData userSessionData;
+    private org.owasp.webgoat.container.i18n.PluginMessages messages;
+
+    public void <init>()
+    {
+        org.owasp.webgoat.container.assignments.AssignmentEndpoint r0;
+
+        r0 := @this;
+
+        specialinvoke r0.<init>();
+
+        return;
+    }
+
+    protected org.owasp.webgoat.container.session.WebSession getWebSession()
+    {
+        org.owasp.webgoat.container.assignments.AssignmentEndpoint r0;
+        org.owasp.webgoat.container.session.WebSession $r1;
+
+        r0 := @this;
+
+        $r1 = r0.webSession;
+
+        return $r1;
+    }
+
+    protected org.owasp.webgoat.container.session.UserSessionData getUserSessionData()
+    {
+        org.owasp.webgoat.container.assignments.AssignmentEndpoint r0;
+        org.owasp.webgoat.container.session.UserSessionData $r1;
+
+        r0 := @this;
+
+        $r1 = r0.userSessionData;
+
+        return $r1;
+    }
+
+    protected org.owasp.webgoat.container.assignments.AttackResult$AttackResultBuilder success(org.owasp.webgoat.container.assignments.AssignmentEndpoint)
+    {
+        org.owasp.webgoat.container.assignments.AttackResult$AttackResultBuilder $r2, $r3, $r4, $r5, $r7;
+        org.owasp.webgoat.container.i18n.PluginMessages $r1;
+        org.owasp.webgoat.container.assignments.AssignmentEndpoint r0, r6;
+
+        r0 := @this;
+
+        r6 := @parameter0;
+
+        $r1 = r0.messages;
+
+        $r2 = staticinvoke org.owasp.webgoat.container.assignments.AttackResult.builder($r1);
+
+        $r3 = virtualinvoke $r2.lessonCompleted(1);
+
+        $r4 = virtualinvoke $r3.attemptWasMade();
+
+        $r5 = virtualinvoke $r4.feedback("assignment.solved");
+
+        $r7 = virtualinvoke $r5.assignment(r6);
+
+        return $r7;
+    }
+
+    protected org.owasp.webgoat.container.assignments.AttackResult$AttackResultBuilder failed(org.owasp.webgoat.container.assignments.AssignmentEndpoint)
+    {
+        org.owasp.webgoat.container.assignments.AttackResult$AttackResultBuilder $r2, $r3, $r4, $r5, $r7;
+        org.owasp.webgoat.container.i18n.PluginMessages $r1;
+        org.owasp.webgoat.container.assignments.AssignmentEndpoint r0, r6;
+
+        r0 := @this;
+
+        r6 := @parameter0;
+
+        $r1 = r0.messages;
+
+        $r2 = staticinvoke org.owasp.webgoat.container.assignments.AttackResult.builder($r1);
+
+        $r3 = virtualinvoke $r2.lessonCompleted(0);
+
+        $r4 = virtualinvoke $r3.attemptWasMade();
+
+        $r5 = virtualinvoke $r4.feedback("assignment.not.solved");
+
+        $r7 = virtualinvoke $r5.assignment(r6);
+
+        return $r7;
+    }
+
+    protected org.owasp.webgoat.container.assignments.AttackResult$AttackResultBuilder informationMessage(org.owasp.webgoat.container.assignments.AssignmentEndpoint)
+    {
+        org.owasp.webgoat.container.assignments.AttackResult$AttackResultBuilder $r2, $r3, $r5;
+        org.owasp.webgoat.container.i18n.PluginMessages $r1;
+        org.owasp.webgoat.container.assignments.AssignmentEndpoint r0, r4;
+
+        r0 := @this;
+
+        r4 := @parameter0;
+
+        $r1 = r0.messages;
+
+        $r2 = staticinvoke org.owasp.webgoat.container.assignments.AttackResult.builder($r1);
+
+        $r3 = virtualinvoke $r2.lessonCompleted(0);
+
+        $r5 = virtualinvoke $r3.assignment(r4);
+
+        return $r5;
+    }
+
+    public void initialize(org.owasp.webgoat.container.users.WebGoatUser)
+    {
+        org.owasp.webgoat.container.assignments.AssignmentEndpoint r0;
+        org.owasp.webgoat.container.users.WebGoatUser r1;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        return;
+    }
+
+    public org.owasp.webgoat.container.i18n.PluginMessages getMessages()
+    {
+        org.owasp.webgoat.container.assignments.AssignmentEndpoint r0;
+        org.owasp.webgoat.container.i18n.PluginMessages $r1;
+
+        r0 := @this;
+
+        $r1 = r0.messages;
+
+        return $r1;
+    }
+}

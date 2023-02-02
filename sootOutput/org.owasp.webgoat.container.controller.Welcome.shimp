@@ -1,0 +1,45 @@
+public class org.owasp.webgoat.container.controller.Welcome extends java.lang.Object
+{
+    private static final java.lang.String WELCOMED;
+
+    public void <init>()
+    {
+        org.owasp.webgoat.container.controller.Welcome r0;
+
+        r0 := @this;
+
+        specialinvoke r0.<init>();
+
+        return;
+    }
+
+    public org.springframework.web.servlet.ModelAndView welcome(javax.servlet.http.HttpServletRequest)
+    {
+        javax.servlet.http.HttpSession $r1;
+        org.springframework.web.servlet.ModelAndView $r3;
+        javax.servlet.http.HttpServletRequest r0;
+        org.owasp.webgoat.container.controller.Welcome r4;
+        java.lang.Object $r2;
+
+        r4 := @this;
+
+        r0 := @parameter0;
+
+        $r1 = interfaceinvoke r0.getSession();
+
+        $r2 = interfaceinvoke $r1.getAttribute("welcomed");
+
+        if $r2 != null goto label1;
+
+        interfaceinvoke $r1.setAttribute("welcomed", "true");
+
+     label1:
+        $r3 = new org.springframework.web.servlet.ModelAndView;
+
+        specialinvoke $r3.<init>();
+
+        virtualinvoke $r3.setViewName("forward:/attack?start=true");
+
+        return $r3;
+    }
+}

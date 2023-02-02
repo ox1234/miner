@@ -1,0 +1,117 @@
+public class org.owasp.webgoat.lessons.clientsidefiltering.ShopEndpoint extends java.lang.Object
+{
+    private org.owasp.webgoat.lessons.clientsidefiltering.ShopEndpoint$CheckoutCodes checkoutCodes;
+
+    public void <init>()
+    {
+        org.owasp.webgoat.lessons.clientsidefiltering.ShopEndpoint$CheckoutCode $r2, $r3, $r4;
+        org.owasp.webgoat.lessons.clientsidefiltering.ShopEndpoint$CheckoutCodes $r5;
+        org.owasp.webgoat.lessons.clientsidefiltering.ShopEndpoint r0;
+        java.util.ArrayList $r1;
+
+        r0 := @this;
+
+        specialinvoke r0.<init>();
+
+        $r1 = staticinvoke com.google.common.collect.Lists.newArrayList();
+
+        $r2 = new org.owasp.webgoat.lessons.clientsidefiltering.ShopEndpoint$CheckoutCode;
+
+        specialinvoke $r2.<init>(r0, "webgoat", 25);
+
+        interfaceinvoke $r1.add($r2);
+
+        $r3 = new org.owasp.webgoat.lessons.clientsidefiltering.ShopEndpoint$CheckoutCode;
+
+        specialinvoke $r3.<init>(r0, "owasp", 25);
+
+        interfaceinvoke $r1.add($r3);
+
+        $r4 = new org.owasp.webgoat.lessons.clientsidefiltering.ShopEndpoint$CheckoutCode;
+
+        specialinvoke $r4.<init>(r0, "owasp-webgoat", 50);
+
+        interfaceinvoke $r1.add($r4);
+
+        $r5 = new org.owasp.webgoat.lessons.clientsidefiltering.ShopEndpoint$CheckoutCodes;
+
+        specialinvoke $r5.<init>(r0, $r1);
+
+        r0.checkoutCodes = $r5;
+
+        return;
+    }
+
+    public org.owasp.webgoat.lessons.clientsidefiltering.ShopEndpoint$CheckoutCode getDiscountCode(java.lang.String)
+    {
+        org.owasp.webgoat.lessons.clientsidefiltering.ShopEndpoint$CheckoutCodes $r3;
+        org.owasp.webgoat.lessons.clientsidefiltering.ShopEndpoint$CheckoutCode $r5, $r7, $r8;
+        org.owasp.webgoat.lessons.clientsidefiltering.ShopEndpoint r2;
+        java.util.Optional $r4;
+        java.lang.Object $r6;
+        java.lang.String r0, $r1;
+        boolean $z0;
+
+        r2 := @this;
+
+        r0 := @parameter0;
+
+        $r1 = "get_it_for_free";
+
+        $z0 = virtualinvoke $r1.equals(r0);
+
+        if $z0 == 0 goto label1;
+
+        $r8 = new org.owasp.webgoat.lessons.clientsidefiltering.ShopEndpoint$CheckoutCode;
+
+        specialinvoke $r8.<init>(r2, "get_it_for_free", 100);
+
+        return $r8;
+
+     label1:
+        $r3 = r2.checkoutCodes;
+
+        $r4 = virtualinvoke $r3.get(r0);
+
+        $r5 = new org.owasp.webgoat.lessons.clientsidefiltering.ShopEndpoint$CheckoutCode;
+
+        specialinvoke $r5.<init>(r2, "no", 0);
+
+        $r6 = virtualinvoke $r4.orElse($r5);
+
+        $r7 = (org.owasp.webgoat.lessons.clientsidefiltering.ShopEndpoint$CheckoutCode) $r6;
+
+        return $r7;
+    }
+
+    public org.owasp.webgoat.lessons.clientsidefiltering.ShopEndpoint$CheckoutCodes all()
+    {
+        java.util.List $r3;
+        org.owasp.webgoat.lessons.clientsidefiltering.ShopEndpoint$CheckoutCode $r4;
+        org.owasp.webgoat.lessons.clientsidefiltering.ShopEndpoint$CheckoutCodes $r2, $r5;
+        org.owasp.webgoat.lessons.clientsidefiltering.ShopEndpoint r1;
+        java.util.ArrayList $r0;
+
+        r1 := @this;
+
+        $r0 = staticinvoke com.google.common.collect.Lists.newArrayList();
+
+        $r2 = r1.checkoutCodes;
+
+        $r3 = virtualinvoke $r2.getCodes();
+
+        interfaceinvoke $r0.addAll($r3);
+
+        $r4 = new org.owasp.webgoat.lessons.clientsidefiltering.ShopEndpoint$CheckoutCode;
+
+        specialinvoke $r4.<init>(r1, "get_it_for_free", 100);
+
+        interfaceinvoke $r0.add($r4);
+
+        $r5 = new org.owasp.webgoat.lessons.clientsidefiltering.ShopEndpoint$CheckoutCodes;
+
+        specialinvoke $r5.<init>(r1, $r0);
+
+        return $r5;
+    }
+}

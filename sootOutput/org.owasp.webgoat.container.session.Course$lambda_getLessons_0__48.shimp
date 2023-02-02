@@ -1,0 +1,55 @@
+public final class org.owasp.webgoat.container.session.Course$lambda_getLessons_0__48 extends java.lang.Object implements java.util.function.Predicate
+{
+    org.owasp.webgoat.container.lessons.Category cap0;
+
+    public static java.util.function.Predicate bootstrap$(org.owasp.webgoat.container.lessons.Category)
+    {
+        org.owasp.webgoat.container.lessons.Category $r0;
+        org.owasp.webgoat.container.session.Course$lambda_getLessons_0__48 $r1;
+
+        $r0 := @parameter0;
+
+        $r1 = new org.owasp.webgoat.container.session.Course$lambda_getLessons_0__48;
+
+        specialinvoke $r1.<init>($r0);
+
+        return $r1;
+    }
+
+    public void <init>(org.owasp.webgoat.container.lessons.Category)
+    {
+        org.owasp.webgoat.container.lessons.Category $r1;
+        org.owasp.webgoat.container.session.Course$lambda_getLessons_0__48 $r0;
+
+        $r0 := @this;
+
+        $r1 := @parameter0;
+
+        specialinvoke $r0.<init>();
+
+        $r0.cap0 = $r1;
+
+        return;
+    }
+
+    public boolean test(java.lang.Object)
+    {
+        org.owasp.webgoat.container.session.Course$lambda_getLessons_0__48 $r0;
+        java.lang.Object $r1;
+        org.owasp.webgoat.container.lessons.Lesson $r2;
+        org.owasp.webgoat.container.lessons.Category $r3;
+        boolean $z0;
+
+        $r0 := @this;
+
+        $r1 := @parameter0;
+
+        $r2 = (org.owasp.webgoat.container.lessons.Lesson) $r1;
+
+        $r3 = $r0.cap0;
+
+        $z0 = staticinvoke org.owasp.webgoat.container.session.Course.lambda$getLessons$0($r3, $r2);
+
+        return $z0;
+    }
+}

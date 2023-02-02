@@ -1,0 +1,56 @@
+class org.owasp.webgoat.lessons.clientsidefiltering.ShopEndpoint$CheckoutCode extends java.lang.Object
+{
+    private java.lang.String code;
+    private int discount;
+    final org.owasp.webgoat.lessons.clientsidefiltering.ShopEndpoint this$0;
+
+    public void <init>(org.owasp.webgoat.lessons.clientsidefiltering.ShopEndpoint, java.lang.String, int)
+    {
+        org.owasp.webgoat.lessons.clientsidefiltering.ShopEndpoint$CheckoutCode r0;
+        org.owasp.webgoat.lessons.clientsidefiltering.ShopEndpoint r1;
+        int i0;
+        java.lang.String r2;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        r2 := @parameter1;
+
+        i0 := @parameter2;
+
+        r0.this$0 = r1;
+
+        specialinvoke r0.<init>();
+
+        r0.code = r2;
+
+        r0.discount = i0;
+
+        return;
+    }
+
+    public java.lang.String getCode()
+    {
+        org.owasp.webgoat.lessons.clientsidefiltering.ShopEndpoint$CheckoutCode r0;
+        java.lang.String $r1;
+
+        r0 := @this;
+
+        $r1 = r0.code;
+
+        return $r1;
+    }
+
+    public int getDiscount()
+    {
+        int $i0;
+        org.owasp.webgoat.lessons.clientsidefiltering.ShopEndpoint$CheckoutCode r0;
+
+        r0 := @this;
+
+        $i0 = r0.discount;
+
+        return $i0;
+    }
+}

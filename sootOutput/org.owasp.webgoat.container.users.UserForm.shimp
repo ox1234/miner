@@ -1,0 +1,122 @@
+public class org.owasp.webgoat.container.users.UserForm extends java.lang.Object
+{
+    private java.lang.String username;
+    private java.lang.String password;
+    private java.lang.String matchingPassword;
+    private java.lang.String agree;
+
+    public void <init>()
+    {
+        org.owasp.webgoat.container.users.UserForm r0;
+
+        r0 := @this;
+
+        specialinvoke r0.<init>();
+
+        return;
+    }
+
+    public java.lang.String getUsername()
+    {
+        org.owasp.webgoat.container.users.UserForm r0;
+        java.lang.String $r1;
+
+        r0 := @this;
+
+        $r1 = r0.username;
+
+        return $r1;
+    }
+
+    public java.lang.String getPassword()
+    {
+        org.owasp.webgoat.container.users.UserForm r0;
+        java.lang.String $r1;
+
+        r0 := @this;
+
+        $r1 = r0.password;
+
+        return $r1;
+    }
+
+    public java.lang.String getMatchingPassword()
+    {
+        org.owasp.webgoat.container.users.UserForm r0;
+        java.lang.String $r1;
+
+        r0 := @this;
+
+        $r1 = r0.matchingPassword;
+
+        return $r1;
+    }
+
+    public java.lang.String getAgree()
+    {
+        org.owasp.webgoat.container.users.UserForm r0;
+        java.lang.String $r1;
+
+        r0 := @this;
+
+        $r1 = r0.agree;
+
+        return $r1;
+    }
+
+    public void setUsername(java.lang.String)
+    {
+        org.owasp.webgoat.container.users.UserForm r0;
+        java.lang.String r1;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        r0.username = r1;
+
+        return;
+    }
+
+    public void setPassword(java.lang.String)
+    {
+        org.owasp.webgoat.container.users.UserForm r0;
+        java.lang.String r1;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        r0.password = r1;
+
+        return;
+    }
+
+    public void setMatchingPassword(java.lang.String)
+    {
+        org.owasp.webgoat.container.users.UserForm r0;
+        java.lang.String r1;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        r0.matchingPassword = r1;
+
+        return;
+    }
+
+    public void setAgree(java.lang.String)
+    {
+        org.owasp.webgoat.container.users.UserForm r0;
+        java.lang.String r1;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        r0.agree = r1;
+
+        return;
+    }
+}

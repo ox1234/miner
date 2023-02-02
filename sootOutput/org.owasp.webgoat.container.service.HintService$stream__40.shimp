@@ -1,0 +1,43 @@
+public final class org.owasp.webgoat.container.service.HintService$stream__40 extends java.lang.Object implements java.util.function.Function
+{
+
+    public static java.util.function.Function bootstrap$()
+    {
+        org.owasp.webgoat.container.service.HintService$stream__40 $r0;
+
+        $r0 = new org.owasp.webgoat.container.service.HintService$stream__40;
+
+        specialinvoke $r0.<init>();
+
+        return $r0;
+    }
+
+    public void <init>()
+    {
+        org.owasp.webgoat.container.service.HintService$stream__40 $r0;
+
+        $r0 := @this;
+
+        specialinvoke $r0.<init>();
+
+        return;
+    }
+
+    public java.lang.Object apply(java.lang.Object)
+    {
+        java.util.List $r2;
+        java.util.stream.Stream $r3;
+        java.lang.Object $r1;
+        org.owasp.webgoat.container.service.HintService$stream__40 $r0;
+
+        $r0 := @this;
+
+        $r1 := @parameter0;
+
+        $r2 = (java.util.List) $r1;
+
+        $r3 = interfaceinvoke $r2.stream();
+
+        return $r3;
+    }
+}

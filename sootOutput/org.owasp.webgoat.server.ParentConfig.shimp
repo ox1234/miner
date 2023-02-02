@@ -1,0 +1,14 @@
+public class org.owasp.webgoat.server.ParentConfig extends java.lang.Object
+{
+
+    public void <init>()
+    {
+        org.owasp.webgoat.server.ParentConfig r0;
+
+        r0 := @this;
+
+        specialinvoke r0.<init>();
+
+        return;
+    }
+}

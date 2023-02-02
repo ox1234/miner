@@ -1,0 +1,42 @@
+public final class org.owasp.webgoat.lessons.jwt.JWTVotesEndpoint$lambda_vote_0__52 extends java.lang.Object implements java.util.function.Consumer
+{
+
+    public static java.util.function.Consumer bootstrap$()
+    {
+        org.owasp.webgoat.lessons.jwt.JWTVotesEndpoint$lambda_vote_0__52 $r0;
+
+        $r0 = new org.owasp.webgoat.lessons.jwt.JWTVotesEndpoint$lambda_vote_0__52;
+
+        specialinvoke $r0.<init>();
+
+        return $r0;
+    }
+
+    public void <init>()
+    {
+        org.owasp.webgoat.lessons.jwt.JWTVotesEndpoint$lambda_vote_0__52 $r0;
+
+        $r0 := @this;
+
+        specialinvoke $r0.<init>();
+
+        return;
+    }
+
+    public void accept(java.lang.Object)
+    {
+        java.lang.Object $r1;
+        org.owasp.webgoat.lessons.jwt.votes.Vote $r2;
+        org.owasp.webgoat.lessons.jwt.JWTVotesEndpoint$lambda_vote_0__52 $r0;
+
+        $r0 := @this;
+
+        $r1 := @parameter0;
+
+        $r2 = (org.owasp.webgoat.lessons.jwt.votes.Vote) $r1;
+
+        staticinvoke org.owasp.webgoat.lessons.jwt.JWTVotesEndpoint.lambda$vote$0($r2);
+
+        return;
+    }
+}

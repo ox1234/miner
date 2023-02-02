@@ -1,0 +1,30 @@
+public class org.owasp.webgoat.lessons.xxe.CommentsEndpoint extends java.lang.Object
+{
+    private org.owasp.webgoat.lessons.xxe.CommentsCache comments;
+
+    public void <init>()
+    {
+        org.owasp.webgoat.lessons.xxe.CommentsEndpoint r0;
+
+        r0 := @this;
+
+        specialinvoke r0.<init>();
+
+        return;
+    }
+
+    public java.util.Collection retrieveComments()
+    {
+        org.owasp.webgoat.lessons.xxe.CommentsEndpoint r0;
+        org.owasp.webgoat.lessons.xxe.CommentsCache $r1;
+        org.owasp.webgoat.lessons.xxe.CommentsCache$Comments $r2;
+
+        r0 := @this;
+
+        $r1 = r0.comments;
+
+        $r2 = virtualinvoke $r1.getComments();
+
+        return $r2;
+    }
+}

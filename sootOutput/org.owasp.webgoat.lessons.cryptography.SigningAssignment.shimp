@@ -1,0 +1,169 @@
+public class org.owasp.webgoat.lessons.cryptography.SigningAssignment extends org.owasp.webgoat.container.assignments.AssignmentEndpoint
+{
+    private static final org.slf4j.Logger log;
+
+    public void <init>()
+    {
+        org.owasp.webgoat.lessons.cryptography.SigningAssignment r0;
+
+        r0 := @this;
+
+        specialinvoke r0.<init>();
+
+        return;
+    }
+
+    public java.lang.String getPrivateKey(javax.servlet.http.HttpServletRequest) throws java.security.NoSuchAlgorithmException, java.security.InvalidAlgorithmParameterException
+    {
+        javax.servlet.http.HttpSession $r1, $r5, $r6;
+        java.security.KeyPair $r3;
+        org.owasp.webgoat.lessons.cryptography.SigningAssignment r7;
+        javax.servlet.http.HttpServletRequest r0;
+        java.lang.Object $r2;
+        java.lang.String $r4, r8, r8_1, r8_2;
+
+        r7 := @this;
+
+        r0 := @parameter0;
+
+        $r1 = interfaceinvoke r0.getSession();
+
+        $r2 = interfaceinvoke $r1.getAttribute("privateKeyString");
+
+        r8 = (java.lang.String) $r2;
+
+(0)     if r8 != null goto label1;
+
+        $r3 = staticinvoke org.owasp.webgoat.lessons.cryptography.CryptoUtil.generateKeyPair();
+
+        $r4 = staticinvoke org.owasp.webgoat.lessons.cryptography.CryptoUtil.getPrivateKeyInPEM($r3);
+
+        r8_1 = $r4;
+
+        $r5 = interfaceinvoke r0.getSession();
+
+        interfaceinvoke $r5.setAttribute("privateKeyString", $r4);
+
+        $r6 = interfaceinvoke r0.getSession();
+
+(1)     interfaceinvoke $r6.setAttribute("keyPair", $r3);
+
+     label1:
+        r8_2 = Phi(r8 #0, r8_1 #1);
+
+        return r8_2;
+    }
+
+    public org.owasp.webgoat.container.assignments.AttackResult completed(javax.servlet.http.HttpServletRequest, java.lang.String, java.lang.String)
+    {
+        java.security.KeyPair r4;
+        byte[] $r8;
+        java.security.interfaces.RSAPublicKey r6;
+        java.math.BigInteger $r7;
+        boolean $z0, $z1;
+        javax.servlet.http.HttpSession $r2;
+        org.owasp.webgoat.container.assignments.AttackResult $r17, $r20, $r24;
+        org.owasp.webgoat.container.assignments.AttackResult$AttackResultBuilder $r15, $r16, $r18, $r19, $r22, $r23;
+        javax.servlet.http.HttpServletRequest r1;
+        int $i0;
+        java.lang.String r0, $r9, $r10, r11, $r25, r26, r26_1, r26_2;
+        org.slf4j.Logger $r13, $r21;
+        java.security.PublicKey $r5, $r12;
+        org.owasp.webgoat.lessons.cryptography.SigningAssignment r14;
+        java.lang.Object $r3;
+
+        r14 := @this;
+
+        r1 := @parameter0;
+
+        r0 := @parameter1;
+
+        r11 := @parameter2;
+
+        r26 = r0;
+
+        $r2 = interfaceinvoke r1.getSession();
+
+        $r3 = interfaceinvoke $r2.getAttribute("keyPair");
+
+        r4 = (java.security.KeyPair) $r3;
+
+        $r5 = virtualinvoke r4.getPublic();
+
+        r6 = (java.security.interfaces.RSAPublicKey) $r5;
+
+        $i0 = virtualinvoke r0.length();
+
+(0)     if $i0 != 512 goto label1;
+
+        $r25 = "00";
+
+(1)     r26_1 = virtualinvoke $r25.concat(r0);
+
+     label1:
+        r26_2 = Phi(r26 #0, r26_1 #1);
+
+        $r7 = interfaceinvoke r6.getModulus();
+
+        $r8 = virtualinvoke $r7.toByteArray();
+
+        $r9 = staticinvoke javax.xml.bind.DatatypeConverter.printHexBinary($r8);
+
+        $r10 = virtualinvoke r26_2.toUpperCase();
+
+        $z0 = virtualinvoke $r9.equals($r10);
+
+        if $z0 != 0 goto label2;
+
+        $r21 = org.owasp.webgoat.lessons.cryptography.SigningAssignment.log;
+
+        interfaceinvoke $r21.warn("modulus {} incorrect", r0);
+
+        $r22 = virtualinvoke r14.failed(r14);
+
+        $r23 = virtualinvoke $r22.feedback("crypto-signing.modulusnotok");
+
+        $r24 = virtualinvoke $r23.build();
+
+        return $r24;
+
+     label2:
+        $r12 = virtualinvoke r4.getPublic();
+
+        $z1 = staticinvoke org.owasp.webgoat.lessons.cryptography.CryptoUtil.verifyMessage(r0, r11, $r12);
+
+        if $z1 == 0 goto label3;
+
+        $r18 = virtualinvoke r14.success(r14);
+
+        $r19 = virtualinvoke $r18.feedback("crypto-signing.success");
+
+        $r20 = virtualinvoke $r19.build();
+
+        return $r20;
+
+     label3:
+        $r13 = org.owasp.webgoat.lessons.cryptography.SigningAssignment.log;
+
+        interfaceinvoke $r13.warn("signature incorrect");
+
+        $r15 = virtualinvoke r14.failed(r14);
+
+        $r16 = virtualinvoke $r15.feedback("crypto-signing.notok");
+
+        $r17 = virtualinvoke $r16.build();
+
+        return $r17;
+    }
+
+    static void <clinit>()
+    {
+        org.slf4j.Logger $r0;
+
+        $r0 = staticinvoke org.slf4j.LoggerFactory.getLogger(class "Lorg/owasp/webgoat/lessons/cryptography/SigningAssignment;");
+
+        org.owasp.webgoat.lessons.cryptography.SigningAssignment.log = $r0;
+
+        return;
+    }
+}

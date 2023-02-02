@@ -1,0 +1,103 @@
+public class org.owasp.webgoat.container.users.RegistrationController extends java.lang.Object
+{
+    private static final org.slf4j.Logger log;
+    private org.owasp.webgoat.container.users.UserValidator userValidator;
+    private org.owasp.webgoat.container.users.UserService userService;
+    private org.springframework.security.authentication.AuthenticationManager authenticationManager;
+
+    public java.lang.String showForm(org.owasp.webgoat.container.users.UserForm)
+    {
+        org.owasp.webgoat.container.users.RegistrationController r0;
+        org.owasp.webgoat.container.users.UserForm r1;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        return "registration";
+    }
+
+    public java.lang.String registration(org.owasp.webgoat.container.users.UserForm, org.springframework.validation.BindingResult, javax.servlet.http.HttpServletRequest) throws javax.servlet.ServletException
+    {
+        org.owasp.webgoat.container.users.UserService $r4;
+        org.owasp.webgoat.container.users.UserValidator $r3;
+        org.springframework.validation.BindingResult r2;
+        org.owasp.webgoat.container.users.RegistrationController r0;
+        javax.servlet.http.HttpServletRequest r7;
+        org.owasp.webgoat.container.users.UserForm r1;
+        java.lang.String $r5, $r6, $r8, $r9;
+        boolean $z0;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        r2 := @parameter1;
+
+        r7 := @parameter2;
+
+        $r3 = r0.userValidator;
+
+        virtualinvoke $r3.validate(r1, r2);
+
+        $z0 = interfaceinvoke r2.hasErrors();
+
+        if $z0 == 0 goto label1;
+
+        return "registration";
+
+     label1:
+        $r4 = r0.userService;
+
+        $r5 = virtualinvoke r1.getUsername();
+
+        $r6 = virtualinvoke r1.getPassword();
+
+        virtualinvoke $r4.addUser($r5, $r6);
+
+        $r8 = virtualinvoke r1.getUsername();
+
+        $r9 = virtualinvoke r1.getPassword();
+
+        interfaceinvoke r7.login($r8, $r9);
+
+        return "redirect:/attack";
+    }
+
+    public void <init>(org.owasp.webgoat.container.users.UserValidator, org.owasp.webgoat.container.users.UserService, org.springframework.security.authentication.AuthenticationManager)
+    {
+        org.springframework.security.authentication.AuthenticationManager r3;
+        org.owasp.webgoat.container.users.UserService r2;
+        org.owasp.webgoat.container.users.UserValidator r1;
+        org.owasp.webgoat.container.users.RegistrationController r0;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        r2 := @parameter1;
+
+        r3 := @parameter2;
+
+        specialinvoke r0.<init>();
+
+        r0.userValidator = r1;
+
+        r0.userService = r2;
+
+        r0.authenticationManager = r3;
+
+        return;
+    }
+
+    static void <clinit>()
+    {
+        org.slf4j.Logger $r0;
+
+        $r0 = staticinvoke org.slf4j.LoggerFactory.getLogger(class "Lorg/owasp/webgoat/container/users/RegistrationController;");
+
+        org.owasp.webgoat.container.users.RegistrationController.log = $r0;
+
+        return;
+    }
+}

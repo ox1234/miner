@@ -1,0 +1,43 @@
+public final class org.owasp.webgoat.container.users.Scoreboard$getTitle__33 extends java.lang.Object implements java.util.function.Function
+{
+
+    public static java.util.function.Function bootstrap$()
+    {
+        org.owasp.webgoat.container.users.Scoreboard$getTitle__33 $r0;
+
+        $r0 = new org.owasp.webgoat.container.users.Scoreboard$getTitle__33;
+
+        specialinvoke $r0.<init>();
+
+        return $r0;
+    }
+
+    public void <init>()
+    {
+        org.owasp.webgoat.container.users.Scoreboard$getTitle__33 $r0;
+
+        $r0 := @this;
+
+        specialinvoke $r0.<init>();
+
+        return;
+    }
+
+    public java.lang.Object apply(java.lang.Object)
+    {
+        org.owasp.webgoat.container.users.Scoreboard$getTitle__33 $r0;
+        java.lang.Object $r1;
+        java.lang.String $r3;
+        org.owasp.webgoat.container.lessons.Lesson $r2;
+
+        $r0 := @this;
+
+        $r1 := @parameter0;
+
+        $r2 = (org.owasp.webgoat.container.lessons.Lesson) $r1;
+
+        $r3 = virtualinvoke $r2.getTitle();
+
+        return $r3;
+    }
+}

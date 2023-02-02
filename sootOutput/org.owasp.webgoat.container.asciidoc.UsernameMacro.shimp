@@ -1,0 +1,79 @@
+public class org.owasp.webgoat.container.asciidoc.UsernameMacro extends org.asciidoctor.extension.InlineMacroProcessor
+{
+
+    public void <init>(java.lang.String)
+    {
+        java.lang.String r1;
+        org.owasp.webgoat.container.asciidoc.UsernameMacro r0;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        specialinvoke r0.<init>(r1);
+
+        return;
+    }
+
+    public void <init>(java.lang.String, java.util.Map)
+    {
+        java.lang.String r1;
+        org.owasp.webgoat.container.asciidoc.UsernameMacro r0;
+        java.util.Map r2;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        r2 := @parameter1;
+
+        specialinvoke r0.<init>(r1, r2);
+
+        return;
+    }
+
+    public java.lang.Object process(org.asciidoctor.ast.ContentNode, java.lang.String, java.util.Map)
+    {
+        org.asciidoctor.ast.ContentNode r4;
+        org.owasp.webgoat.container.users.WebGoatUser r6;
+        org.springframework.security.core.context.SecurityContext $r0;
+        org.owasp.webgoat.container.asciidoc.UsernameMacro r3;
+        org.asciidoctor.ast.PhraseNode $r5;
+        java.util.Map r8;
+        java.lang.Object $r2;
+        java.lang.String r7, r9, r9_1, r9_2;
+        org.springframework.security.core.Authentication $r1;
+        boolean $z0;
+
+        r3 := @this;
+
+        r4 := @parameter0;
+
+        r7 := @parameter1;
+
+        r8 := @parameter2;
+
+        $r0 = staticinvoke org.springframework.security.core.context.SecurityContextHolder.getContext();
+
+        $r1 = interfaceinvoke $r0.getAuthentication();
+
+        r9 = "unknown";
+
+        $r2 = interfaceinvoke $r1.getPrincipal();
+
+        $z0 = $r2 instanceof org.owasp.webgoat.container.users.WebGoatUser;
+
+(0)     if $z0 == 0 goto label1;
+
+        r6 = (org.owasp.webgoat.container.users.WebGoatUser) $r2;
+
+(1)     r9_1 = virtualinvoke r6.getUsername();
+
+     label1:
+        r9_2 = Phi(r9 #0, r9_1 #1);
+
+        $r5 = virtualinvoke r3.createPhraseNode(r4, "quoted", r9_2);
+
+        return $r5;
+    }
+}

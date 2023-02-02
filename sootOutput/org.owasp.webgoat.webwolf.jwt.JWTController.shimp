@@ -1,0 +1,82 @@
+public class org.owasp.webgoat.webwolf.jwt.JWTController extends java.lang.Object
+{
+
+    public void <init>()
+    {
+        org.owasp.webgoat.webwolf.jwt.JWTController r0;
+
+        r0 := @this;
+
+        specialinvoke r0.<init>();
+
+        return;
+    }
+
+    public org.springframework.web.servlet.ModelAndView jwt()
+    {
+        org.springframework.web.servlet.ModelAndView $r0;
+        org.owasp.webgoat.webwolf.jwt.JWTController r1;
+
+        r1 := @this;
+
+        $r0 = new org.springframework.web.servlet.ModelAndView;
+
+        specialinvoke $r0.<init>("jwt");
+
+        return $r0;
+    }
+
+    public org.owasp.webgoat.webwolf.jwt.JWTToken decode(org.springframework.util.MultiValueMap)
+    {
+        org.owasp.webgoat.webwolf.jwt.JWTController r6;
+        org.springframework.util.MultiValueMap r0;
+        java.lang.Object $r1, $r3;
+        java.lang.String r2, r4;
+        org.owasp.webgoat.webwolf.jwt.JWTToken $r5;
+
+        r6 := @this;
+
+        r0 := @parameter0;
+
+        $r1 = interfaceinvoke r0.getFirst("token");
+
+        r2 = (java.lang.String) $r1;
+
+        $r3 = interfaceinvoke r0.getFirst("secretKey");
+
+        r4 = (java.lang.String) $r3;
+
+        $r5 = staticinvoke org.owasp.webgoat.webwolf.jwt.JWTToken.decode(r2, r4);
+
+        return $r5;
+    }
+
+    public org.owasp.webgoat.webwolf.jwt.JWTToken encode(org.springframework.util.MultiValueMap)
+    {
+        org.owasp.webgoat.webwolf.jwt.JWTController r8;
+        org.springframework.util.MultiValueMap r0;
+        java.lang.Object $r1, $r3, $r5;
+        java.lang.String r2, r4, r6;
+        org.owasp.webgoat.webwolf.jwt.JWTToken $r7;
+
+        r8 := @this;
+
+        r0 := @parameter0;
+
+        $r1 = interfaceinvoke r0.getFirst("header");
+
+        r2 = (java.lang.String) $r1;
+
+        $r3 = interfaceinvoke r0.getFirst("payload");
+
+        r4 = (java.lang.String) $r3;
+
+        $r5 = interfaceinvoke r0.getFirst("secretKey");
+
+        r6 = (java.lang.String) $r5;
+
+        $r7 = staticinvoke org.owasp.webgoat.webwolf.jwt.JWTToken.encode(r2, r4, r6);
+
+        return $r7;
+    }
+}

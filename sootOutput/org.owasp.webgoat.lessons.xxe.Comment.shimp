@@ -1,0 +1,137 @@
+public class org.owasp.webgoat.lessons.xxe.Comment extends java.lang.Object
+{
+    private java.lang.String user;
+    private java.lang.String dateTime;
+    private java.lang.String text;
+
+    public java.lang.String getUser()
+    {
+        org.owasp.webgoat.lessons.xxe.Comment r0;
+        java.lang.String $r1;
+
+        r0 := @this;
+
+        $r1 = r0.user;
+
+        return $r1;
+    }
+
+    public java.lang.String getDateTime()
+    {
+        org.owasp.webgoat.lessons.xxe.Comment r0;
+        java.lang.String $r1;
+
+        r0 := @this;
+
+        $r1 = r0.dateTime;
+
+        return $r1;
+    }
+
+    public java.lang.String getText()
+    {
+        org.owasp.webgoat.lessons.xxe.Comment r0;
+        java.lang.String $r1;
+
+        r0 := @this;
+
+        $r1 = r0.text;
+
+        return $r1;
+    }
+
+    public void setUser(java.lang.String)
+    {
+        org.owasp.webgoat.lessons.xxe.Comment r0;
+        java.lang.String r1;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        r0.user = r1;
+
+        return;
+    }
+
+    public void setDateTime(java.lang.String)
+    {
+        org.owasp.webgoat.lessons.xxe.Comment r0;
+        java.lang.String r1;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        r0.dateTime = r1;
+
+        return;
+    }
+
+    public void setText(java.lang.String)
+    {
+        org.owasp.webgoat.lessons.xxe.Comment r0;
+        java.lang.String r1;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        r0.text = r1;
+
+        return;
+    }
+
+    public void <init>(java.lang.String, java.lang.String, java.lang.String)
+    {
+        org.owasp.webgoat.lessons.xxe.Comment r0;
+        java.lang.String r1, r2, r3;
+
+        r0 := @this;
+
+        r1 := @parameter0;
+
+        r2 := @parameter1;
+
+        r3 := @parameter2;
+
+        specialinvoke r0.<init>();
+
+        r0.user = r1;
+
+        r0.dateTime = r2;
+
+        r0.text = r3;
+
+        return;
+    }
+
+    public void <init>()
+    {
+        org.owasp.webgoat.lessons.xxe.Comment r0;
+
+        r0 := @this;
+
+        specialinvoke r0.<init>();
+
+        return;
+    }
+
+    public java.lang.String toString()
+    {
+        org.owasp.webgoat.lessons.xxe.Comment r0;
+        java.lang.String $r1, $r2, $r3, $r4;
+
+        r0 := @this;
+
+        $r1 = virtualinvoke r0.getUser();
+
+        $r2 = virtualinvoke r0.getDateTime();
+
+        $r3 = virtualinvoke r0.getText();
+
+        $r4 = dynamicinvoke "makeConcatWithConstants" <java.lang.String (java.lang.String,java.lang.String,java.lang.String)>($r1, $r2, $r3) java.lang.invoke.StringConcatFactory.makeConcatWithConstants("Comment(user=\u0001, dateTime=\u0001, text=\u0001)");
+
+        return $r4;
+    }
+}

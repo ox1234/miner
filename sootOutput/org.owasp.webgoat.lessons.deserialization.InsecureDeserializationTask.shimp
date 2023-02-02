@@ -1,0 +1,195 @@
+public class org.owasp.webgoat.lessons.deserialization.InsecureDeserializationTask extends org.owasp.webgoat.container.assignments.AssignmentEndpoint
+{
+
+    public void <init>()
+    {
+        org.owasp.webgoat.lessons.deserialization.InsecureDeserializationTask r0;
+
+        r0 := @this;
+
+        specialinvoke r0.<init>();
+
+        return;
+    }
+
+    public org.owasp.webgoat.container.assignments.AttackResult completed(java.lang.String) throws java.io.IOException
+    {
+        byte[] $r6;
+        java.io.ObjectInputStream $r3;
+        java.io.ByteArrayInputStream $r4;
+        boolean $z0, $z1;
+        org.owasp.webgoat.lessons.deserialization.InsecureDeserializationTask r8;
+        java.lang.Exception $r21;
+        org.owasp.webgoat.container.assignments.AttackResult $r10, $r12, $r14, $r17, $r20, $r24, $r28, $r32;
+        java.lang.Throwable $r25, $r29, $r33, $r34;
+        org.owasp.webgoat.container.assignments.AttackResult$AttackResultBuilder $r9, $r11, $r13, $r15, $r16, $r18, $r19, $r22, $r23, $r26, $r27, $r30, $r31;
+        java.util.Base64$Decoder $r5;
+        long $l0, $l1, $l2;
+        int i3;
+        java.lang.String r0, $r1, $r2;
+        java.lang.Object $r7;
+
+        r8 := @this;
+
+        r0 := @parameter0;
+
+        $r1 = virtualinvoke r0.replace(45, 43);
+
+        $r2 = virtualinvoke $r1.replace(95, 47);
+
+     label01:
+        $r3 = new java.io.ObjectInputStream;
+
+        $r4 = new java.io.ByteArrayInputStream;
+
+        $r5 = staticinvoke java.util.Base64.getDecoder();
+
+        $r6 = virtualinvoke $r5.decode($r2);
+
+        specialinvoke $r4.<init>($r6);
+
+        specialinvoke $r3.<init>($r4);
+
+     label02:
+        $l0 = staticinvoke java.lang.System.currentTimeMillis();
+
+        $r7 = virtualinvoke $r3.readObject();
+
+        $z0 = $r7 instanceof org.dummy.insecure.framework.VulnerableTaskHolder;
+
+        if $z0 != 0 goto label08;
+
+        $z1 = $r7 instanceof java.lang.String;
+
+        if $z1 == 0 goto label05;
+
+        $r18 = virtualinvoke r8.failed(r8);
+
+        $r19 = virtualinvoke $r18.feedback("insecure-deserialization.stringobject");
+
+        $r20 = virtualinvoke $r19.build();
+
+     label03:
+        virtualinvoke $r3.close();
+
+     label04:
+        return $r20;
+
+     label05:
+        $r15 = virtualinvoke r8.failed(r8);
+
+        $r16 = virtualinvoke $r15.feedback("insecure-deserialization.wrongobject");
+
+        $r17 = virtualinvoke $r16.build();
+
+     label06:
+        virtualinvoke $r3.close();
+
+     label07:
+        return $r17;
+
+     label08:
+        $l1 = staticinvoke java.lang.System.currentTimeMillis();
+
+     label09:
+        virtualinvoke $r3.close();
+
+        goto label15;
+
+     label10:
+        $r34 := @caughtexception;
+
+     label11:
+        virtualinvoke $r3.close();
+
+     label12:
+        goto label14;
+
+     label13:
+        $r33 := @caughtexception;
+
+        virtualinvoke $r34.addSuppressed($r33);
+
+     label14:
+        throw $r34;
+
+     label15:
+        goto label19;
+
+     label16:
+        $r29 := @caughtexception;
+
+        $r30 = virtualinvoke r8.failed(r8);
+
+        $r31 = virtualinvoke $r30.feedback("insecure-deserialization.invalidversion");
+
+        $r32 = virtualinvoke $r31.build();
+
+        return $r32;
+
+     label17:
+        $r25 := @caughtexception;
+
+        $r26 = virtualinvoke r8.failed(r8);
+
+        $r27 = virtualinvoke $r26.feedback("insecure-deserialization.expired");
+
+        $r28 = virtualinvoke $r27.build();
+
+        return $r28;
+
+     label18:
+        $r21 := @caughtexception;
+
+        $r22 = virtualinvoke r8.failed(r8);
+
+        $r23 = virtualinvoke $r22.feedback("insecure-deserialization.invalidversion");
+
+        $r24 = virtualinvoke $r23.build();
+
+        return $r24;
+
+     label19:
+        $l2 = $l1 - $l0;
+
+        i3 = (int) $l2;
+
+        if i3 <= 7000 goto label20;
+
+        $r13 = virtualinvoke r8.failed(r8);
+
+        $r14 = virtualinvoke $r13.build();
+
+        return $r14;
+
+     label20:
+        if i3 >= 3000 goto label21;
+
+        $r11 = virtualinvoke r8.failed(r8);
+
+        $r12 = virtualinvoke $r11.build();
+
+        return $r12;
+
+     label21:
+        $r9 = virtualinvoke r8.success(r8);
+
+        $r10 = virtualinvoke $r9.build();
+
+        return $r10;
+
+        catch java.lang.Throwable from label02 to label03 with label10;
+        catch java.lang.Throwable from label05 to label06 with label10;
+        catch java.lang.Throwable from label08 to label09 with label10;
+        catch java.lang.Throwable from label11 to label12 with label13;
+        catch java.io.InvalidClassException from label01 to label04 with label16;
+        catch java.io.InvalidClassException from label05 to label07 with label16;
+        catch java.io.InvalidClassException from label08 to label15 with label16;
+        catch java.lang.IllegalArgumentException from label01 to label04 with label17;
+        catch java.lang.IllegalArgumentException from label05 to label07 with label17;
+        catch java.lang.IllegalArgumentException from label08 to label15 with label17;
+        catch java.lang.Exception from label01 to label04 with label18;
+        catch java.lang.Exception from label05 to label07 with label18;
+        catch java.lang.Exception from label08 to label15 with label18;
+    }
+}

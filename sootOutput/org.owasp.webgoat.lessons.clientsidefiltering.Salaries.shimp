@@ -1,0 +1,266 @@
+public class org.owasp.webgoat.lessons.clientsidefiltering.Salaries extends java.lang.Object
+{
+    private static final org.slf4j.Logger log;
+    private java.lang.String webGoatHomeDirectory;
+
+    public void <init>()
+    {
+        org.owasp.webgoat.lessons.clientsidefiltering.Salaries r0;
+
+        r0 := @this;
+
+        specialinvoke r0.<init>();
+
+        return;
+    }
+
+    public void copyFiles()
+    {
+        java.lang.Throwable $r7;
+        org.springframework.core.io.ClassPathResource $r0;
+        java.io.FileOutputStream $r5;
+        java.lang.RuntimeException $r8;
+        java.io.File $r1, $r6;
+        org.owasp.webgoat.lessons.clientsidefiltering.Salaries r2;
+        java.lang.String $r3;
+        boolean $z0;
+        java.io.InputStream $r4;
+
+        r2 := @this;
+
+        $r0 = new org.springframework.core.io.ClassPathResource;
+
+        specialinvoke $r0.<init>("lessons/employees.xml");
+
+        $r1 = new java.io.File;
+
+        $r3 = r2.webGoatHomeDirectory;
+
+        specialinvoke $r1.<init>($r3, "/ClientSideFiltering");
+
+        $z0 = virtualinvoke $r1.exists();
+
+        if $z0 != 0 goto label1;
+
+        virtualinvoke $r1.mkdir();
+
+     label1:
+        $r4 = virtualinvoke $r0.getInputStream();
+
+        $r5 = new java.io.FileOutputStream;
+
+        $r6 = new java.io.File;
+
+        specialinvoke $r6.<init>($r1, "employees.xml");
+
+        specialinvoke $r5.<init>($r6);
+
+        staticinvoke org.springframework.util.FileCopyUtils.copy($r4, $r5);
+
+     label2:
+        goto label4;
+
+     label3:
+        $r7 := @caughtexception;
+
+        $r8 = new java.lang.RuntimeException;
+
+        specialinvoke $r8.<init>($r7);
+
+        throw $r8;
+
+     label4:
+        return;
+
+        catch java.io.IOException from label1 to label2 with label3;
+    }
+
+    public java.util.List invoke()
+    {
+        org.owasp.webgoat.lessons.clientsidefiltering.Salaries r1;
+        java.lang.StringBuilder $r9;
+        javax.xml.namespace.QName $r11;
+        java.lang.Throwable $r17, $r19, $r21, $r22;
+        javax.xml.xpath.XPath $r4;
+        java.util.HashMap $r6, $r16, r23, r23_1, r23_2, r23_3, r23_4, r23_5, r23_6, r23_7;
+        java.util.ArrayList $r5;
+        org.w3c.dom.Node $r13;
+        int $i0, $i1, i2, i2_1, i2_2, i2_3, i2_4, i2_5, i2_6;
+        java.lang.String $r2, $r10, $r14, $r15;
+        org.xml.sax.InputSource $r8;
+        org.slf4j.Logger $r18, $r20;
+        org.w3c.dom.NodeList r24;
+        java.io.FileInputStream $r7;
+        java.io.File $r0;
+        javax.xml.xpath.XPathFactory $r3;
+        java.lang.Object $r12;
+
+        r1 := @this;
+
+        $r0 = new java.io.File;
+
+        $r2 = r1.webGoatHomeDirectory;
+
+        specialinvoke $r0.<init>($r2, "ClientSideFiltering/employees.xml");
+
+        $r3 = staticinvoke javax.xml.xpath.XPathFactory.newInstance();
+
+        $r4 = virtualinvoke $r3.newXPath();
+
+        $r5 = new java.util.ArrayList;
+
+        specialinvoke $r5.<init>();
+
+        $r6 = new java.util.HashMap;
+
+        specialinvoke $r6.<init>();
+
+        r23 = $r6;
+
+     label01:
+(0)     $r7 = new java.io.FileInputStream;
+
+(1)     specialinvoke $r7.<init>($r0);
+
+     label02:
+        $r8 = new org.xml.sax.InputSource;
+
+        specialinvoke $r8.<init>($r7);
+
+        $r9 = new java.lang.StringBuilder;
+
+        specialinvoke $r9.<init>();
+
+        virtualinvoke $r9.append("/Employees/Employee/UserID | ");
+
+        virtualinvoke $r9.append("/Employees/Employee/FirstName | ");
+
+        virtualinvoke $r9.append("/Employees/Employee/LastName | ");
+
+        virtualinvoke $r9.append("/Employees/Employee/SSN | ");
+
+        virtualinvoke $r9.append("/Employees/Employee/Salary ");
+
+        $r10 = virtualinvoke $r9.toString();
+
+        $r11 = javax.xml.xpath.XPathConstants.NODESET;
+
+        $r12 = interfaceinvoke $r4.evaluate($r10, $r8, $r11);
+
+        r24 = (org.w3c.dom.NodeList) $r12;
+
+(2)     i2 = 0;
+
+     label03:
+        i2_1 = Phi(i2 #2, i2_2 #10);
+
+        r23_1 = Phi(r23 #2, r23_3 #10);
+
+(3)     $i0 = interfaceinvoke r24.getLength();
+
+(4)     if i2_1 >= $i0 goto label05;
+
+        $i1 = i2_1 % 5;
+
+(5)     if $i1 != 0 goto label04;
+
+        $r16 = new java.util.HashMap;
+
+        specialinvoke $r16.<init>();
+
+(6)     r23_2 = $r16;
+
+(7)     interfaceinvoke $r5.add($r16);
+
+     label04:
+        r23_3 = Phi(r23_1 #5, r23_2 #7);
+
+(8)     $r13 = interfaceinvoke r24.item(i2_1);
+
+        $r14 = interfaceinvoke $r13.getNodeName();
+
+        $r15 = interfaceinvoke $r13.getTextContent();
+
+        interfaceinvoke r23_3.put($r14, $r15);
+
+(9)     i2_2 = i2_1 + 1;
+
+(10)    goto label03;
+
+     label05:
+        virtualinvoke $r7.close();
+
+        goto label11;
+
+     label06:
+        $r22 := @caughtexception;
+
+        i2_3 = Phi(i2 #1, i2_1 #3, i2_2 #9);
+
+        r23_4 = Phi(r23 #1, r23_1 #3, r23_2 #6, r23_3 #8);
+
+     label07:
+        virtualinvoke $r7.close();
+
+     label08:
+        goto label10;
+
+     label09:
+(11)    $r21 := @caughtexception;
+
+        virtualinvoke $r22.addSuppressed($r21);
+
+     label10:
+(12)    throw $r22;
+
+     label11:
+(13)    goto label14;
+
+     label12:
+        $r19 := @caughtexception;
+
+        i2_4 = Phi(i2 #0, i2_1 #4, i2_3 #11, i2_3 #12);
+
+        r23_5 = Phi(r23 #0, r23_1 #4, r23_4 #11, r23_4 #12);
+
+        $r20 = org.owasp.webgoat.lessons.clientsidefiltering.Salaries.log;
+
+        interfaceinvoke $r20.error("Unable to parse xml", $r19);
+
+(14)    goto label14;
+
+     label13:
+        $r17 := @caughtexception;
+
+        i2_5 = Phi(i2 #0, i2_1 #4, i2_3 #11, i2_3 #12);
+
+        r23_6 = Phi(r23 #0, r23_1 #4, r23_4 #11, r23_4 #12);
+
+        $r18 = org.owasp.webgoat.lessons.clientsidefiltering.Salaries.log;
+
+(15)    interfaceinvoke $r18.error("Unable to read employees.xml at location: \'{}\'", $r0);
+
+     label14:
+        i2_6 = Phi(i2_1 #13, i2_4 #14, i2_5 #15);
+
+        r23_7 = Phi(r23_1 #13, r23_5 #14, r23_6 #15);
+
+        return $r5;
+
+        catch java.lang.Throwable from label02 to label05 with label06;
+        catch java.lang.Throwable from label07 to label08 with label09;
+        catch javax.xml.xpath.XPathExpressionException from label01 to label11 with label12;
+        catch java.io.IOException from label01 to label11 with label13;
+    }
+
+    static void <clinit>()
+    {
+        org.slf4j.Logger $r0;
+
+        $r0 = staticinvoke org.slf4j.LoggerFactory.getLogger(class "Lorg/owasp/webgoat/lessons/clientsidefiltering/Salaries;");
+
+        org.owasp.webgoat.lessons.clientsidefiltering.Salaries.log = $r0;
+
+        return;
+    }
+}

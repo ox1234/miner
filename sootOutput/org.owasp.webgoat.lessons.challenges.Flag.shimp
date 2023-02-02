@@ -1,0 +1,167 @@
+public class org.owasp.webgoat.lessons.challenges.Flag extends org.owasp.webgoat.container.assignments.AssignmentEndpoint
+{
+    public static final java.util.Map FLAGS;
+    private org.owasp.webgoat.container.users.UserTrackerRepository userTrackerRepository;
+    private org.owasp.webgoat.container.session.WebSession webSession;
+
+    public void <init>()
+    {
+        org.owasp.webgoat.lessons.challenges.Flag r0;
+
+        r0 := @this;
+
+        specialinvoke r0.<init>();
+
+        return;
+    }
+
+    public void initFlags()
+    {
+        java.util.stream.IntStream $r0;
+        java.util.function.IntConsumer $r1;
+        org.owasp.webgoat.lessons.challenges.Flag r2;
+
+        r2 := @this;
+
+        $r0 = staticinvoke java.util.stream.IntStream.range(1, 10);
+
+        $r1 = staticinvoke org.owasp.webgoat.lessons.challenges.Flag$lambda_initFlags_0__62.bootstrap$();
+
+        interfaceinvoke $r0.forEach($r1);
+
+        return;
+    }
+
+    public org.owasp.webgoat.container.assignments.AttackResult postFlag(java.lang.String)
+    {
+        org.owasp.webgoat.lessons.challenges.Flag r0;
+        java.lang.Integer $r9, $r11;
+        java.util.Map $r10;
+        boolean $z0;
+        org.owasp.webgoat.container.users.UserTracker $r4;
+        org.owasp.webgoat.container.assignments.AttackResult r25, r25_1, r25_2;
+        org.owasp.webgoat.container.assignments.AttackResult$AttackResultBuilder $r17, $r18, $r23, $r24;
+        org.owasp.webgoat.container.lessons.Lesson $r6, $r16, $r21;
+        int $i0, $i1, $i2, $i3;
+        java.lang.String $r3, $r7, $r8, r13, r14, $r22;
+        org.owasp.webgoat.container.users.UserTrackerRepository $r2, $r19;
+        org.owasp.webgoat.container.session.WebSession $r1, $r5, $r15, $r20;
+        java.lang.Object $r12;
+
+        r0 := @this;
+
+        r14 := @parameter0;
+
+        $r2 = r0.userTrackerRepository;
+
+        $r1 = r0.webSession;
+
+        $r3 = virtualinvoke $r1.getUserName();
+
+        $r4 = interfaceinvoke $r2.findByUser($r3);
+
+        $r5 = r0.webSession;
+
+        $r6 = virtualinvoke $r5.getCurrentLesson();
+
+        $r7 = virtualinvoke $r6.getName();
+
+        $i0 = virtualinvoke $r7.length();
+
+        $i1 = $i0 - 1;
+
+        $i2 = virtualinvoke $r7.length();
+
+        $r8 = virtualinvoke $r7.substring($i1, $i2);
+
+        $r9 = staticinvoke java.lang.Integer.valueOf($r8);
+
+        $i3 = virtualinvoke $r9.intValue();
+
+        $r10 = org.owasp.webgoat.lessons.challenges.Flag.FLAGS;
+
+        $r11 = staticinvoke java.lang.Integer.valueOf($i3);
+
+        $r12 = interfaceinvoke $r10.get($r11);
+
+        r13 = (java.lang.String) $r12;
+
+        $z0 = virtualinvoke r13.equals(r14);
+
+        if $z0 == 0 goto label1;
+
+        $r20 = r0.webSession;
+
+        $r21 = virtualinvoke $r20.getCurrentLesson();
+
+        $r22 = dynamicinvoke "makeConcatWithConstants" <java.lang.String (int)>($i3) java.lang.invoke.StringConcatFactory.makeConcatWithConstants("Assignment\u0001");
+
+        virtualinvoke $r4.assignmentSolved($r21, $r22);
+
+        $r23 = virtualinvoke r0.success(r0);
+
+        $r24 = virtualinvoke $r23.feedback("challenge.flag.correct");
+
+        r25 = virtualinvoke $r24.build();
+
+(0)     goto label2;
+
+     label1:
+        $r15 = r0.webSession;
+
+        $r16 = virtualinvoke $r15.getCurrentLesson();
+
+        virtualinvoke $r4.assignmentFailed($r16);
+
+        $r17 = virtualinvoke r0.failed(r0);
+
+        $r18 = virtualinvoke $r17.feedback("challenge.flag.incorrect");
+
+(1)     r25_1 = virtualinvoke $r18.build();
+
+     label2:
+        r25_2 = Phi(r25 #0, r25_1 #1);
+
+        $r19 = r0.userTrackerRepository;
+
+        interfaceinvoke $r19.save($r4);
+
+        return r25_2;
+    }
+
+    public static void lambda$initFlags$0(int)
+    {
+        java.util.Map $r0;
+        int i0;
+        java.util.UUID $r2;
+        java.lang.String $r3;
+        java.lang.Integer $r1;
+
+        i0 := @parameter0;
+
+        $r0 = org.owasp.webgoat.lessons.challenges.Flag.FLAGS;
+
+        $r1 = staticinvoke java.lang.Integer.valueOf(i0);
+
+        $r2 = staticinvoke java.util.UUID.randomUUID();
+
+        $r3 = virtualinvoke $r2.toString();
+
+        interfaceinvoke $r0.put($r1, $r3);
+
+        return;
+    }
+
+    static void <clinit>()
+    {
+        java.util.HashMap $r0;
+
+        $r0 = new java.util.HashMap;
+
+        specialinvoke $r0.<init>();
+
+        org.owasp.webgoat.lessons.challenges.Flag.FLAGS = $r0;
+
+        return;
+    }
+}

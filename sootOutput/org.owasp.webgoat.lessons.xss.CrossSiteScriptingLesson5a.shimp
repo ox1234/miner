@@ -1,0 +1,194 @@
+public class org.owasp.webgoat.lessons.xss.CrossSiteScriptingLesson5a extends org.owasp.webgoat.container.assignments.AssignmentEndpoint
+{
+    public static final java.util.function.Predicate XSS_PATTERN;
+    org.owasp.webgoat.container.session.UserSessionData userSessionData;
+
+    public void <init>()
+    {
+        org.owasp.webgoat.lessons.xss.CrossSiteScriptingLesson5a r0;
+
+        r0 := @this;
+
+        specialinvoke r0.<init>();
+
+        return;
+    }
+
+    public org.owasp.webgoat.container.assignments.AttackResult completed(java.lang.Integer, java.lang.Integer, java.lang.Integer, java.lang.Integer, java.lang.String, java.lang.String)
+    {
+        java.lang.Integer r2, r3, r4, r5;
+        boolean $z0, $z1, $z2;
+        java.util.function.Predicate $r1, $r14;
+        org.owasp.webgoat.container.session.UserSessionData $r7, $r12, $r15, $r21, $r33;
+        org.owasp.webgoat.container.assignments.AttackResult $r20, $r27, $r32, $r36;
+        java.lang.StringBuilder $r8;
+        org.owasp.webgoat.container.assignments.AttackResult$AttackResultBuilder $r16, $r17, $r19, $r23, $r24, $r26, $r28, $r29, $r31, $r34, $r35;
+        org.owasp.webgoat.lessons.xss.CrossSiteScriptingLesson5a r6;
+        int $i0, $i1, $i2, $i3;
+        java.lang.String r0, r9, $r10, $r11, $r18, $r22, $r25, $r30;
+        double $d0, $d1, $d2, $d3, $d4, $d5, $d6, $d7, $d8, $d9, d10;
+        java.lang.Object $r13;
+
+        r6 := @this;
+
+        r2 := @parameter0;
+
+        r3 := @parameter1;
+
+        r4 := @parameter2;
+
+        r5 := @parameter3;
+
+        r9 := @parameter4;
+
+        r0 := @parameter5;
+
+        $r1 = org.owasp.webgoat.lessons.xss.CrossSiteScriptingLesson5a.XSS_PATTERN;
+
+        $z0 = interfaceinvoke $r1.test(r0);
+
+        if $z0 == 0 goto label1;
+
+        $r34 = virtualinvoke r6.failed(r6);
+
+        $r35 = virtualinvoke $r34.feedback("xss-reflected-5a-failed-wrong-field");
+
+        $r36 = virtualinvoke $r35.build();
+
+        return $r36;
+
+     label1:
+        $i0 = virtualinvoke r2.intValue();
+
+        $d0 = (double) $i0;
+
+        $d1 = $d0 * 69.99;
+
+        $i1 = virtualinvoke r3.intValue();
+
+        $d2 = (double) $i1;
+
+        $d3 = $d2 * 27.99;
+
+        $d4 = $d1 + $d3;
+
+        $i2 = virtualinvoke r4.intValue();
+
+        $d5 = (double) $i2;
+
+        $d6 = $d5 * 1599.99;
+
+        $d7 = $d4 + $d6;
+
+        $i3 = virtualinvoke r5.intValue();
+
+        $d8 = (double) $i3;
+
+        $d9 = $d8 * 299.99;
+
+        d10 = $d7 + $d9;
+
+        $r7 = r6.userSessionData;
+
+        virtualinvoke $r7.setValue("xss-reflected1-complete", "false");
+
+        $r8 = new java.lang.StringBuilder;
+
+        specialinvoke $r8.<init>();
+
+        virtualinvoke $r8.append("Thank you for shopping at WebGoat. <br />Your support is appreciated<hr />");
+
+        $r10 = dynamicinvoke "makeConcatWithConstants" <java.lang.String (java.lang.String)>(r9) java.lang.invoke.StringConcatFactory.makeConcatWithConstants("<p>We have charged credit card:\u0001<br />");
+
+        virtualinvoke $r8.append($r10);
+
+        virtualinvoke $r8.append("                             ------------------- <br />");
+
+        $r11 = dynamicinvoke "makeConcatWithConstants" <java.lang.String (double)>(d10) java.lang.invoke.StringConcatFactory.makeConcatWithConstants("                               $\u0001");
+
+        virtualinvoke $r8.append($r11);
+
+        $r12 = r6.userSessionData;
+
+        $r13 = virtualinvoke $r12.getValue("xss-reflected1-complete");
+
+        if $r13 != null goto label2;
+
+        $r33 = r6.userSessionData;
+
+        virtualinvoke $r33.setValue("xss-reflected1-complete", "false");
+
+     label2:
+        $r14 = org.owasp.webgoat.lessons.xss.CrossSiteScriptingLesson5a.XSS_PATTERN;
+
+        $z1 = interfaceinvoke $r14.test(r9);
+
+        if $z1 == 0 goto label4;
+
+        $r21 = r6.userSessionData;
+
+        virtualinvoke $r21.setValue("xss-reflected-5a-complete", "true");
+
+        $r22 = virtualinvoke r9.toLowerCase();
+
+        $z2 = virtualinvoke $r22.contains("console.log");
+
+        if $z2 == 0 goto label3;
+
+        $r28 = virtualinvoke r6.success(r6);
+
+        $r29 = virtualinvoke $r28.feedback("xss-reflected-5a-success-console");
+
+        $r30 = virtualinvoke $r8.toString();
+
+        $r31 = virtualinvoke $r29.output($r30);
+
+        $r32 = virtualinvoke $r31.build();
+
+        return $r32;
+
+     label3:
+        $r23 = virtualinvoke r6.success(r6);
+
+        $r24 = virtualinvoke $r23.feedback("xss-reflected-5a-success-alert");
+
+        $r25 = virtualinvoke $r8.toString();
+
+        $r26 = virtualinvoke $r24.output($r25);
+
+        $r27 = virtualinvoke $r26.build();
+
+        return $r27;
+
+     label4:
+        $r15 = r6.userSessionData;
+
+        virtualinvoke $r15.setValue("xss-reflected1-complete", "false");
+
+        $r16 = virtualinvoke r6.failed(r6);
+
+        $r17 = virtualinvoke $r16.feedback("xss-reflected-5a-failure");
+
+        $r18 = virtualinvoke $r8.toString();
+
+        $r19 = virtualinvoke $r17.output($r18);
+
+        $r20 = virtualinvoke $r19.build();
+
+        return $r20;
+    }
+
+    static void <clinit>()
+    {
+        java.util.regex.Pattern $r0;
+        java.util.function.Predicate $r1;
+
+        $r0 = staticinvoke java.util.regex.Pattern.compile(".*<script>(console\\.log|alert)\\(.*\\);?</script>.*", 2);
+
+        $r1 = virtualinvoke $r0.asMatchPredicate();
+
+        org.owasp.webgoat.lessons.xss.CrossSiteScriptingLesson5a.XSS_PATTERN = $r1;
+
+        return;
+    }
+}
