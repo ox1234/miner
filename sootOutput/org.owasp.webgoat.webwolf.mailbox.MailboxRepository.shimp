@@ -1,5 +1,0 @@
-public interface  org.owasp.webgoat.webwolf.mailbox.MailboxRepository extends java.lang.Object implements org.springframework.data.jpa.repository.JpaRepository
-{
-
-    public abstract java.util.List findByRecipientOrderByTimeDesc(java.lang.String);
-}

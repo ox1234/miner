@@ -1,9 +1,0 @@
-public annotation interface  org.owasp.webgoat.container.assignments.AssignmentPath extends java.lang.Object implements java.lang.'annotation'.Annotation
-{
-
-    public abstract java.lang.String[] path();
-
-    public abstract org.springframework.web.bind.'annotation'.RequestMethod[] method();
-
-    public abstract java.lang.String value();
-}
