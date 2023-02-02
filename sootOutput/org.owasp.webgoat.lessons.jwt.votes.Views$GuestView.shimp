@@ -1,3 +1,0 @@
-public interface  org.owasp.webgoat.lessons.jwt.votes.Views$GuestView extends java.lang.Object
-{
-}

@@ -1,5 +1,0 @@
-public interface  org.owasp.webgoat.webwolf.user.UserRepository extends java.lang.Object implements org.springframework.data.jpa.repository.JpaRepository
-{
-
-    public abstract org.owasp.webgoat.webwolf.user.WebGoatUser findByUsername(java.lang.String);
-}
