@@ -6,8 +6,8 @@ import soot.tagkit.AnnotationTag;
 
 public class MethodUtil {
     public static boolean isRouteMethod(SootMethod sootMethod) {
-        for (AnnotationTag methodTag : ClassUtil.getMethodAnnotation(sootMethod)) {
-            if (ClassUtil.isRouteMethodAnnotation(methodTag)) {
+        for (AnnotationTag methodTag : TagUtil.getMethodAnnotation(sootMethod)) {
+            if (TagUtil.isRouteMethodAnnotation(methodTag)) {
                 return true;
             }
         }

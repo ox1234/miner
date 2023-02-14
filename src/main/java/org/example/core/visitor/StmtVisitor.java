@@ -1,12 +1,13 @@
 package org.example.core.visitor;
 
-import org.example.config.FlowRepository;
+import org.example.core.IntraAnalyzedMethod;
 import org.example.core.basic.Node;
 import org.example.core.basic.Site;
 import org.example.core.basic.identity.UnifyReturn;
 import soot.SootMethod;
 import soot.Unit;
 import soot.Value;
+import soot.VoidType;
 import soot.jimple.*;
 
 import java.util.List;
@@ -15,6 +16,7 @@ public class StmtVisitor extends AbstractStmtSwitch<Void> {
     private static final StmtVisitor instance = new StmtVisitor();
     private static ValueVisitor valueVisitor;
 
+    public IntraAnalyzedMethod analyzedMethod;
     public SootMethod currentMethod;
     public Unit currentUnit;
 
@@ -35,7 +37,7 @@ public class StmtVisitor extends AbstractStmtSwitch<Void> {
     public void caseInvokeStmt(InvokeStmt stmt) {
         stmt.getInvokeExpr().apply(valueVisitor);
         List<Node> nodeSet = valueVisitor.getResult();
-        FlowRepository.addFlow(null, nodeSet);
+        analyzedMethod.addFlow(null, nodeSet);
     }
 
     @Override
@@ -44,9 +46,10 @@ public class StmtVisitor extends AbstractStmtSwitch<Void> {
         op.apply(valueVisitor);
 
         List<Node> nodeSet = valueVisitor.getResult();
-        Node node = Site.getNodeInstance(UnifyReturn.class, currentMethod, currentMethod.getReturnType().toString());
-
-        FlowRepository.addFlow(node, nodeSet);
+        if (!(currentMethod.getReturnType() instanceof VoidType)) {
+            Node node = Site.getNodeInstance(UnifyReturn.class, currentMethod, currentMethod.getReturnType().toString());
+            analyzedMethod.addFlow(node, nodeSet);
+        }
     }
 
     @Override
@@ -120,14 +123,15 @@ public class StmtVisitor extends AbstractStmtSwitch<Void> {
         rightVal.apply(valueVisitor);
         List<Node> rightNode = valueVisitor.getResult();
 
-        FlowRepository.addFlow(leftNodes.get(0), rightNode);
+        analyzedMethod.addFlow(leftNodes.get(0), rightNode);
     }
 
 
-    public static StmtVisitor getInstance(SootMethod sootMethod, Unit unit) {
-        instance.currentMethod = sootMethod;
+    public static StmtVisitor getInstance(IntraAnalyzedMethod analyzedMethod, Unit unit) {
+        instance.analyzedMethod = analyzedMethod;
+        instance.currentMethod = analyzedMethod.getMethodRef();
         instance.currentUnit = unit;
-        valueVisitor = ValueVisitor.getInstance(sootMethod, unit);
+        valueVisitor = ValueVisitor.getInstance(analyzedMethod, unit);
         return instance;
     }
 }

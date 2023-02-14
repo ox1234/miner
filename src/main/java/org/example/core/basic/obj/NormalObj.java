@@ -10,4 +10,9 @@ public class NormalObj extends Obj {
         super(sootClass.getName(), unit);
         this.sootClass = sootClass;
     }
+
+    public NormalObj(SootClass sootClass) {
+        super(sootClass.getName());
+        this.sootClass = sootClass;
+    }
 }

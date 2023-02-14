@@ -1,5 +1,6 @@
 package org.example.core;
 
+import org.example.config.AnnotationRepository;
 import org.example.config.Global;
 import org.example.core.visitor.StmtVisitor;
 import org.example.neo4j.node.method.AbstractMethod;
@@ -27,6 +28,20 @@ public class Engine {
         this.callGraph = callGraph;
     }
 
+
+    public void collectAnnotations() {
+        Scene.v().getApplicationClasses().snapshotIterator().forEachRemaining(sootClass -> {
+            Log.info("collecting %s class annotation", sootClass.getName());
+            AnnotationRepository.collectClassAnnotation(sootClass);
+            for (SootMethod sootMethod : sootClass.getMethods()) {
+                AnnotationRepository.collectMethodAnnotation(sootMethod);
+            }
+            for (SootField sootField : sootClass.getFields()) {
+                AnnotationRepository.collectFieldAnnotation(sootField);
+            }
+        });
+    }
+
     // doIntraProcedureAnalysis 对给定的SootMethod，进行过程内的指针分析
     public IntraAnalyzedMethod doIntraProcedureAnalysis(SootMethod method) {
         Log.info("do intra procedure analysis on %s", method.getSignature());
@@ -36,18 +51,19 @@ public class Engine {
 
         Body body = method.retrieveActiveBody();
 
+        IntraAnalyzedMethod analyzedMethod = new IntraAnalyzedMethod(method);
         int order = 1;
         for (Unit unit : body.getUnits()) {
             unit.addTag(new LocationTag(method, order, unit));
-            StmtVisitor stmtVisitor = StmtVisitor.getInstance(method, unit);
+            StmtVisitor stmtVisitor = StmtVisitor.getInstance(analyzedMethod, unit);
             unit.apply(stmtVisitor);
             order++;
         }
-        return new IntraAnalyzedMethod(method);
+        return analyzedMethod;
     }
 
-    public Set<IntraAnalyzedMethod> extractPointRelation() {
-        Set<IntraAnalyzedMethod> intraAnalyzedMethods = new HashSet<>();
+    public Map<String, IntraAnalyzedMethod> extractPointRelation() {
+        Map<String, IntraAnalyzedMethod> intraAnalyzedMethods = new HashMap<>();
         Set<String> visitedMethods = new HashSet<>();
         callGraph.forEach(new Consumer<Edge>() {
             @Override
@@ -72,7 +88,7 @@ public class Engine {
                 if (analyzedMethod == null) {
                     return;
                 }
-                intraAnalyzedMethods.add(analyzedMethod);
+                intraAnalyzedMethods.put(analyzedMethod.getSignature(), analyzedMethod);
             }
         });
         return intraAnalyzedMethods;

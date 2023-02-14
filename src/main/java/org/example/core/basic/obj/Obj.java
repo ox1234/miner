@@ -13,6 +13,10 @@ abstract public class Obj extends UnitLevelSite implements TypeNode, Neo4jNode {
         super(type, LocationTag.getLocation(unit));
     }
 
+    protected Obj(String type) {
+        super(type, "root");
+    }
+
     @Override
     public String getType() {
         return type;

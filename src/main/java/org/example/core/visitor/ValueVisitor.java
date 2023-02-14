@@ -1,6 +1,8 @@
 package org.example.core.visitor;
 
 import org.example.config.NodeRepository;
+import org.example.constant.InvokeType;
+import org.example.core.IntraAnalyzedMethod;
 import org.example.core.basic.MethodLevelSite;
 import org.example.core.basic.Node;
 import org.example.core.basic.Site;
@@ -24,12 +26,14 @@ public class ValueVisitor extends AbstractShimpleValueSwitch<List<Node>> {
 
     public SootMethod currentMethod;
     public Unit currentUnit;
+    public IntraAnalyzedMethod analyzedMethod;
 
     private ValueVisitor() {
     }
 
-    public static ValueVisitor getInstance(SootMethod sootMethod, Unit unit) {
-        instance.currentMethod = sootMethod;
+    public static ValueVisitor getInstance(IntraAnalyzedMethod analyzedMethod, Unit unit) {
+        instance.analyzedMethod = analyzedMethod;
+        instance.currentMethod = analyzedMethod.getMethodRef();
         instance.currentUnit = unit;
         return instance;
     }
@@ -39,7 +43,11 @@ public class ValueVisitor extends AbstractShimpleValueSwitch<List<Node>> {
     public void caseLocal(soot.Local v) {
         Node node = NodeRepository.getNode(MethodLevelSite.getLevelSiteID(v.getName(), currentMethod.getSignature()));
         if (node == null) {
-            node = Site.getNodeInstance(LocalVariable.class, v.getName(), currentMethod, v.getType().toString());
+            if (v.getName().equals("this")) {
+                node = Site.getNodeInstance(ThisVariable.class, currentMethod, v.getType().toString());
+            } else {
+                node = Site.getNodeInstance(LocalVariable.class, v.getName(), currentMethod, v.getType().toString());
+            }
         }
         this.setNodeResult(node);
     }
@@ -201,7 +209,19 @@ public class ValueVisitor extends AbstractShimpleValueSwitch<List<Node>> {
             assert nodes.size() == 1;
             args.add(nodes.get(0));
         }
-        this.setNodeResult(Site.getNodeInstance(CallNode.class, targetMethod, currentMethod, currentUnit, args));
+
+        Node base = null;
+        if (v instanceof InstanceInvokeExpr) {
+            ((InstanceInvokeExpr) v).getBase().apply(this);
+            List<Node> nodes = getResult();
+            assert nodes.size() == 1;
+            base = nodes.get(0);
+        } else if (v instanceof StaticInvokeExpr) {
+            String className = v.getType().toString();
+            base = Site.getNodeInstance(ClassTypeNode.class, className);
+        }
+
+        this.setNodeResult(Site.getNodeInstance(CallNode.class, targetMethod, currentMethod, currentUnit, args, base, InvokeType.getInvokeType(v)));
     }
 
     // TODO: 处理所有expr语句

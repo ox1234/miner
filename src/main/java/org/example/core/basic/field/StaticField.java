@@ -12,6 +12,9 @@ public class StaticField extends ClassLevelSite implements TypeNode {
         this.field = field;
     }
 
+    public SootField getFieldRef() {
+        return field;
+    }
 
     @Override
     public String getType() {
