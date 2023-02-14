@@ -18,9 +18,6 @@ import java.util.function.BiConsumer;
 
 @RelationshipEntity(type = "POINTO")
 public class PointTo extends AbstractRelation {
-    @Id
-    String id;
-
     @StartNode
     AbstractAllocNode src;
 
@@ -28,20 +25,8 @@ public class PointTo extends AbstractRelation {
     ObjAlloc tgt;
 
     public PointTo(@NotNull AbstractAllocNode src, @NotNull ObjAlloc tgt) {
-        this.id = String.format("pointto:%s:%s", src.id, tgt.id);
+        super(String.format("pointto:%s:%s", src.id, tgt.id));
         this.src = src;
         this.tgt = tgt;
-    }
-
-    public static Set<AbstractRelation> getRelations(Map<Node, Set<Obj>> pointMap) {
-        Set<AbstractRelation> relations = new HashSet<>();
-        pointMap.forEach((node, objs) -> {
-            AbstractAllocNode fromNode = AbstractAllocNode.getInstance(node);
-            for (Obj obj : objs) {
-                AbstractAllocNode toObj = AbstractAllocNode.getInstance(obj);
-                relations.add(new PointTo(Objects.requireNonNull(fromNode), (ObjAlloc) Objects.requireNonNull(toObj)));
-            }
-        });
-        return relations;
     }
 }

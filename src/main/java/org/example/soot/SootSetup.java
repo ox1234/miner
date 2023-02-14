@@ -43,6 +43,9 @@ public class SootSetup {
             Log.info("target is a packed file(jar/war), will extract inner class in %s", outputPath);
             if (!outputPath.toFile().exists()) {
                 outputPath.toFile().mkdirs();
+            } else {
+                outputPath.toFile().delete();
+                outputPath.toFile().mkdirs();
             }
             JarUtil.extractJar(targetPath, outputPath);
         }
@@ -70,7 +73,7 @@ public class SootSetup {
         Options.v().set_keep_offset(true);
         Options.v().set_output_dir(Global.sootOutputPath);
 
-        Options.v().setPhaseOption("jb", "use-orginal-names");
+        Options.v().setPhaseOption("jb", "use-original-names:true");
 
         if (Global.allReachable) {
             Options.v().setPhaseOption("cg", "all-reachable:true");
@@ -95,6 +98,7 @@ public class SootSetup {
                 Scene.v().getApplicationClasses().size(),
                 Scene.v().getLibraryClasses().size(),
                 Scene.v().getPhantomClasses().size());
+
     }
 
     // 初始化方法

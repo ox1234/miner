@@ -1,17 +1,9 @@
 package org.example.neo4j.node.var;
 
-import org.example.core.basic.MethodLevelSite;
-import org.example.core.basic.Neo4jNode;
-import org.example.core.basic.Node;
-import org.example.core.basic.node.CallNode;
-import org.example.core.basic.identity.Parameter;
-import org.example.core.basic.obj.Obj;
-import org.example.util.Log;
 import org.neo4j.ogm.annotation.Id;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -37,12 +29,8 @@ abstract public class AbstractAllocNode {
         this.name = name;
     }
 
-    public static AbstractAllocNode getInstance(Node node) {
-        if (node instanceof Neo4jNode) {
-            return ((Neo4jNode) node).convert();
-        }
-        Log.error("%s node not support to convert neo4j node", node);
-        return null;
+    public void rebaseID(String objID) {
+
     }
 
     public void addTaint(AbstractAllocNode taintNode) {

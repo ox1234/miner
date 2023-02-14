@@ -17,9 +17,6 @@ import java.util.Set;
 
 @RelationshipEntity(type = "CALL")
 public class Call extends AbstractRelation {
-    @Id
-    String callSite;
-
     List<String> argTypes;
 
     @StartNode
@@ -29,21 +26,9 @@ public class Call extends AbstractRelation {
     AbstractMethod tgt;
 
     public Call(SootMethod srcMethod, SootMethod targetMethod, Stmt callSite) {
+        super(LocationTag.getLocation(callSite));
         this.src = AbstractMethod.getInstance(srcMethod);
         this.tgt = AbstractMethod.getInstance(targetMethod);
-        this.callSite = LocationTag.getLocation(callSite);
         this.argTypes = this.tgt.getParamTypes();
-    }
-
-
-
-    public String getCallSite() {
-        return callSite;
-    }
-
-    public static Set<AbstractRelation> getRelations(SootMethod srcMethod, SootMethod targetMethod, Stmt callSite) {
-        Set<AbstractRelation> relations = new HashSet<>();
-        relations.add(new Call(srcMethod, targetMethod, callSite));
-        return relations;
     }
 }

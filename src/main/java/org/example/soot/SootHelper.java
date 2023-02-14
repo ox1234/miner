@@ -1,9 +1,9 @@
 package org.example.soot;
 
 import org.example.config.Global;
-import org.example.util.ClassUtil;
 import org.example.util.Log;
 import org.example.util.MethodUtil;
+import org.example.util.TagUtil;
 import soot.*;
 import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.tagkit.AnnotationTag;
@@ -36,8 +36,8 @@ public class SootHelper {
         List<SootMethod> routeMethods = new ArrayList<>();
         for (SootClass sootClass : classes) {
             Log.info("searching %s class route methods with %d classes", sootClass.getName(), classes.size());
-            for (AnnotationTag annotationTag : ClassUtil.getClassAnnotation(sootClass)) {
-                if (ClassUtil.isSpringControllerAnnotation(annotationTag)) {
+            for (AnnotationTag annotationTag : TagUtil.getClassAnnotation(sootClass)) {
+                if (TagUtil.isSpringControllerAnnotation(annotationTag)) {
                     for (SootMethod sootMethod : sootClass.getMethods()) {
                         if (MethodUtil.isRouteMethod(sootMethod)) {
                             Log.info("find %s method is route method", sootMethod.getSignature());
