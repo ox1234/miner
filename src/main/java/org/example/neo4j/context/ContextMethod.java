@@ -8,10 +8,10 @@ import soot.jimple.Stmt;
 
 public abstract class ContextMethod {
     private SootMethod sootMethod;
-    private Stmt callSite;
+    private Unit callSite;
     private CallNode callNode;
 
-    public ContextMethod(SootMethod sootMethod, Stmt callSite) {
+    public ContextMethod(SootMethod sootMethod, Unit callSite) {
         this.sootMethod = sootMethod;
         this.callSite = callSite;
         if (callSite != null) {
@@ -24,7 +24,7 @@ public abstract class ContextMethod {
         return callNode;
     }
 
-    public Stmt getCallSite() {
+    public Unit getCallSite() {
         return callSite;
     }
 

@@ -19,20 +19,23 @@ public class CallNode extends UnitLevelSite {
     private SootMethod caller;
     private SootMethod callee;
     private String signature;
+    private String subSignature;
     private List<Node> args;
     private List<Node> params = new ArrayList<>();
     private Node base;
     private Node unifyRet;
     private Node retVar;
+    private Unit callSite;
     private InvokeType invokeType;
-
 
     protected CallNode(SootMethod callee, SootMethod caller, Unit nodeSite, Collection<Node> args, Node base, InvokeType invokeType) {
         super(nodeSite.toString(), LocationTag.getLocation(nodeSite));
         this.base = base;
         this.caller = caller;
         this.callee = callee;
+        this.callSite = nodeSite;
         this.signature = callee.getSignature();
+        this.subSignature = callee.getSubSignature();
         for (int i = 0; i < callee.getParameterCount(); i++) {
             params.add(Site.getNodeInstance(Parameter.class, i, callee, callee.getParameterType(i).toString()));
         }
@@ -41,6 +44,14 @@ public class CallNode extends UnitLevelSite {
             this.unifyRet = Site.getNodeInstance(UnifyReturn.class, callee, callee.getReturnType().toString());
         }
         this.invokeType = invokeType;
+    }
+
+    public String getSubSignature() {
+        return subSignature;
+    }
+
+    public Unit getCallSite() {
+        return callSite;
     }
 
     public InvokeType getInvokeType() {

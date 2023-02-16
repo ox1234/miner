@@ -25,7 +25,7 @@ public class Call extends AbstractRelation {
     @EndNode
     AbstractMethod tgt;
 
-    public Call(SootMethod srcMethod, SootMethod targetMethod, Stmt callSite) {
+    public Call(SootMethod srcMethod, SootMethod targetMethod, Unit callSite) {
         super(LocationTag.getLocation(callSite));
         this.src = AbstractMethod.getInstance(srcMethod);
         this.tgt = AbstractMethod.getInstance(targetMethod);

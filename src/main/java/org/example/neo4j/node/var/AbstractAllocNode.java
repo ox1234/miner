@@ -10,6 +10,7 @@ import java.util.Set;
 @NodeEntity
 abstract public class AbstractAllocNode {
     String name;
+    boolean taint;
 
     @Id
     public String id;
@@ -30,7 +31,10 @@ abstract public class AbstractAllocNode {
     }
 
     public void rebaseID(String objID) {
+    }
 
+    public void setTaint(boolean taint) {
+        this.taint = taint;
     }
 
     public void addTaint(AbstractAllocNode taintNode) {

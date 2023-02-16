@@ -74,6 +74,7 @@ public class SootSetup {
         Options.v().set_output_dir(Global.sootOutputPath);
 
         Options.v().setPhaseOption("jb", "use-original-names:true");
+        Options.v().setPhaseOption("cg.cha", "on");
 
         if (Global.allReachable) {
             Options.v().setPhaseOption("cg", "all-reachable:true");
