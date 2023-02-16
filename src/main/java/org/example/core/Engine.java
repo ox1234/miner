@@ -1,20 +1,18 @@
 package org.example.core;
 
-import org.example.config.AnnotationRepository;
-import org.example.config.Global;
+import org.example.core.basic.Site;
 import org.example.core.visitor.StmtVisitor;
-import org.example.neo4j.node.method.AbstractMethod;
-import org.example.neo4j.service.Neo4jService;
 import org.example.tags.LocationTag;
-import org.example.util.ClassUtil;
 import org.example.util.Log;
-import org.example.util.MethodUtil;
+import org.example.util.TagUtil;
 import soot.*;
 import soot.Unit;
+import soot.jimple.Jimple;
 import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.callgraph.Edge;
+import soot.tagkit.AnnotationElem;
+import soot.tagkit.AnnotationStringElem;
 import soot.tagkit.AnnotationTag;
-import soot.util.Chain;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -22,24 +20,12 @@ import java.util.function.Consumer;
 public class Engine {
     private Hierarchy hierarchy;
     private CallGraph callGraph;
+    private Set<SootClass> patchedClasses;
 
     public Engine(Hierarchy hierarchy, CallGraph callGraph) {
         this.hierarchy = hierarchy;
         this.callGraph = callGraph;
-    }
-
-
-    public void collectAnnotations() {
-        Scene.v().getApplicationClasses().snapshotIterator().forEachRemaining(sootClass -> {
-            Log.info("collecting %s class annotation", sootClass.getName());
-            AnnotationRepository.collectClassAnnotation(sootClass);
-            for (SootMethod sootMethod : sootClass.getMethods()) {
-                AnnotationRepository.collectMethodAnnotation(sootMethod);
-            }
-            for (SootField sootField : sootClass.getFields()) {
-                AnnotationRepository.collectFieldAnnotation(sootField);
-            }
-        });
+        this.patchedClasses = new HashSet<>();
     }
 
     // doIntraProcedureAnalysis 对给定的SootMethod，进行过程内的指针分析
@@ -50,6 +36,10 @@ public class Engine {
         }
 
         Body body = method.retrieveActiveBody();
+        if (!patchedClasses.contains(method.getDeclaringClass())) {
+            PatchJimple patchJimple = new PatchJimple(hierarchy, method.getDeclaringClass());
+            patchJimple.patch();
+        }
 
         IntraAnalyzedMethod analyzedMethod = new IntraAnalyzedMethod(method);
         int order = 1;
@@ -65,19 +55,13 @@ public class Engine {
     public Map<String, IntraAnalyzedMethod> extractPointRelation() {
         Map<String, IntraAnalyzedMethod> intraAnalyzedMethods = new HashMap<>();
         Set<String> visitedMethods = new HashSet<>();
-        callGraph.forEach(new Consumer<Edge>() {
+        Scene.v().getApplicationClasses().snapshotIterator().forEachRemaining(sootClass -> sootClass.getMethods().forEach(new Consumer<SootMethod>() {
             @Override
-            public void accept(Edge edge) {
-                SootMethod srcMethod = edge.src();
-                SootMethod tgtMethod = edge.tgt();
-                if (needDoIntraAnalysis(srcMethod)) {
-                    addAnalyzedMethod(doIntraProcedureAnalysis(srcMethod));
+            public void accept(SootMethod sootMethod) {
+                if (needDoIntraAnalysis(sootMethod)) {
+                    addAnalyzedMethod(doIntraProcedureAnalysis(sootMethod));
                 }
-                if (needDoIntraAnalysis(tgtMethod)) {
-                    addAnalyzedMethod(doIntraProcedureAnalysis(tgtMethod));
-                }
-                visitedMethods.add(srcMethod.getSignature());
-                visitedMethods.add(tgtMethod.getSignature());
+                visitedMethods.add(sootMethod.getSignature());
             }
 
             private boolean needDoIntraAnalysis(SootMethod sootMethod) {
@@ -90,7 +74,7 @@ public class Engine {
                 }
                 intraAnalyzedMethods.put(analyzedMethod.getSignature(), analyzedMethod);
             }
-        });
+        }));
         return intraAnalyzedMethods;
     }
 }

@@ -13,6 +13,7 @@ import soot.PackManager;
 import soot.Scene;
 import soot.jimple.toolkits.callgraph.CallGraph;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
@@ -20,14 +21,13 @@ public class Main {
     public static void main(String[] args) throws Exception {
         // 配置Soot运行环境，分析对应jar包的所有类
         SootSetup setup = new SootSetup();
-//        setup.initialize("/Users/bytedance/workplace/java/demo1/target/demo1-0.0.1-SNAPSHOT.jar");
-        setup.initialize("/Users/bytedance/workplace/java/java-sec-code/target/java-sec-code-1.0.0.jar");
+        setup.initialize("/Users/bytedance/workplace/java/demo1/target/demo1-0.0.1-SNAPSHOT.jar");
+//        setup.initialize("/Users/bytedance/workplace/java/java-sec-code/target/java-sec-code-1.0.0.jar");
 
         // initialize analyze engine and do analysis
         Hierarchy hierarchy = SootHelper.buildHierarchy();
         CallGraph callGraph = SootHelper.buildCallGraph();
         Engine engine = new Engine(hierarchy, callGraph);
-        engine.collectAnnotations();
         Map<String, IntraAnalyzedMethod> analyzedMethodSet = engine.extractPointRelation();
 
         // import call graph and intra analysis result to neo4j
@@ -36,7 +36,7 @@ public class Main {
 //        Set<AbstractRelation> relations = service.buildRelations();
 //        service.saveRelation(relations);
 
-        FlowEngine flowEngine = new FlowEngine(callGraph, analyzedMethodSet);
+        FlowEngine flowEngine = new FlowEngine(callGraph, analyzedMethodSet, Collections.emptySet());
         flowEngine.buildRelations();
         flowEngine.saveRelationsToNeo4j();
 

@@ -21,25 +21,28 @@ import org.example.neo4j.node.var.StaticAlloc;
 import org.example.neo4j.relation.*;
 import org.example.util.Log;
 import soot.SootMethod;
+import soot.Unit;
 import soot.jimple.Stmt;
 
 import java.util.*;
 
 public class RelationExtractor {
     private CallNode callNode;
-    private Stmt callSite;
+    private Unit callSite;
     private Set<AbstractRelation> relations = new HashSet<>();
     private IntraAnalyzedMethod analyzedMethod;
     private Stack<ContextMethod> callStack;
     private SootMethod sootMethod;
 
+    private Set<Node> taintNodes;
 
-    public RelationExtractor(CallNode callNode, Stmt callSite, SootMethod sootMethod, IntraAnalyzedMethod analyzedMethod, Stack<ContextMethod> callStack) {
+    public RelationExtractor(CallNode callNode, Unit callSite, SootMethod sootMethod, IntraAnalyzedMethod analyzedMethod, Stack<ContextMethod> callStack, Set<Node> taintNodes) {
         this.callNode = callNode;
         this.callSite = callSite;
         this.analyzedMethod = analyzedMethod;
         this.callStack = callStack;
         this.sootMethod = sootMethod;
+        this.taintNodes = taintNodes;
     }
 
     public AbstractAllocNode getInstance(Node node) {
@@ -113,11 +116,24 @@ public class RelationExtractor {
     public void addTaintRelation(Map<Node, Set<Node>> taintFlowMap) {
         taintFlowMap.forEach((node, nodes) -> {
             AbstractAllocNode toNode = getInstance(node);
+            if (containsTaint(nodes)) {
+                toNode.setTaint(true);
+                taintNodes.add(node);
+            }
             for (Node from : nodes) {
                 AbstractAllocNode fromNode = getInstance(from);
                 relations.add(new Taint(Objects.requireNonNull(fromNode), Objects.requireNonNull(toNode)));
             }
         });
+    }
+
+    private boolean containsTaint(Set<Node> originalNodes) {
+        for (Node origNode : originalNodes) {
+            if (taintNodes.contains(origNode)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public AbstractAllocNode rebaseThisRef(InstanceField instanceField) {

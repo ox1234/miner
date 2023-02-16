@@ -1,11 +1,9 @@
 package org.example.core;
 
 import org.example.config.NodeRepository;
-import org.example.core.basic.MethodLevelSite;
 import org.example.core.basic.Node;
 import org.example.core.basic.node.CallNode;
 import org.example.core.basic.obj.Obj;
-import org.example.neo4j.relation.Call;
 import soot.SootClass;
 import soot.SootMethod;
 
@@ -26,8 +24,9 @@ public class IntraAnalyzedMethod {
 
     class Flow {
         private Map<Node, Set<Node>> taintFlowMap = new HashMap<>();
-        private Map<Node, Set<CallNode>> callReturnMap = new HashMap<>();
+        private Map<Node, Set<CallNode>> callNodeMap = new HashMap<>();
         private Map<Node, Obj> pointMap = new HashMap<>();
+        private List<CallNode> callNodes = new ArrayList<>();
 
         public void addFlow(Node to, Collection<Node> from) {
             if (from == null || from.isEmpty()) {
@@ -38,6 +37,7 @@ public class IntraAnalyzedMethod {
                 if (node instanceof CallNode) {
                     CallNode callNode = (CallNode) node;
                     callNode.setRetVar(to);
+                    addCallNode(callNode);
                 } else if (node != null) {
                     if (node instanceof Obj) {
                         addPointFlow(to, (Obj) node);
@@ -48,6 +48,10 @@ public class IntraAnalyzedMethod {
             }
         }
 
+        private void addCallNode(CallNode callNode) {
+            callNodes.add(callNode);
+        }
+
         private void addTaintFlow(Node to, Node from) {
             if (!taintFlowMap.containsKey(to)) {
                 taintFlowMap.put(to, new HashSet<>());
@@ -56,10 +60,10 @@ public class IntraAnalyzedMethod {
         }
 
         private void addCallRetFlow(Node to, CallNode from) {
-            if (!callReturnMap.containsKey(to)) {
-                callReturnMap.put(to, new HashSet<>());
+            if (!callNodeMap.containsKey(to)) {
+                callNodeMap.put(to, new HashSet<>());
             }
-            callReturnMap.get(to).add(from);
+            callNodeMap.get(to).add(from);
         }
 
         private void addPointFlow(Node to, Obj obj) {
@@ -79,6 +83,10 @@ public class IntraAnalyzedMethod {
         this.methodRef = sootMethod;
         this.declaredClassRef = sootMethod.getDeclaringClass();
         this.flow = new Flow();
+    }
+
+    public List<CallNode> getCallNodes() {
+        return flow.callNodes;
     }
 
     public String getName() {
@@ -102,7 +110,7 @@ public class IntraAnalyzedMethod {
     }
 
     public Map<Node, Set<CallNode>> getCallReturnMap() {
-        return flow.callReturnMap;
+        return flow.callNodeMap;
     }
 
     public Map<Node, Obj> getPointMap() {

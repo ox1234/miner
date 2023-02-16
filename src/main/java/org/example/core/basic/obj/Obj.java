@@ -14,7 +14,7 @@ abstract public class Obj extends UnitLevelSite implements TypeNode, Neo4jNode {
     }
 
     protected Obj(String type) {
-        super(type, "root");
+        super(type, "fake");
     }
 
     @Override
