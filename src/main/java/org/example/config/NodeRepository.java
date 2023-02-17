@@ -3,7 +3,9 @@ package org.example.config;
 import org.example.core.basic.*;
 import org.example.core.basic.field.InstanceField;
 import org.example.core.basic.field.StaticField;
+import org.example.core.basic.identity.Parameter;
 import org.example.core.basic.identity.ThisVariable;
+import org.example.core.basic.identity.UnifyReturn;
 import org.example.core.basic.node.CallNode;
 import org.example.core.basic.obj.Obj;
 import org.example.neo4j.relation.Call;
@@ -78,6 +80,6 @@ public class NodeRepository {
     }
 
     private static boolean ignoredMethodNode(Node node) {
-        return node instanceof InstanceField || node instanceof ThisVariable || node instanceof StaticField;
+        return node instanceof InstanceField || node instanceof ThisVariable || node instanceof StaticField || node instanceof UnifyReturn || node instanceof Parameter;
     }
 }

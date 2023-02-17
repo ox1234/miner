@@ -4,6 +4,7 @@ import org.example.core.IntraAnalyzedMethod;
 import org.example.core.basic.Node;
 import org.example.core.basic.Site;
 import org.example.core.basic.identity.UnifyReturn;
+import org.example.core.basic.node.VoidNode;
 import soot.SootMethod;
 import soot.Unit;
 import soot.Value;
@@ -37,7 +38,8 @@ public class StmtVisitor extends AbstractStmtSwitch<Void> {
     public void caseInvokeStmt(InvokeStmt stmt) {
         stmt.getInvokeExpr().apply(valueVisitor);
         List<Node> nodeSet = valueVisitor.getResult();
-        analyzedMethod.addFlow(null, nodeSet);
+        Node voidNode = Site.getNodeInstance(VoidNode.class, stmt);
+        analyzedMethod.addFlow(voidNode, nodeSet);
     }
 
     @Override

@@ -23,9 +23,10 @@ public class IntraAnalyzedMethod {
     private Flow flow;
 
     class Flow {
-        private Map<Node, Set<Node>> taintFlowMap = new HashMap<>();
-        private Map<Node, Set<CallNode>> callNodeMap = new HashMap<>();
-        private Map<Node, Obj> pointMap = new HashMap<>();
+        private Map<Node, Set<Node>> taintFlowMap = new LinkedHashMap<>();
+        private Map<Node, Set<CallNode>> callNodeMap = new LinkedHashMap<>();
+        private Map<Node, Set<Node>> inorderFlowMap = new LinkedHashMap<>();
+        private Map<Node, Obj> pointMap = new LinkedHashMap<>();
         private List<CallNode> callNodes = new ArrayList<>();
 
         public void addFlow(Node to, Collection<Node> from) {
@@ -45,7 +46,15 @@ public class IntraAnalyzedMethod {
                         addTaintFlow(to, node);
                     }
                 }
+                addInorderFlowMap(to, node);
             }
+        }
+
+        public void addInorderFlowMap(Node to, Node from) {
+            if (!inorderFlowMap.containsKey(to)) {
+                inorderFlowMap.put(to, new LinkedHashSet<>());
+            }
+            inorderFlowMap.get(to).add(from);
         }
 
         private void addCallNode(CallNode callNode) {
@@ -115,5 +124,9 @@ public class IntraAnalyzedMethod {
 
     public Map<Node, Obj> getPointMap() {
         return flow.pointMap;
+    }
+
+    public Map<Node, Set<Node>> getOrderedFlowMap() {
+        return flow.inorderFlowMap;
     }
 }

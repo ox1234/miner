@@ -11,13 +11,10 @@ public abstract class ContextMethod {
     private Unit callSite;
     private CallNode callNode;
 
-    public ContextMethod(SootMethod sootMethod, Unit callSite) {
+    public ContextMethod(SootMethod sootMethod, CallNode callNode, Unit callSite) {
         this.sootMethod = sootMethod;
         this.callSite = callSite;
-        if (callSite != null) {
-            String callNodeID = CallNode.getCallNodeID(callSite);
-            this.callNode = (CallNode) NodeRepository.getNode(callNodeID);
-        }
+        this.callNode = callNode;
     }
 
     public CallNode getCallNode() {

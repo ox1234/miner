@@ -37,6 +37,10 @@ abstract public class AbstractAllocNode {
         this.taint = taint;
     }
 
+    public boolean isTaint() {
+        return taint;
+    }
+
     public void addTaint(AbstractAllocNode taintNode) {
         taints.add(taintNode);
     }
