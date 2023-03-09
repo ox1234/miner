@@ -1,10 +1,9 @@
-package org.example.neo4j.context;
+package org.example.flow.context;
 
 import org.example.core.basic.node.CallNode;
 import soot.SootClass;
 import soot.SootMethod;
 import soot.Unit;
-import soot.jimple.Stmt;
 
 public class StaticContextMethod extends ContextMethod {
     private SootClass sootClass;

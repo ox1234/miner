@@ -1,10 +1,11 @@
 package org.example.core.basic.field;
 
 import org.example.core.basic.ClassLevelSite;
+import org.example.core.basic.Global;
 import org.example.core.basic.TypeNode;
 import soot.SootField;
 
-public class StaticField extends ClassLevelSite implements TypeNode {
+public class StaticField extends ClassLevelSite implements TypeNode, Global {
     private SootField field;
 
     protected StaticField(SootField field) {

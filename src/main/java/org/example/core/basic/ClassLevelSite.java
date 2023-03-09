@@ -15,4 +15,9 @@ public abstract class ClassLevelSite extends Site {
     public static String getLevelSiteID(String name, String className) {
         return DigestUtils.sha1Hex(String.format("%s:%s", name, className));
     }
+
+    @Override
+    public String toString() {
+        return String.format("[%s].%s", className, name);
+    }
 }

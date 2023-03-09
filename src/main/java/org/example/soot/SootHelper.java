@@ -19,6 +19,9 @@ public class SootHelper {
             Collection<SootClass> sootClasses = Scene.v().getApplicationClasses();
             List<SootMethod> routeMethods = getRouteMethods(sootClasses);
             Log.info("collect %d route methods, will build all route cg", routeMethods.size());
+            if(routeMethods.isEmpty()){
+                routeMethods.add(Scene.v().getMainMethod());
+            }
             Scene.v().setEntryPoints(routeMethods);
         }
         Log.info("running soot phases......");
@@ -39,6 +42,11 @@ public class SootHelper {
             for (AnnotationTag annotationTag : TagUtil.getClassAnnotation(sootClass)) {
                 if (TagUtil.isSpringControllerAnnotation(annotationTag)) {
                     for (SootMethod sootMethod : sootClass.getMethods()) {
+                        // test single route method
+//                        if(!sootMethod.getName().equals("jdbc_sqli_vul")){
+//                            continue;
+//                        }
+
                         if (MethodUtil.isRouteMethod(sootMethod)) {
                             Log.info("find %s method is route method", sootMethod.getSignature());
                             routeMethods.add(sootMethod);

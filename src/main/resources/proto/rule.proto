@@ -1,0 +1,21 @@
+syntax = "proto3";
+package rule;
+import "gogo.proto";
+//option go_package = "code.byted.org/sast/codegraphv2/build/gen";
+option (gogoproto.populate_all) = true;
+option go_package = "./";
+option java_package = "org.example.proto";
+message Sink{
+    string FuncID = 1[(gogoproto.jsontag) = "func_id", (gogoproto.moretags) = 'bson:"func_id"'];
+    int32 Pos = 2[(gogoproto.jsontag) = "pos", (gogoproto.moretags) = 'bson:"pos"'];
+}
+
+message Source{
+    string FuncID =1[(gogoproto.jsontag) = "func_id", (gogoproto.moretags) = 'bson:"func_id"'];
+    int32 Pos = 2[(gogoproto.jsontag) = "pos", (gogoproto.moretags) = 'bson:"pos"'];
+}
+
+message Rule{
+    repeated Source Sources = 1[(gogoproto.jsontag) = "sources", (gogoproto.moretags) = 'bson:"sources"'] ;
+    repeated Sink Sinks = 2[(gogoproto.jsontag) = "pos", (gogoproto.moretags) = 'bson:"pos"'] ;
+}

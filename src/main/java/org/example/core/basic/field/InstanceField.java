@@ -2,9 +2,6 @@ package org.example.core.basic.field;
 
 import org.example.core.basic.*;
 import org.example.core.basic.obj.Obj;
-import org.example.neo4j.node.var.AbstractAllocNode;
-import org.example.neo4j.node.var.FieldAlloc;
-import org.example.util.Log;
 import soot.SootField;
 import soot.SootMethod;
 

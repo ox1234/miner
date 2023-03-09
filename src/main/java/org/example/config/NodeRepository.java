@@ -27,7 +27,11 @@ public class NodeRepository {
 
     private static Map<Node, Obj> pointToObj = new HashMap<>();
 
-    public static void addNode(Node node) {
+    public static Node addNode(Node node) {
+        if (nodeRepository.containsKey(node.getID())) {
+            return nodeRepository.get(node.getID());
+        }
+
         if (node instanceof MethodLevelSite) {
             MethodLevelSite methodNode = (MethodLevelSite) node;
             methodLevelSiteMap.put(node.getID(), methodNode);
@@ -53,6 +57,7 @@ public class NodeRepository {
         }
 
         nodeRepository.put(node.getID(), node);
+        return node;
     }
 
     public static Node getNode(String nodeID) {
@@ -80,6 +85,6 @@ public class NodeRepository {
     }
 
     private static boolean ignoredMethodNode(Node node) {
-        return node instanceof InstanceField || node instanceof ThisVariable || node instanceof StaticField || node instanceof UnifyReturn || node instanceof Parameter;
+        return node instanceof InstanceField || node instanceof ThisVariable || node instanceof StaticField || node instanceof UnifyReturn;
     }
 }

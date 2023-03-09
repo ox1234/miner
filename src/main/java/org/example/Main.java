@@ -4,26 +4,33 @@ import org.example.config.NodeRepository;
 import org.example.core.Engine;
 import org.example.core.IntraAnalyzedMethod;
 import org.example.core.basic.Node;
-import org.example.neo4j.relation.AbstractRelation;
-import org.example.neo4j.service.FlowEngine;
-import org.example.neo4j.service.Neo4jService;
+import org.example.flow.FlowEngine;
 import org.example.soot.SootHelper;
 import org.example.soot.SootSetup;
+import org.example.soot.impl.FatJarHandler;
 import org.example.util.Log;
 import soot.Hierarchy;
 import soot.PackManager;
 import soot.Scene;
+import soot.SootMethod;
 import soot.jimple.toolkits.callgraph.CallGraph;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
+
+/*
+
+func (){
+    this.xxx = xxx;
+}
+ */
 
 public class Main {
     public static void main(String[] args) throws Exception {
         // 配置Soot运行环境，分析对应jar包的所有类
-        SootSetup setup = new SootSetup();
+        SootSetup setup = new SootSetup(new FatJarHandler());
         setup.initialize("/Users/bytedance/workplace/java/demo1/target/demo1-0.0.1-SNAPSHOT.jar");
 //        setup.initialize("/Users/bytedance/workplace/java/java-sec-code/target/java-sec-code-1.0.0.jar");
 
@@ -39,13 +46,8 @@ public class Main {
 //        Set<AbstractRelation> relations = service.buildRelations();
 //        service.saveRelation(relations);
 
-        Node initTaintNode = NodeRepository.getNode("d4cf2cbba6a60a745a01879b6a15a73d9c0d3ad8");
-        Set<Node> taintNodes = new HashSet<>();
-        taintNodes.add(initTaintNode);
-
-        FlowEngine flowEngine = new FlowEngine(callGraph, analyzedMethodSet, taintNodes);
-        flowEngine.buildRelations();
-        flowEngine.saveRelationsToNeo4j();
+        FlowEngine flowEngine = new FlowEngine(analyzedMethodSet);
+        Scene.v().getEntryPoints().forEach(flowEngine::traverse);
 
         // write jimple
         setup.cleanupOutput();

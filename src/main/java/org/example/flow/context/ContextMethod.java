@@ -1,28 +1,34 @@
-package org.example.neo4j.context;
+package org.example.flow.context;
 
-import org.example.config.NodeRepository;
+import org.example.core.basic.Node;
+import org.example.core.basic.field.InstanceField;
+import org.example.core.basic.field.StaticField;
+import org.example.core.basic.identity.UnifyReturn;
 import org.example.core.basic.node.CallNode;
+import org.example.flow.FlowEngine;
+import org.example.flow.TaintContainer;
+import org.example.util.Log;
 import soot.SootMethod;
 import soot.Unit;
-import soot.jimple.Stmt;
+
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 public abstract class ContextMethod {
     private SootMethod sootMethod;
     private Unit callSite;
     private CallNode callNode;
+    private Set<Node> taintNodes;
+    private boolean retTaint;
+    private TaintContainer taintContainer;
 
     public ContextMethod(SootMethod sootMethod, CallNode callNode, Unit callSite) {
         this.sootMethod = sootMethod;
         this.callSite = callSite;
         this.callNode = callNode;
-    }
-
-    public CallNode getCallNode() {
-        return callNode;
-    }
-
-    public Unit getCallSite() {
-        return callSite;
+        this.taintNodes = new LinkedHashSet<>();
+        this.taintContainer = new TaintContainer();
     }
 
     public SootMethod getSootMethod() {
@@ -40,5 +46,13 @@ public abstract class ContextMethod {
             return sootMethod.equals(((ContextMethod) obj).sootMethod);
         }
         return false;
+    }
+
+    public boolean returnTaint() {
+        return retTaint;
+    }
+
+    public TaintContainer getTaintContainer() {
+        return taintContainer;
     }
 }

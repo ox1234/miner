@@ -3,6 +3,7 @@ package org.example.soot;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.example.config.Global;
+import org.example.constant.Operation;
 import org.example.util.ClassUtil;
 import org.example.util.JarUtil;
 import org.example.util.Log;
@@ -21,43 +22,28 @@ import java.util.List;
 // SootSetup 负责所有Soot的参数设置和Soot类的加载路径
 public class SootSetup {
     // sourceTypeSpecifier 用来设置哪些类是application class以及library class
-    private SourceTypeSpecifier sourceTypeSpecifier;
+    private final SourceTypeSpecifier sourceTypeSpecifier;
+    private final TargetHandler targetHandler;
 
-    public SootSetup() {
+    public SootSetup(TargetHandler targetHandler) {
         sourceTypeSpecifier = new DefaultSourceTypeSpecifier();
+        this.targetHandler = targetHandler;
     }
 
-    public SootSetup(SourceTypeSpecifier specifier) {
+    public SootSetup(TargetHandler targetHandler, SourceTypeSpecifier specifier) {
         this.sourceTypeSpecifier = specifier;
+        this.targetHandler = targetHandler;
     }
 
     // setScanTarget 该函数负责Soot分析的路径，支持war，jar包（会自解压压缩包）
     private void setScanTarget(String target) throws Exception {
         Path targetPath = Paths.get(target);
-        String targetName = targetPath.toFile().getName();
-
-        Path outputPath = null;
-        // check file is jar
-        if (targetName.endsWith(".jar") || targetName.endsWith(".war")) {
-            outputPath = Paths.get(Global.outputPath).resolve(DigestUtils.sha1Hex(targetName));
-            Log.info("target is a packed file(jar/war), will extract inner class in %s", outputPath);
-            if (!outputPath.toFile().exists()) {
-                outputPath.toFile().mkdirs();
-            } else {
-                outputPath.toFile().delete();
-                outputPath.toFile().mkdirs();
-            }
-            JarUtil.extractJar(targetPath, outputPath);
+        if (!targetHandler.canHandle(targetPath)) {
+            throw new Exception(String.format("%s target handler not support this target", targetHandler.getClass().getName()));
         }
 
-        assert outputPath != null;
-        Path appClassPath = outputPath.resolve("BOOT-INF/classes");
-        Path libClassPath = outputPath.resolve("BOOT-INF/lib");
-
-        Collection<File> libJars = FileUtils.listFiles(libClassPath.toFile(), new String[]{"jar"}, true);
-
-        Options.v().set_process_dir(Collections.singletonList(appClassPath.toFile().getAbsolutePath()));
-        Options.v().set_soot_classpath(getLibClassPathStr(libJars));
+        Options.v().set_process_dir(targetHandler.getTargetClassDir(targetPath));
+        Options.v().set_soot_classpath(String.join(":", targetHandler.getLibraryClassDir(targetPath)));
     }
 
     // setOptions Soot的phase配置
@@ -74,11 +60,7 @@ public class SootSetup {
         Options.v().set_output_dir(Global.sootOutputPath);
 
         Options.v().setPhaseOption("jb", "use-original-names:true");
-        Options.v().setPhaseOption("cg.cha", "on");
-
-        if (Global.allReachable) {
-            Options.v().setPhaseOption("cg", "all-reachable:true");
-        }
+        Options.v().setPhaseOption("cg", "spark:false");
     }
 
     public void cleanupOutput() {
@@ -112,13 +94,5 @@ public class SootSetup {
         // load all classes
         Log.info("loading classes into soot Scene......");
         loadSootClasses();
-    }
-
-    private String getLibClassPathStr(Collection<File> jars) {
-        List<String> files = new ArrayList<>();
-        for (File jar : jars) {
-            files.add(jar.getAbsolutePath());
-        }
-        return String.join(":", files);
     }
 }

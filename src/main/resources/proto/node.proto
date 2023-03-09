@@ -1,0 +1,76 @@
+syntax = "proto3";
+package node;
+import "gogo.proto";
+option (gogoproto.populate_all) = true;
+//option go_package = "code.byted.org/sast/codegraphv2/build/gen";
+option go_package = "./";
+option java_package = "org.example.proto";
+
+// Location 代码位置
+message Node {
+	// **约定**： 当且仅当是污点或包含时，才需要保存引用信息
+	string ID = 1 [(gogoproto.jsontag) = "id", (gogoproto.moretags) = 'bson:"id"'];
+	repeated Pos Refs = 2 [(gogoproto.jsontag) = "refs", (gogoproto.moretags) = 'bson:"refs"'];
+	// 变量的类型
+	string Type = 3 [(gogoproto.jsontag) = "type", (gogoproto.moretags) = 'bson:"type"'];
+	// 污点的常量表示，用于 SSRF 等场景
+	string Repr = 4 [(gogoproto.jsontag) = "repr", (gogoproto.moretags) = 'bson:"repr"'];
+	//  map 结构，m["x"] 可以表示成 Fields["\"xxx\""]
+	//  list 结构，m[1] 可以表示成 Fields["1"]
+    map<string,Node> Fields =5 [(gogoproto.jsontag) = "fields", (gogoproto.moretags) = 'bson:"fields"'];
+	// 表示当前 Node 是一个指针
+	Node PointsTo=6 [(gogoproto.jsontag) = "pointsto", (gogoproto.moretags) = 'bson:"pointsto"'];
+	string PointsToID=7 [(gogoproto.jsontag) = "pointsto_id", (gogoproto.moretags) = 'bson:"pointsto_id"'];
+	// 表示迭代器指向的原Node
+	Node SrcTo = 8 [(gogoproto.jsontag) = "srcto", (gogoproto.moretags) = 'bson:"srcto"']; 
+	//表示第几个参数
+	int32 ArgIndex=9 [(gogoproto.jsontag) = "arg_index", (gogoproto.moretags) = 'bson:"arg_index"'];
+	//表示第几个返回值
+	int32 RetIndex=10 [(gogoproto.jsontag) = "ret_index", (gogoproto.moretags) = 'bson:"ret_index"'];
+	// 表示当前节点是污点
+	bool Tainted=13 [(gogoproto.jsontag) = "tainted", (gogoproto.moretags) = 'bson:"tainted"'];
+    // 表示变量名称
+    string Name = 14 [(gogoproto.jsontag) = "name", (gogoproto.moretags) = 'bson:"name"'];
+    // 表示变量是否为全局变量
+    bool IsGlobal=15[(gogoproto.jsontag) = "is_global", (gogoproto.moretags) = 'bson:"is_global"'];
+    // 表示ssa名称
+    repeated string SSA = 16 [(gogoproto.jsontag) = "ssa", (gogoproto.moretags) = 'bson:"ssa"'];
+}
+
+message Tainted{
+    repeated string RelSlice = 1 [(gogoproto.jsontag) = "rel_slice", (gogoproto.moretags) = 'bson:"rel_slice"'];
+    bool IsDeepFlow = 2 [(gogoproto.jsontag) = "is_deep_flow", (gogoproto.moretags) = 'bson:"is_deep_flow"'] ;
+    string Op= 3 [(gogoproto.jsontag) = "op", (gogoproto.moretags) = 'bson:"op"'];
+    Pos Ref= 4 [(gogoproto.jsontag) = "ref", (gogoproto.moretags) = 'bson:"ref"'];
+}
+
+message TaintedFlow{
+    map<string,Value> TaintedFlow = 1[(gogoproto.jsontag) = "tainted_flow", (gogoproto.moretags) = 'bson:"tainted_flow"'];
+}
+message Value {
+    oneof kind{
+        Tainted tainted = 1[(gogoproto.jsontag) = "tainted", (gogoproto.moretags) = 'bson:"tainted"'];
+        CallNode callnode = 2[(gogoproto.jsontag) = "callnode", (gogoproto.moretags) = 'bson:"callnode"'];
+        SanitizerNode santizernode = 3 [(gogoproto.jsontag) = "santizernode", (gogoproto.moretags) = 'bson:"santizernode"'];
+    }
+}
+
+message CallNode{
+    string FuncID = 1 [(gogoproto.jsontag) = "func_id", (gogoproto.moretags) = 'bson:"func_id"'];
+    repeated Node Args = 2 [(gogoproto.jsontag) = "args", (gogoproto.moretags) = 'bson:"args"'];
+    repeated Node Bindings = 3 [(gogoproto.jsontag) = "bindings", (gogoproto.moretags) = 'bson:"bindings"'];
+    string Ret = 4 [(gogoproto.jsontag) = "ret", (gogoproto.moretags) = 'bson:"ret"'];
+    Pos Ref = 5 [(gogoproto.jsontag) = "ref", (gogoproto.moretags) = 'bson:"ref"'];
+    int32 Type = 6  [(gogoproto.jsontag) = "type", (gogoproto.moretags) = 'bson:"type"'];
+}
+
+message SanitizerNode {
+    Node SantiNode = 1 [(gogoproto.jsontag) = "santi", (gogoproto.moretags) = 'bson:"santi"'];
+}
+
+// Location 代码位置
+message Pos {
+  string File = 1 [(gogoproto.jsontag) = "file,omitempty", (gogoproto.moretags) = 'bson:"file,omitempty"'];     // 文件名
+  int32 Line = 2 [(gogoproto.jsontag) = "line,omitempty", (gogoproto.moretags) = 'bson:"line,omitempty"'];     // 行号
+  int32 Column = 3 [(gogoproto.jsontag) = "column,omitempty", (gogoproto.moretags) = 'bson:"column,omitempty"']; // 列号
+}

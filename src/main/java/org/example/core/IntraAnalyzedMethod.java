@@ -1,7 +1,9 @@
 package org.example.core;
 
 import org.example.config.NodeRepository;
+import org.example.config.PointRepository;
 import org.example.core.basic.Node;
+import org.example.core.expr.AbstractExprNode;
 import org.example.core.basic.node.CallNode;
 import org.example.core.basic.obj.Obj;
 import soot.SootClass;
@@ -19,42 +21,41 @@ public class IntraAnalyzedMethod {
     private SootMethod methodRef;
     private SootClass declaredClassRef;
 
-    // method intra flow analysis
+    // method intra org.example.flow analysis
     private Flow flow;
 
     class Flow {
         private Map<Node, Set<Node>> taintFlowMap = new LinkedHashMap<>();
         private Map<Node, Set<CallNode>> callNodeMap = new LinkedHashMap<>();
-        private Map<Node, Set<Node>> inorderFlowMap = new LinkedHashMap<>();
+        private Map<Node, AbstractExprNode> inorderFlowMap = new LinkedHashMap<>();
         private Map<Node, Obj> pointMap = new LinkedHashMap<>();
         private List<CallNode> callNodes = new ArrayList<>();
 
-        public void addFlow(Node to, Collection<Node> from) {
+        public void addFlow(Node to, AbstractExprNode from) {
             if (from == null || from.isEmpty()) {
                 return;
             }
 
-            for (Node node : from) {
+            for (Node node : from.getAllNodes()) {
                 if (node instanceof CallNode) {
                     CallNode callNode = (CallNode) node;
                     callNode.setRetVar(to);
                     addCallNode(callNode);
                 } else if (node != null) {
-                    if (node instanceof Obj) {
-                        addPointFlow(to, (Obj) node);
+                    Obj refObj = node.getRefObj();
+                    if (refObj != null) {
+                        to.setRefObj(refObj);
+                        addPointFlow(to, refObj);
                     } else {
                         addTaintFlow(to, node);
                     }
                 }
-                addInorderFlowMap(to, node);
             }
+            addInorderFlowMap(to, from);
         }
 
-        public void addInorderFlowMap(Node to, Node from) {
-            if (!inorderFlowMap.containsKey(to)) {
-                inorderFlowMap.put(to, new LinkedHashSet<>());
-            }
-            inorderFlowMap.get(to).add(from);
+        public void addInorderFlowMap(Node to, AbstractExprNode from) {
+            inorderFlowMap.put(to, from);
         }
 
         private void addCallNode(CallNode callNode) {
@@ -76,6 +77,7 @@ public class IntraAnalyzedMethod {
         }
 
         private void addPointFlow(Node to, Obj obj) {
+            PointRepository.pointoMap.put(to, obj);
             pointMap.put(to, obj);
             NodeRepository.addPointTo(to, obj);
         }
@@ -110,7 +112,7 @@ public class IntraAnalyzedMethod {
         return methodRef;
     }
 
-    public void addFlow(Node to, Collection<Node> from) {
+    public void addFlow(Node to, AbstractExprNode from) {
         flow.addFlow(to, from);
     }
 
@@ -126,7 +128,7 @@ public class IntraAnalyzedMethod {
         return flow.pointMap;
     }
 
-    public Map<Node, Set<Node>> getOrderedFlowMap() {
+    public Map<Node, AbstractExprNode> getOrderedFlowMap() {
         return flow.inorderFlowMap;
     }
 }
