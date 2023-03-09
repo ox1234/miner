@@ -20,4 +20,9 @@ public class ArrayReference extends SiteLevelSite {
     public Node getIdxNode() {
         return idxNode;
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s:%s", baseNode.toString(), idxNode.toString());
+    }
 }

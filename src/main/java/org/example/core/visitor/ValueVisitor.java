@@ -2,10 +2,15 @@ package org.example.core.visitor;
 
 import org.example.config.NodeRepository;
 import org.example.constant.InvokeType;
+import org.example.constant.Operation;
 import org.example.core.IntraAnalyzedMethod;
+import org.example.core.expr.AbstractExprNode;
 import org.example.core.basic.MethodLevelSite;
 import org.example.core.basic.Node;
 import org.example.core.basic.Site;
+import org.example.core.expr.EmptyExprNode;
+import org.example.core.expr.SingleExprNode;
+import org.example.core.expr.OpExprNode;
 import org.example.core.basic.field.ArrayReference;
 import org.example.core.basic.node.CallNode;
 import org.example.core.basic.field.InstanceField;
@@ -21,7 +26,7 @@ import soot.shimple.AbstractShimpleValueSwitch;
 
 import java.util.*;
 
-public class ValueVisitor extends AbstractShimpleValueSwitch<List<Node>> {
+public class ValueVisitor extends AbstractShimpleValueSwitch<AbstractExprNode> {
     private static final ValueVisitor instance = new ValueVisitor();
 
     public SootMethod currentMethod;
@@ -49,42 +54,42 @@ public class ValueVisitor extends AbstractShimpleValueSwitch<List<Node>> {
                 node = Site.getNodeInstance(LocalVariable.class, v.getName(), currentMethod, v.getType().toString());
             }
         }
-        this.setNodeResult(node);
+        this.setResult(new SingleExprNode(node));
     }
 
     @Override
     public void caseDoubleConstant(DoubleConstant v) {
-        this.setNodeResult(Site.getNodeInstance(ConstantObj.class, String.valueOf(v.value), v.getType().toString(), currentUnit));
+        this.setResult(new SingleExprNode(Site.getNodeInstance(ConstantObj.class, String.valueOf(v.value), v.getType().toString(), currentUnit)));
     }
 
     @Override
     public void caseFloatConstant(FloatConstant v) {
-        this.setNodeResult(Site.getNodeInstance(ConstantObj.class, String.valueOf(v.value), v.getType().toString(), currentUnit));
+        this.setResult(new SingleExprNode(Site.getNodeInstance(ConstantObj.class, String.valueOf(v.value), v.getType().toString(), currentUnit)));
     }
 
     @Override
     public void caseIntConstant(IntConstant v) {
-        this.setNodeResult(Site.getNodeInstance(ConstantObj.class, String.valueOf(v.value), v.getType().toString(), currentUnit));
+        this.setResult(new SingleExprNode(Site.getNodeInstance(ConstantObj.class, String.valueOf(v.value), v.getType().toString(), currentUnit)));
     }
 
     @Override
     public void caseLongConstant(LongConstant v) {
-        this.setNodeResult(Site.getNodeInstance(ConstantObj.class, String.valueOf(v.value), v.getType().toString(), currentUnit));
+        this.setResult(new SingleExprNode(Site.getNodeInstance(ConstantObj.class, String.valueOf(v.value), v.getType().toString(), currentUnit)));
     }
 
     @Override
     public void caseNullConstant(NullConstant v) {
-        this.setNodeResult(Site.getNodeInstance(ConstantObj.class, "null", v.getType().toString(), currentUnit));
+        this.setResult(new SingleExprNode(Site.getNodeInstance(ConstantObj.class, "null", v.getType().toString(), currentUnit)));
     }
 
     @Override
     public void caseStringConstant(StringConstant v) {
-        this.setNodeResult(Site.getNodeInstance(ConstantObj.class, String.valueOf(v.value), v.getType().toString(), currentUnit));
+        this.setResult(new SingleExprNode(Site.getNodeInstance(ConstantObj.class, String.valueOf(v.value), v.getType().toString(), currentUnit)));
     }
 
     @Override
     public void caseClassConstant(ClassConstant v) {
-        this.setNodeResult(Site.getNodeInstance(ConstantObj.class, String.valueOf(v.value), v.getType().toString(), currentUnit));
+        this.setResult(new SingleExprNode(Site.getNodeInstance(ConstantObj.class, String.valueOf(v.value), v.getType().toString(), currentUnit)));
     }
 
 
@@ -102,30 +107,30 @@ public class ValueVisitor extends AbstractShimpleValueSwitch<List<Node>> {
     public void caseArrayRef(ArrayRef v) {
         // get base node
         v.getBase().apply(this);
-        Node baseNode = this.getResult().get(0);
+        Node baseNode = this.getResult().getFirstNode();
 
         v.getIndex().apply(this);
-        Node idxNode = this.getResult().get(0);
+        Node idxNode = this.getResult().getFirstNode();
 
-        this.setNodeResult(Site.getNodeInstance(ArrayReference.class, baseNode, idxNode));
+        this.setResult(new SingleExprNode(Site.getNodeInstance(ArrayReference.class, baseNode, idxNode)));
     }
 
     @Override
     public void caseStaticFieldRef(StaticFieldRef v) {
-        this.setNodeResult(Site.getNodeInstance(StaticField.class, v.getField()));
+        this.setResult(new SingleExprNode(Site.getNodeInstance(StaticField.class, v.getField())));
     }
 
     @Override
     public void caseInstanceFieldRef(InstanceFieldRef v) {
         v.getBase().apply(this);
-        Node baseNode = this.getResult().get(0);
+        Node baseNode = this.getResult().getFirstNode();
 
-        this.setNodeResult(Site.getNodeInstance(InstanceField.class, baseNode, v.getField(), currentMethod));
+        this.setResult(new SingleExprNode(Site.getNodeInstance(InstanceField.class, baseNode, v.getField(), currentMethod)));
     }
 
     @Override
     public void caseParameterRef(ParameterRef v) {
-        this.setNodeResult(Site.getNodeInstance(Parameter.class, v.getIndex(), currentMethod, v.getType().toString()));
+        this.setResult(new SingleExprNode(Site.getNodeInstance(Parameter.class, v.getIndex(), currentMethod, v.getType().toString())));
     }
 
     @Override
@@ -141,7 +146,7 @@ public class ValueVisitor extends AbstractShimpleValueSwitch<List<Node>> {
     // --------------------------------------------------------- expr visitor ----------------------------------------------
     @Override
     public void caseNewExpr(NewExpr v) {
-        setNodeResult(Site.getNodeInstance(NormalObj.class, v.getBaseType().getSootClass(), currentUnit));
+        setResult(new SingleExprNode(Site.getNodeInstance(NormalObj.class, v.getBaseType().getSootClass(), currentUnit)));
     }
 
     @Override
@@ -151,13 +156,12 @@ public class ValueVisitor extends AbstractShimpleValueSwitch<List<Node>> {
         Value op2 = v.getOp2();
 
         op1.apply(this);
-        List<Node> nodeList = new ArrayList<>(this.getResult());
+        List<Node> nodeList = new ArrayList<>(this.getResult().getAllNodes());
 
         op2.apply(this);
-        nodeList.addAll(this.getResult());
+        nodeList.addAll(this.getResult().getAllNodes());
 
-
-        this.setNodeResult(nodeList);
+        this.setResult(new OpExprNode(Operation.NUMBERADD, nodeList));
     }
 
     @Override
@@ -186,14 +190,14 @@ public class ValueVisitor extends AbstractShimpleValueSwitch<List<Node>> {
         if (v.getMethod().getName().equals("makeConcatWithConstants")) {
             for (Value boostrapValue : v.getBootstrapArgs()) {
                 boostrapValue.apply(this);
-                nodeList.addAll(this.getResult());
+                nodeList.addAll(this.getResult().getAllNodes());
             }
 
             for (Value arg : v.getArgs()) {
                 arg.apply(this);
-                nodeList.addAll(this.getResult());
+                nodeList.addAll(this.getResult().getAllNodes());
             }
-            this.setNodeResult(nodeList);
+            this.setResult(new OpExprNode(Operation.STRCONCAT, nodeList));
         } else {
             handleInvoke(v);
         }
@@ -205,7 +209,7 @@ public class ValueVisitor extends AbstractShimpleValueSwitch<List<Node>> {
         for (int i = 0; i < v.getArgCount(); i++) {
             Value argValue = v.getArg(i);
             argValue.apply(this);
-            List<Node> nodes = getResult();
+            List<Node> nodes = getResult().getAllNodes();
             assert nodes.size() == 1;
             args.add(nodes.get(0));
         }
@@ -213,7 +217,7 @@ public class ValueVisitor extends AbstractShimpleValueSwitch<List<Node>> {
         Node base = null;
         if (v instanceof InstanceInvokeExpr) {
             ((InstanceInvokeExpr) v).getBase().apply(this);
-            List<Node> nodes = getResult();
+            List<Node> nodes = getResult().getAllNodes();
             assert nodes.size() == 1;
             base = nodes.get(0);
         } else if (v instanceof StaticInvokeExpr) {
@@ -221,7 +225,7 @@ public class ValueVisitor extends AbstractShimpleValueSwitch<List<Node>> {
             base = Site.getNodeInstance(ClassTypeNode.class, className);
         }
 
-        this.setNodeResult(Site.getNodeInstance(CallNode.class, targetMethod, currentMethod, currentUnit, args, base, InvokeType.getInvokeType(v)));
+        this.setResult(new SingleExprNode(Site.getNodeInstance(CallNode.class, targetMethod, currentMethod, currentUnit, args, base, InvokeType.getInvokeType(v))));
     }
 
     // TODO: 处理所有expr语句
@@ -355,20 +359,11 @@ public class ValueVisitor extends AbstractShimpleValueSwitch<List<Node>> {
     // ------------------------------------------------------- result manipulate ------------------------------------------
 
     public void setNopResult() {
-        super.setResult(Collections.emptyList());
+        super.setResult(new EmptyExprNode());
     }
 
-    public void setNodeResult(Node... result) {
-        List<Node> nodeSet = new ArrayList<>(Arrays.asList(result));
-        super.setResult(nodeSet);
-    }
-
-    public void setNodeResult(List<Node> results) {
-        super.setResult(results);
-    }
-
-    public List<Node> getResult() {
-        List<Node> result = super.getResult();
+    public AbstractExprNode getResult() {
+        AbstractExprNode result = super.getResult();
         super.setResult(null);
         return result;
     }

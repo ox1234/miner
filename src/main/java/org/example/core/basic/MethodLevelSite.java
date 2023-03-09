@@ -1,9 +1,8 @@
 package org.example.core.basic;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.example.neo4j.node.var.AbstractAllocNode;
 
-public abstract class MethodLevelSite extends Site{
+public abstract class MethodLevelSite extends Site {
     private String name;
     private String methodSig; // enclosing method
 
@@ -25,4 +24,8 @@ public abstract class MethodLevelSite extends Site{
         return methodSig;
     }
 
+    @Override
+    public String toString() {
+        return name;
+    }
 }

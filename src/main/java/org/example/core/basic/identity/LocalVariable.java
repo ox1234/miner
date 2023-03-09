@@ -1,12 +1,9 @@
 package org.example.core.basic.identity;
 
-import org.example.core.basic.MethodLevelSite;
-import org.example.core.basic.Neo4jNode;
-import org.example.core.basic.TypeNode;
+import org.example.core.basic.*;
 import org.example.neo4j.node.var.AbstractAllocNode;
 import org.example.neo4j.node.var.LocalAlloc;
 import soot.SootMethod;
-import soot.Unit;
 
 public class LocalVariable extends MethodLevelSite implements TypeNode, Neo4jNode {
     protected String type;

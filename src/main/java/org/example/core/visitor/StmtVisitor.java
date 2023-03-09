@@ -3,6 +3,7 @@ package org.example.core.visitor;
 import org.example.core.IntraAnalyzedMethod;
 import org.example.core.basic.Node;
 import org.example.core.basic.Site;
+import org.example.core.expr.AbstractExprNode;
 import org.example.core.basic.identity.UnifyReturn;
 import org.example.core.basic.node.VoidNode;
 import soot.SootMethod;
@@ -10,8 +11,6 @@ import soot.Unit;
 import soot.Value;
 import soot.VoidType;
 import soot.jimple.*;
-
-import java.util.List;
 
 public class StmtVisitor extends AbstractStmtSwitch<Void> {
     private static final StmtVisitor instance = new StmtVisitor();
@@ -37,7 +36,7 @@ public class StmtVisitor extends AbstractStmtSwitch<Void> {
     @Override
     public void caseInvokeStmt(InvokeStmt stmt) {
         stmt.getInvokeExpr().apply(valueVisitor);
-        List<Node> nodeSet = valueVisitor.getResult();
+        AbstractExprNode nodeSet = valueVisitor.getResult();
         Node voidNode = Site.getNodeInstance(VoidNode.class, stmt);
         analyzedMethod.addFlow(voidNode, nodeSet);
     }
@@ -47,7 +46,7 @@ public class StmtVisitor extends AbstractStmtSwitch<Void> {
         Value op = stmt.getOp();
         op.apply(valueVisitor);
 
-        List<Node> nodeSet = valueVisitor.getResult();
+        AbstractExprNode nodeSet = valueVisitor.getResult();
         if (!(currentMethod.getReturnType() instanceof VoidType)) {
             Node node = Site.getNodeInstance(UnifyReturn.class, currentMethod, currentMethod.getReturnType().toString());
             analyzedMethod.addFlow(node, nodeSet);
@@ -119,13 +118,14 @@ public class StmtVisitor extends AbstractStmtSwitch<Void> {
         Value rightVal = stmt.getRightOp();
 
         leftVal.apply(valueVisitor);
-        List<Node> leftNodes = valueVisitor.getResult();
+        AbstractExprNode leftNodes = valueVisitor.getResult();
         assert leftNodes.size() == 1;
 
         rightVal.apply(valueVisitor);
-        List<Node> rightNode = valueVisitor.getResult();
+        AbstractExprNode rightNode = valueVisitor.getResult();
 
-        analyzedMethod.addFlow(leftNodes.get(0), rightNode);
+        Node node = leftNodes.getFirstNode();
+        analyzedMethod.addFlow(node, rightNode);
     }
 
 

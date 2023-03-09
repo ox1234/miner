@@ -1,0 +1,15 @@
+syntax = "proto3";
+package rule;
+import "gogo.proto";
+//option go_package = "code.byted.org/sast/codegraphv2/build/gen";
+option (gogoproto.populate_all) = true;
+option go_package = "./";
+option java_package = "org.example.proto";
+
+message SpreadPaths  {
+    repeated SpreadPath SpreadPaths = 1 [(gogoproto.jsontag) = "spread_paths", (gogoproto.moretags) = 'bson:"spread_paths"'];
+}
+
+message SpreadPath  {
+    repeated string path = 1 [(gogoproto.jsontag) = "path", (gogoproto.moretags) = 'bson:"path"'];
+}

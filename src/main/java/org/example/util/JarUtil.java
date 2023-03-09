@@ -10,6 +10,7 @@ import java.util.function.Consumer;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
+import java.util.jar.Manifest;
 
 public class JarUtil {
     public static boolean isFatJar(String jarPath) {
@@ -48,5 +49,6 @@ public class JarUtil {
                 }
             }
         }
+
     }
 }

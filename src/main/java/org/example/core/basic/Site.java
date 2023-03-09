@@ -1,6 +1,7 @@
 package org.example.core.basic;
 
 import org.example.config.NodeRepository;
+import org.example.core.basic.obj.Obj;
 import org.example.util.Log;
 import soot.SootMethod;
 import soot.Unit;
@@ -14,6 +15,7 @@ import java.util.Set;
 
 public abstract class Site implements Node {
     protected String id;
+    protected Obj refObj;
 
     public String getID() {
         return id;
@@ -40,8 +42,7 @@ public abstract class Site implements Node {
             Constructor<?> constructor = constructors[0];
             constructor.setAccessible(true);
             Node node = (Node) constructor.newInstance(args);
-            NodeRepository.addNode(node);
-            return node;
+            return NodeRepository.addNode(node);
         } catch (InvocationTargetException | InstantiationException | IllegalArgumentException |
                  IllegalAccessException e) {
             Log.error("construct %s class instance fail", nodeClass.getName());
@@ -49,4 +50,17 @@ public abstract class Site implements Node {
         return null;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    @Override
+    public Obj getRefObj() {
+        return refObj;
+    }
+
+    @Override
+    public void setRefObj(Obj refObj) {
+        this.refObj = refObj;
+    }
 }

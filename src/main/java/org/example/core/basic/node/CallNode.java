@@ -6,6 +6,7 @@ import org.example.core.basic.Site;
 import org.example.core.basic.UnitLevelSite;
 import org.example.core.basic.identity.Parameter;
 import org.example.core.basic.identity.UnifyReturn;
+import org.example.core.basic.obj.Obj;
 import org.example.tags.LocationTag;
 import soot.SootMethod;
 import soot.Unit;
@@ -27,6 +28,7 @@ public class CallNode extends UnitLevelSite {
     private Node retVar;
     private Unit callSite;
     private InvokeType invokeType;
+    private Obj thisRef;
 
     protected CallNode(SootMethod callee, SootMethod caller, Unit nodeSite, Collection<Node> args, Node base, InvokeType invokeType) {
         super(nodeSite.toString(), LocationTag.getLocation(nodeSite));
@@ -45,11 +47,18 @@ public class CallNode extends UnitLevelSite {
         this.subSignature = callee.getSubSignature();
         this.params = new ArrayList<>();
         for (int i = 0; i < callee.getParameterCount(); i++) {
-            params.add(Site.getNodeInstance(Parameter.class, i, callee, callee.getParameterType(i).toString()));
+            Node paramNode = Site.getNodeInstance(Parameter.class, i, callee, callee.getParameterType(i).toString());
+            assert paramNode != null;
+            paramNode.setRefObj(args.get(i).getRefObj());
+            params.add(paramNode);
         }
         if (!(callee.getReturnType() instanceof VoidType)) {
             this.unifyRet = Site.getNodeInstance(UnifyReturn.class, callee, callee.getReturnType().toString());
         }
+    }
+
+    public void setThisRef(Obj thisRef) {
+        this.thisRef = thisRef;
     }
 
     public String getSubSignature() {

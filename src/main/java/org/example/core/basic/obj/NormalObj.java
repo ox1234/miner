@@ -1,7 +1,10 @@
 package org.example.core.basic.obj;
 
+import org.example.core.basic.Node;
 import soot.SootClass;
 import soot.Unit;
+
+import java.util.Map;
 
 public class NormalObj extends Obj {
     private SootClass sootClass;
