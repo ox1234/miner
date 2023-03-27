@@ -8,4 +8,9 @@ public class VoidNode extends UnitLevelSite {
     protected VoidNode(Unit location) {
         super("void", LocationTag.getLocation(location));
     }
+
+    @Override
+    public String toString() {
+        return "voidnode";
+    }
 }

@@ -15,7 +15,7 @@ import java.util.Map;
 abstract public class Obj extends UnitLevelSite implements TypeNode, Neo4jNode {
     private Map<String, TaintField> fieldMap = new HashMap<>();
 
-    class TaintField{
+    class TaintField {
         private boolean isTaint;
         private InstanceField instanceField;
 
@@ -57,7 +57,12 @@ abstract public class Obj extends UnitLevelSite implements TypeNode, Neo4jNode {
         return this;
     }
 
-    public void putInstanceField(InstanceField field){
-        fieldMap.put(field.getName(), new TaintField(field, false));
+    public void putInstanceField(InstanceField field, boolean isTaint) {
+        fieldMap.put(field.getName(), new TaintField(field, isTaint));
+    }
+
+    public boolean isTaintField(InstanceField field) {
+        TaintField taintField = fieldMap.get(field.getName());
+        return taintField != null && taintField.isTaint;
     }
 }

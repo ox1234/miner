@@ -22,4 +22,9 @@ public class ConstantObj extends Obj implements TypeNode {
     public AbstractAllocNode convert() {
         return new ObjAlloc(super.getID(), String.format("%s:%s", value, type));
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s(%s)", value, super.getType());
+    }
 }

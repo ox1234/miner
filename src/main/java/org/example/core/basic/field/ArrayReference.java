@@ -23,6 +23,6 @@ public class ArrayReference extends SiteLevelSite {
 
     @Override
     public String toString() {
-        return String.format("%s:%s", baseNode.toString(), idxNode.toString());
+        return String.format("%s(%s)", baseNode.toString(), idxNode.toString());
     }
 }

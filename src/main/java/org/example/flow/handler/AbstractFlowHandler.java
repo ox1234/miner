@@ -9,19 +9,14 @@ import soot.Hierarchy;
 
 abstract public class AbstractFlowHandler implements FlowHandler {
     protected FlowEngine flowEngine;
-    protected ContextMethod belongMethod;
-    protected TaintContainer taintContainer;
+    protected CallStack callStack;
 
     protected AbstractFlowHandler(FlowEngine flowEngine) {
         this.flowEngine = flowEngine;
-    }
-
-    public void injectBelongMethod(ContextMethod belongMethod) {
-        this.belongMethod = belongMethod;
-        this.taintContainer = belongMethod.getTaintContainer();
+        this.callStack = flowEngine.getCallStack();
     }
 
     public TaintContainer getTaintContainer() {
-        return taintContainer;
+        return callStack.peek().getTaintContainer();
     }
 }

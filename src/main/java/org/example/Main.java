@@ -46,13 +46,14 @@ public class Main {
 //        Set<AbstractRelation> relations = service.buildRelations();
 //        service.saveRelation(relations);
 
-        FlowEngine flowEngine = new FlowEngine(analyzedMethodSet);
-        Scene.v().getEntryPoints().forEach(flowEngine::traverse);
-
         // write jimple
         setup.cleanupOutput();
         PackManager.v().writeOutput();
         Log.info("writing jimple file to soot output directory");
+
+        FlowEngine flowEngine = new FlowEngine(analyzedMethodSet);
+        Scene.v().getEntryPoints().forEach(flowEngine::traverse);
+
         Log.info("java code graph construct successfully");
     }
 }

@@ -112,4 +112,9 @@ public class CallNode extends UnitLevelSite {
     public SootMethod getCallee() {
         return callee;
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s.%s", base.toString(), callee.getName());
+    }
 }

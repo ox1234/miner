@@ -18,9 +18,7 @@ import org.example.core.basic.field.StaticField;
 import org.example.core.basic.identity.*;
 import org.example.core.basic.obj.ConstantObj;
 import org.example.core.basic.obj.NormalObj;
-import soot.SootMethod;
-import soot.Unit;
-import soot.Value;
+import soot.*;
 import soot.jimple.*;
 import soot.shimple.AbstractShimpleValueSwitch;
 
@@ -140,7 +138,10 @@ public class ValueVisitor extends AbstractShimpleValueSwitch<AbstractExprNode> {
 
     @Override
     public void caseThisRef(ThisRef v) {
-        // TODO handle this
+        Type type = v.getType();
+        if (type instanceof RefType) {
+            setResult(new SingleExprNode(Site.getNodeInstance(ClassTypeNode.class, ((RefType) type).getClassName())));
+        }
     }
 
     // --------------------------------------------------------- expr visitor ----------------------------------------------

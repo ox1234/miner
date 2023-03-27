@@ -18,6 +18,6 @@ public abstract class ClassLevelSite extends Site {
 
     @Override
     public String toString() {
-        return String.format("[%s].%s", className, name);
+        return String.format("%s.%s", className, name);
     }
 }

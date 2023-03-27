@@ -2,10 +2,12 @@ package org.example.core.expr;
 
 import org.example.core.basic.Node;
 import org.example.core.basic.obj.Obj;
+import soot.jimple.Stmt;
 
 import java.util.List;
+import java.util.function.Consumer;
 
-abstract public class AbstractExprNode{
+abstract public class AbstractExprNode {
     private List<Node> nodes;
 
     public AbstractExprNode(List<Node> nodes) {
@@ -30,5 +32,9 @@ abstract public class AbstractExprNode{
 
     public boolean isObj() {
         return nodes.size() == 1 && getFirstNode() instanceof Obj;
+    }
+
+    public void setNodesRefStmt(Stmt stmt) {
+        nodes.forEach(node -> node.setRefStmt(stmt));
     }
 }

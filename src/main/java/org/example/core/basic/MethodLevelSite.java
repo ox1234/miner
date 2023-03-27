@@ -26,6 +26,6 @@ public abstract class MethodLevelSite extends Site {
 
     @Override
     public String toString() {
-        return name;
+        return String.format("%s(variable)", name);
     }
 }

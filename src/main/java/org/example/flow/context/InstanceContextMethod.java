@@ -1,5 +1,6 @@
 package org.example.flow.context;
 
+import org.example.core.IntraAnalyzedMethod;
 import org.example.core.basic.node.CallNode;
 import org.example.core.basic.obj.Obj;
 import soot.SootMethod;
