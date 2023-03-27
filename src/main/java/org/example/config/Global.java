@@ -6,13 +6,17 @@ import org.example.rule.RuleUtil;
 import org.example.rule.Sink;
 
 import java.io.FileInputStream;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
 
 // Global 全局配置类
 public class Global {
     public static Root rule;
     public static Set<String> sinks;
+    public static Map<String, Sink> sinkMap = new HashMap<>();
 
     public static String outputPath = "tmp";
     public static String neo4jDSN = "neo4j://localhost:7687";
@@ -45,6 +49,7 @@ public class Global {
             Root rule = RuleUtil.getRule(new String(buf));
             Global.rule = rule;
             Global.sinks = Global.getAllSinkSignature();
+            Global.rule.rules.forEach(rule1 -> rule1.sinks.forEach(sink -> sinkMap.put(sink.expression, sink)));
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -3,11 +3,14 @@ package org.example.core;
 import org.example.config.NodeRepository;
 import org.example.config.PointRepository;
 import org.example.core.basic.Node;
+import org.example.core.basic.Site;
+import org.example.core.basic.identity.Parameter;
 import org.example.core.expr.AbstractExprNode;
 import org.example.core.basic.node.CallNode;
 import org.example.core.basic.obj.Obj;
 import soot.SootClass;
 import soot.SootMethod;
+import soot.jimple.Stmt;
 
 import java.util.*;
 
@@ -30,6 +33,7 @@ public class IntraAnalyzedMethod {
         private Map<Node, AbstractExprNode> inorderFlowMap = new LinkedHashMap<>();
         private Map<Node, Obj> pointMap = new LinkedHashMap<>();
         private List<CallNode> callNodes = new ArrayList<>();
+        private List<Parameter> paramNodes = new ArrayList<>();
 
         public void addFlow(Node to, AbstractExprNode from) {
             if (from == null || from.isEmpty()) {
@@ -37,6 +41,10 @@ public class IntraAnalyzedMethod {
             }
 
             for (Node node : from.getAllNodes()) {
+                if (node instanceof Parameter) {
+                    addParamNode((Parameter) node);
+                }
+
                 if (node instanceof CallNode) {
                     CallNode callNode = (CallNode) node;
                     callNode.setRetVar(to);
@@ -81,6 +89,10 @@ public class IntraAnalyzedMethod {
             pointMap.put(to, obj);
             NodeRepository.addPointTo(to, obj);
         }
+
+        private void addParamNode(Parameter parameter) {
+            paramNodes.add(parameter);
+        }
     }
 
     public IntraAnalyzedMethod(SootMethod sootMethod) {
@@ -94,6 +106,12 @@ public class IntraAnalyzedMethod {
         this.methodRef = sootMethod;
         this.declaredClassRef = sootMethod.getDeclaringClass();
         this.flow = new Flow();
+
+        for (int i = 0; i < sootMethod.getParameterCount(); i++) {
+            Node paramNode = Site.getNodeInstance(Parameter.class, i, sootMethod, sootMethod.getParameterType(i).toString());
+            assert paramNode != null;
+            flow.addParamNode((Parameter) paramNode);
+        }
     }
 
     public List<CallNode> getCallNodes() {
@@ -112,7 +130,9 @@ public class IntraAnalyzedMethod {
         return methodRef;
     }
 
-    public void addFlow(Node to, AbstractExprNode from) {
+    public void addFlow(Node to, AbstractExprNode from, Stmt stmt) {
+        to.setRefStmt(stmt);
+        from.setNodesRefStmt(stmt);
         flow.addFlow(to, from);
     }
 
@@ -130,5 +150,9 @@ public class IntraAnalyzedMethod {
 
     public Map<Node, AbstractExprNode> getOrderedFlowMap() {
         return flow.inorderFlowMap;
+    }
+
+    public List<Parameter> getParameterNodes() {
+        return flow.paramNodes;
     }
 }

@@ -7,8 +7,9 @@ import org.example.core.basic.obj.PhantomObj;
 import org.example.flow.context.ContextMethod;
 import org.example.flow.context.InstanceContextMethod;
 import org.example.flow.handler.AbstractFlowHandler;
-import org.example.flow.handler.impl.NodeCallNodeHandler;
-import org.example.flow.handler.impl.NodeObjHandler;
+import org.example.flow.handler.impl.TaintFlowHandler;
+import org.example.soot.SootHelper;
+import org.example.util.Log;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import soot.*;
@@ -18,20 +19,20 @@ import java.util.*;
 public class FlowEngine {
     private List<AbstractFlowHandler> flowHandlers;
 
-    private Map<String, IntraAnalyzedMethod> analyzedMethodMap;
+    public static Map<String, IntraAnalyzedMethod> intraAnalyzedMethodMap;
     private Graph<SootMethod, CallNode> cg = new DefaultDirectedGraph<>(CallNode.class);
 
     private CallStack callStack;
     private Hierarchy hierarchy;
 
     public FlowEngine(Map<String, IntraAnalyzedMethod> analyzedMethodMap) {
-        this.analyzedMethodMap = analyzedMethodMap;
+        intraAnalyzedMethodMap = analyzedMethodMap;
+
         this.callStack = new CallStack();
         this.hierarchy = Scene.v().getActiveHierarchy();
 
         this.flowHandlers = new ArrayList<>();
-        registerFlowHandler(new NodeObjHandler(this));
-        registerFlowHandler(new NodeCallNodeHandler(this));
+        registerFlowHandler(new TaintFlowHandler(this));
     }
 
     public void registerFlowHandler(AbstractFlowHandler flowHandler) {
@@ -41,26 +42,30 @@ public class FlowEngine {
     public void traverse(SootMethod entryPoint) {
         Obj fakeObj = new PhantomObj(entryPoint.getDeclaringClass());
         ContextMethod entry = new InstanceContextMethod(fakeObj, entryPoint, null, null);
+        entry.setTaintAllParam(true);
         traverse(entry);
     }
 
     public boolean traverse(ContextMethod entry) {
         callStack.push(entry);
-        IntraAnalyzedMethod analyzedMethod = analyzedMethodMap.get(entry.getSootMethod().getSignature());
+        IntraAnalyzedMethod analyzedMethod = entry.getIntraAnalyzedMethod();
         if (analyzedMethod != null) {
+            // if taint all param, all parameter of this method will be taint
+            if (entry.isTaintAllParam()) {
+                analyzedMethod.getParameterNodes().forEach(parameter -> entry.getTaintContainer().addTaint(parameter));
+            }
+
             // add method has relation
             analyzedMethod.getOrderedFlowMap().forEach((node, abstractExprNode) -> {
                 for (AbstractFlowHandler flowHandler : flowHandlers) {
-                    if (flowHandler.canHandle(node, abstractExprNode)) {
-                        flowHandler.injectBelongMethod(entry);
-                        flowHandler.handle(node, abstractExprNode);
-                        break;
-                    }
+                    Log.debug("method: %s, stmt: %s, now taint status: %s", entry.getSootMethod().getSignature(), node.getRefStmt(), flowHandler.getTaintContainer());
+                    flowHandler.handle(node, abstractExprNode);
+                    Log.debug("method: %s, stmt: %s, now taint status: %s", entry.getSootMethod().getSignature(), node.getRefStmt(), flowHandler.getTaintContainer());
                 }
             });
         }
         callStack.pop();
-        return entry.returnTaint();
+        return entry.getTaintContainer().isRetTaint();
     }
 
     public void addCGEdge(CallNode callNode) {
@@ -78,5 +83,24 @@ public class FlowEngine {
 
     public Hierarchy getHierarchy() {
         return hierarchy;
+    }
+
+    public static IntraAnalyzedMethod getAnalysedMethod(SootMethod sootMethod) {
+        return getAnalysedMethod(sootMethod.getSignature());
+    }
+
+    public static IntraAnalyzedMethod getAnalysedMethod(String signature) {
+        IntraAnalyzedMethod intraAnalyzedMethod = intraAnalyzedMethodMap.get(signature);
+        if (intraAnalyzedMethod == null) {
+            SootMethod sootMethod = SootHelper.getSootMethod(signature);
+            if (sootMethod != null) {
+                intraAnalyzedMethod = new IntraAnalyzedMethod(sootMethod);
+            }
+        }
+        return intraAnalyzedMethod;
+    }
+
+    public static void addAnalysedMethod(IntraAnalyzedMethod intraAnalyzedMethod) {
+        intraAnalyzedMethodMap.put(intraAnalyzedMethod.getSignature(), intraAnalyzedMethod);
     }
 }

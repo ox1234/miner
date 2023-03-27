@@ -19,7 +19,7 @@ public class SootHelper {
             Collection<SootClass> sootClasses = Scene.v().getApplicationClasses();
             List<SootMethod> routeMethods = getRouteMethods(sootClasses);
             Log.info("collect %d route methods, will build all route cg", routeMethods.size());
-            if(routeMethods.isEmpty()){
+            if (routeMethods.isEmpty()) {
                 routeMethods.add(Scene.v().getMainMethod());
             }
             Scene.v().setEntryPoints(routeMethods);
@@ -57,5 +57,9 @@ public class SootHelper {
         }
         Log.info("get %d route methods in project", routeMethods.size());
         return routeMethods;
+    }
+
+    public static SootMethod getSootMethod(String signature) {
+        return Scene.v().getMethod(signature);
     }
 }

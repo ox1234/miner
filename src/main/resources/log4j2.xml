@@ -9,7 +9,7 @@
     </Appenders>
     <Loggers>
         <!-- 默认打印日志级别为 error -->
-        <Root level="info">
+        <Root level="debug">
             <AppenderRef ref="Console"/>
         </Root>
     </Loggers>

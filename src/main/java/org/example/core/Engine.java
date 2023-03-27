@@ -65,7 +65,7 @@ public class Engine {
             }
 
             private boolean needDoIntraAnalysis(SootMethod sootMethod) {
-                return !visitedMethods.contains(sootMethod.getSignature()) && sootMethod.getDeclaringClass().isApplicationClass();
+                return !visitedMethods.contains(sootMethod.getSignature());
             }
 
             private void addAnalyzedMethod(IntraAnalyzedMethod analyzedMethod) {

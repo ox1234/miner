@@ -18,4 +18,9 @@ public class NormalObj extends Obj {
         super(sootClass.getName());
         this.sootClass = sootClass;
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s(normal)", super.getType());
+    }
 }

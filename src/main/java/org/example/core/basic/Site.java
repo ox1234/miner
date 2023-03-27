@@ -5,6 +5,7 @@ import org.example.core.basic.obj.Obj;
 import org.example.util.Log;
 import soot.SootMethod;
 import soot.Unit;
+import soot.jimple.Stmt;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -16,6 +17,7 @@ import java.util.Set;
 public abstract class Site implements Node {
     protected String id;
     protected Obj refObj;
+    protected Stmt refStmt;
 
     public String getID() {
         return id;
@@ -62,5 +64,15 @@ public abstract class Site implements Node {
     @Override
     public void setRefObj(Obj refObj) {
         this.refObj = refObj;
+    }
+
+    @Override
+    public void setRefStmt(Stmt stmt) {
+        refStmt = stmt;
+    }
+
+    @Override
+    public Stmt getRefStmt() {
+        return refStmt;
     }
 }
