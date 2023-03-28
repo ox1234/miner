@@ -34,13 +34,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class TaintFlowHandler extends AbstractFlowHandler {
+public class TaintFlowHandler extends BasicFlowHandler {
     public TaintFlowHandler(FlowEngine flowEngine) {
         super(flowEngine);
     }
 
     @Override
     public void handle(Node to, AbstractExprNode from) {
+        super.handle(to, from);
         if (isRightTaint(from)) {
             addLeftTaint(to);
         }
@@ -82,7 +83,7 @@ public class TaintFlowHandler extends AbstractFlowHandler {
         } else if (node instanceof InstanceField) {
             InstanceField field = (InstanceField) node;
             Obj baseObj = callStack.getBaseRefObj(field.getBase());
-            baseObj.putInstanceField(field, true);
+            baseObj.setTaintField(field);
         } else if (node instanceof StaticField) {
             getTaintContainer().addTaint(node);
         } else if (node instanceof UnifyReturn) {
@@ -111,6 +112,7 @@ public class TaintFlowHandler extends AbstractFlowHandler {
     }
 
     private boolean handleCallNode(CallNode callNode) {
+        boolean retIsTaint = false;
         Unit callSite = callNode.getCallSite();
         for (SootMethod tgtMethod : dispatch(callNode)) {
             callNode.resetUnifyRet(tgtMethod);
@@ -140,19 +142,27 @@ public class TaintFlowHandler extends AbstractFlowHandler {
                 List<Node> args = callNode.getArgs();
                 if (args != null && args.size() > 0) {
                     for (int i = 0; i < args.size(); i++) {
+                        // map taint variable
                         if (getTaintContainer().containsTaint(args.get(i))) {
                             if (sink != null && sink.index.contains(i)) {
                                 Log.info("!!! find vulnerability reach sink to %s", tgtContextMethod.getSootMethod().getSignature());
                             }
                             tgtContextMethod.getTaintContainer().addTaint(tgtContextMethod.getIntraAnalyzedMethod().getParameterNodes().get(i));
                         }
+                        // map point variable
+                        Obj obj = getPointContainer().getPointRefObj(args.get(i));
+                        if (obj != null) {
+                            tgtContextMethod.getPointToContainer().addPointRelation(tgtContextMethod.getIntraAnalyzedMethod().getParameterNodes().get(i), obj);
+                        }
                     }
                 }
 
-                return super.flowEngine.traverse(tgtContextMethod);
+                if (!retIsTaint && super.flowEngine.traverse(tgtContextMethod)) {
+                    retIsTaint = true;
+                }
             }
         }
-        return false;
+        return retIsTaint;
     }
 
 

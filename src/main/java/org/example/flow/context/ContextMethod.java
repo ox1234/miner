@@ -7,6 +7,7 @@ import org.example.core.basic.field.StaticField;
 import org.example.core.basic.identity.UnifyReturn;
 import org.example.core.basic.node.CallNode;
 import org.example.flow.FlowEngine;
+import org.example.flow.PointToContainer;
 import org.example.flow.TaintContainer;
 import org.example.util.Log;
 import soot.SootMethod;
@@ -24,6 +25,7 @@ public abstract class ContextMethod {
     private boolean retTaint;
     private boolean taintAllParam;
     private TaintContainer taintContainer;
+    private PointToContainer pointToContainer;
     private IntraAnalyzedMethod intraAnalyzedMethod;
 
     public ContextMethod(SootMethod sootMethod, CallNode callNode, Unit callSite) {
@@ -32,6 +34,7 @@ public abstract class ContextMethod {
         this.callNode = callNode;
         this.taintNodes = new LinkedHashSet<>();
         this.taintContainer = new TaintContainer();
+        this.pointToContainer = new PointToContainer();
 
         this.intraAnalyzedMethod = FlowEngine.getAnalysedMethod(sootMethod);
     }
@@ -79,5 +82,9 @@ public abstract class ContextMethod {
 
     public TaintContainer getTaintContainer() {
         return taintContainer;
+    }
+
+    public PointToContainer getPointToContainer() {
+        return pointToContainer;
     }
 }

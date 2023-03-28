@@ -8,6 +8,7 @@ import org.example.core.basic.identity.LocalVariable;
 import org.example.core.basic.identity.ThisVariable;
 import org.example.core.basic.obj.Obj;
 import org.example.core.basic.obj.PhantomObj;
+import org.example.util.Log;
 import soot.Scene;
 import soot.SootClass;
 
@@ -44,13 +45,14 @@ public class CallStack {
         }
         // get point to relation
         if (obj == null) {
-            obj = NodeRepository.getPointObj(node);
+            obj = callStack.peek().getPointToContainer().getPointRefObj(node);
         }
         // can't find a obj, will make a phantom obj
         if (obj == null) {
             if (node instanceof LocalVariable) {
                 SootClass sootClass = Scene.v().getSootClass(((LocalVariable) node).getType());
                 obj = new PhantomObj(sootClass);
+                Log.warn("%s node can't find referenced object, will create a phantom obj", ((LocalVariable) node).getName());
             }
         }
         return obj;

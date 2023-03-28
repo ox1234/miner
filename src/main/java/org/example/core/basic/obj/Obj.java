@@ -1,38 +1,17 @@
 package org.example.core.basic.obj;
 
-import org.example.core.basic.Neo4jNode;
+import org.example.core.basic.Node;
 import org.example.core.basic.TypeNode;
 import org.example.core.basic.UnitLevelSite;
 import org.example.core.basic.field.InstanceField;
-import org.example.neo4j.node.var.AbstractAllocNode;
-import org.example.neo4j.node.var.ObjAlloc;
 import org.example.tags.LocationTag;
 import soot.Unit;
 
 import java.util.HashMap;
 import java.util.Map;
 
-abstract public class Obj extends UnitLevelSite implements TypeNode, Neo4jNode {
-    private Map<String, TaintField> fieldMap = new HashMap<>();
-
-    class TaintField {
-        private boolean isTaint;
-        private InstanceField instanceField;
-
-        public TaintField(InstanceField instanceField, boolean isTaint) {
-            this.isTaint = isTaint;
-            this.instanceField = instanceField;
-        }
-
-        public boolean isTaint() {
-            return isTaint;
-        }
-
-        public void setTaint(boolean taint) {
-            isTaint = taint;
-        }
-    }
-
+abstract public class Obj extends UnitLevelSite implements TypeNode {
+    private Map<String, ObjField> fieldMap = new HashMap<>();
 
     protected Obj(String type, Unit unit) {
         super(type, LocationTag.getLocation(unit));
@@ -47,22 +26,25 @@ abstract public class Obj extends UnitLevelSite implements TypeNode, Neo4jNode {
         return type;
     }
 
-    @Override
-    public AbstractAllocNode convert() {
-        return new ObjAlloc(super.getID(), type);
+    public void putInstanceField(InstanceField field, Node value) {
+        fieldMap.put(field.getName(), new ObjField(field, value));
     }
 
-    @Override
-    public Obj getRefObj() {
-        return this;
-    }
-
-    public void putInstanceField(InstanceField field, boolean isTaint) {
-        fieldMap.put(field.getName(), new TaintField(field, isTaint));
+    public ObjField getInstanceField(InstanceField field) {
+        return fieldMap.get(field.getName());
     }
 
     public boolean isTaintField(InstanceField field) {
-        TaintField taintField = fieldMap.get(field.getName());
-        return taintField != null && taintField.isTaint;
+        ObjField objField = fieldMap.get(field.getName());
+        return objField != null && objField.isTaint();
+    }
+
+    public void setTaintField(InstanceField field) {
+        ObjField objField = getInstanceField(field);
+        if (objField == null) {
+            objField = new ObjField(field);
+            fieldMap.put(field.getName(), objField);
+        }
+        objField.setTaint(true);
     }
 }

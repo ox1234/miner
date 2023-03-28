@@ -7,10 +7,6 @@ import soot.jimple.Stmt;
 public interface Node {
     String getID();
 
-    void setRefObj(Obj obj);
-
-    Obj getRefObj();
-
     void setRefStmt(Stmt unit);
 
     Stmt getRefStmt();
