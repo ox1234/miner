@@ -1,13 +1,10 @@
 package org.example.core.basic.identity;
 
 import org.example.core.basic.MethodLevelSite;
-import org.example.core.basic.Neo4jNode;
 import org.example.core.basic.TypeNode;
-import org.example.neo4j.node.var.AbstractAllocNode;
-import org.example.neo4j.node.var.ParamAlloc;
 import soot.SootMethod;
 
-public class Parameter extends MethodLevelSite implements TypeNode, Neo4jNode {
+public class Parameter extends MethodLevelSite implements TypeNode {
     protected int idx;
     protected String type;
 
@@ -24,11 +21,6 @@ public class Parameter extends MethodLevelSite implements TypeNode, Neo4jNode {
     @Override
     public String getType() {
         return type;
-    }
-
-    @Override
-    public AbstractAllocNode convert() {
-        return new ParamAlloc(super.getID(), super.getName(), super.getMethodSig());
     }
 
     public static String getParameterName(int idx) {

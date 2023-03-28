@@ -16,7 +16,6 @@ import java.util.Set;
 
 public abstract class Site implements Node {
     protected String id;
-    protected Obj refObj;
     protected Stmt refStmt;
 
     public String getID() {
@@ -54,16 +53,6 @@ public abstract class Site implements Node {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    @Override
-    public Obj getRefObj() {
-        return refObj;
-    }
-
-    @Override
-    public void setRefObj(Obj refObj) {
-        this.refObj = refObj;
     }
 
     @Override

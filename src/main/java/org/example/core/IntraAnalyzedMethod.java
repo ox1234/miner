@@ -28,11 +28,7 @@ public class IntraAnalyzedMethod {
     private Flow flow;
 
     class Flow {
-        private Map<Node, Set<Node>> taintFlowMap = new LinkedHashMap<>();
-        private Map<Node, Set<CallNode>> callNodeMap = new LinkedHashMap<>();
         private Map<Node, AbstractExprNode> inorderFlowMap = new LinkedHashMap<>();
-        private Map<Node, Obj> pointMap = new LinkedHashMap<>();
-        private List<CallNode> callNodes = new ArrayList<>();
         private List<Parameter> paramNodes = new ArrayList<>();
 
         public void addFlow(Node to, AbstractExprNode from) {
@@ -48,15 +44,6 @@ public class IntraAnalyzedMethod {
                 if (node instanceof CallNode) {
                     CallNode callNode = (CallNode) node;
                     callNode.setRetVar(to);
-                    addCallNode(callNode);
-                } else if (node != null) {
-                    Obj refObj = node.getRefObj();
-                    if (refObj != null) {
-                        to.setRefObj(refObj);
-                        addPointFlow(to, refObj);
-                    } else {
-                        addTaintFlow(to, node);
-                    }
                 }
             }
             addInorderFlowMap(to, from);
@@ -64,30 +51,6 @@ public class IntraAnalyzedMethod {
 
         public void addInorderFlowMap(Node to, AbstractExprNode from) {
             inorderFlowMap.put(to, from);
-        }
-
-        private void addCallNode(CallNode callNode) {
-            callNodes.add(callNode);
-        }
-
-        private void addTaintFlow(Node to, Node from) {
-            if (!taintFlowMap.containsKey(to)) {
-                taintFlowMap.put(to, new HashSet<>());
-            }
-            taintFlowMap.get(to).add(from);
-        }
-
-        private void addCallRetFlow(Node to, CallNode from) {
-            if (!callNodeMap.containsKey(to)) {
-                callNodeMap.put(to, new HashSet<>());
-            }
-            callNodeMap.get(to).add(from);
-        }
-
-        private void addPointFlow(Node to, Obj obj) {
-            PointRepository.pointoMap.put(to, obj);
-            pointMap.put(to, obj);
-            NodeRepository.addPointTo(to, obj);
         }
 
         private void addParamNode(Parameter parameter) {
@@ -114,10 +77,6 @@ public class IntraAnalyzedMethod {
         }
     }
 
-    public List<CallNode> getCallNodes() {
-        return flow.callNodes;
-    }
-
     public String getName() {
         return name;
     }
@@ -134,18 +93,6 @@ public class IntraAnalyzedMethod {
         to.setRefStmt(stmt);
         from.setNodesRefStmt(stmt);
         flow.addFlow(to, from);
-    }
-
-    public Map<Node, Set<Node>> getTaintFlowMap() {
-        return flow.taintFlowMap;
-    }
-
-    public Map<Node, Set<CallNode>> getCallReturnMap() {
-        return flow.callNodeMap;
-    }
-
-    public Map<Node, Obj> getPointMap() {
-        return flow.pointMap;
     }
 
     public Map<Node, AbstractExprNode> getOrderedFlowMap() {
