@@ -29,7 +29,6 @@ abstract public class BasicFlowHandler extends AbstractFlowHandler {
             return;
         }
 
-        // if from is not Object, will skip
         Node rightNode = from.getFirstNode();
 
         // if right node is call node, do param mapping

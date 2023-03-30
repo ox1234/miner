@@ -52,7 +52,9 @@ public class CallStack {
             if (node instanceof LocalVariable) {
                 SootClass sootClass = Scene.v().getSootClass(((LocalVariable) node).getType());
                 obj = new PhantomObj(sootClass);
-                Log.warn("%s node can't find referenced object, will create a phantom obj", ((LocalVariable) node).getName());
+                if (sootClass.isApplicationClass()) {
+                    Log.error("%s node can't find referenced object, will create a phantom obj", ((LocalVariable) node).getName());
+                }
             }
         }
         return obj;

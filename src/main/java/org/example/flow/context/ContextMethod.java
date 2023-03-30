@@ -1,5 +1,6 @@
 package org.example.flow.context;
 
+import org.example.config.Global;
 import org.example.core.IntraAnalyzedMethod;
 import org.example.core.basic.Node;
 import org.example.core.basic.field.InstanceField;
@@ -9,6 +10,7 @@ import org.example.core.basic.node.CallNode;
 import org.example.flow.FlowEngine;
 import org.example.flow.PointToContainer;
 import org.example.flow.TaintContainer;
+import org.example.rule.Sink;
 import org.example.util.Log;
 import soot.SootMethod;
 import soot.Unit;
@@ -86,5 +88,24 @@ public abstract class ContextMethod {
 
     public PointToContainer getPointToContainer() {
         return pointToContainer;
+    }
+
+    public boolean checkReachSink() {
+        Sink sink = Global.sinkMap.get(getSootMethod().getSignature());
+        if (sink == null) {
+            return false;
+        }
+
+        // if base is taint and config defined such sink without no param, will report
+        if (getTaintContainer().containsTaint(callNode.getBase()) && sink.index.size() == 0) {
+            return true;
+        }
+
+        for (int idx : sink.index) {
+            if (getTaintContainer().checkIdxParamIsTaint(idx)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

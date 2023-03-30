@@ -1,11 +1,14 @@
 package org.example.core;
 
 import org.example.util.Log;
+import org.example.util.MethodUtil;
 import org.example.util.TagUtil;
 import soot.*;
 import soot.javaToJimple.DefaultLocalGenerator;
 import soot.jimple.Jimple;
+import soot.jimple.StringConstant;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
@@ -14,22 +17,48 @@ public class PatchJimple {
     private Hierarchy hierarchy;
     private SootClass sootClass;
 
-    private static final String INIT_METHOD_NAME = "<init>";
-
     public PatchJimple(Hierarchy hierarchy, SootClass sootClass) {
         this.hierarchy = Scene.v().getActiveHierarchy();
         this.sootClass = sootClass;
     }
 
     public void patch() {
-        sootClass.getFields().forEach(new Consumer<SootField>() {
-            @Override
-            public void accept(SootField sootField) {
-                if (TagUtil.isResourceField(sootField)) {
-                    patchResourceField(sootField);
-                }
+        sootClass.getFields().forEach(sootField -> {
+            // patch resource field
+            if (TagUtil.isResourceField(sootField)) {
+                patchResourceField(sootField);
+            }
+
+            // patch autowire field
+            if (TagUtil.isAutoWireField(sootField)) {
+                patchAutoWireField(sootField);
+            }
+
+            // patch value field
+            if (TagUtil.isValueField(sootField)) {
+                patchValueField(sootField);
             }
         });
+    }
+
+    public void patchAutoWireField(SootField sootField) {
+
+    }
+
+    public void patchValueField(SootField sootField) {
+        SootMethod initMethodRef = getTargetPatchMethod(sootClass.isStatic());
+        Body body = initMethodRef.retrieveActiveBody();
+        UnitPatchingChain patchingChain = body.getUnits();
+
+        StringConstant stringConstant = StringConstant.v(TagUtil.getValueAnnotationValue(sootField));
+
+        List<Unit> addUnits = new ArrayList<>();
+        addUnits.add(Jimple.v().newAssignStmt(Jimple.v().newInstanceFieldRef(body.getThisLocal(), sootField.makeRef()), stringConstant));
+
+        Collections.reverse(addUnits);
+        for (Unit unit : addUnits) {
+            patchingChain.addFirst(unit);
+        }
     }
 
     public void patchResourceField(SootField sootField) {
@@ -57,25 +86,31 @@ public class PatchJimple {
             return;
         }
 
-        SootMethod initMethodRef = getInitMethod(sootClass);
-        if (initMethodRef == null || initMethodRef.hasActiveBody()) {
-            return;
-        }
-
+        // create a $stack = new beanClass();
+        SootMethod initMethodRef = getTargetPatchMethod(sootClass.isStatic());
         Body body = initMethodRef.retrieveActiveBody();
         DefaultLocalGenerator localGenerator = new DefaultLocalGenerator(body);
         UnitPatchingChain patchingChain = body.getUnits();
-        // create a $stack = new beanClass();
+
         Local local = localGenerator.generateLocal(beanRefClass.getType());
-        patchingChain.add(Jimple.v().newAssignStmt(local, Jimple.v().newNewExpr(beanRefClass.getType())));
+        List<Unit> addUnits = new ArrayList<>();
+        addUnits.add(Jimple.v().newAssignStmt(local, Jimple.v().newNewExpr(beanRefClass.getType())));
         // invoke init method: $stack.special invoke
-        patchingChain.add(Jimple.v().newInvokeStmt(Jimple.v().newSpecialInvokeExpr(local, initMethodRef.makeRef())));
+        addUnits.add(Jimple.v().newInvokeStmt(Jimple.v().newSpecialInvokeExpr(local, initMethodRef.makeRef())));
         // assign the field
-        patchingChain.add(Jimple.v().newAssignStmt(Jimple.v().newInstanceFieldRef(body.getThisLocal(), sootField.makeRef()), local));
+        addUnits.add(Jimple.v().newAssignStmt(Jimple.v().newInstanceFieldRef(body.getThisLocal(), sootField.makeRef()), local));
+
+        Collections.reverse(addUnits);
+        patchingChain.addAll(addUnits);
     }
 
-    private SootMethod getInitMethod(SootClass sootClass) {
-        return sootClass.getMethod(INIT_METHOD_NAME, Collections.emptyList());
+
+    public SootMethod getTargetPatchMethod(boolean isStatic) {
+        SootMethod initMethod = MethodUtil.getRefInitMethod(sootClass, isStatic);
+        if (initMethod == null || !initMethod.hasActiveBody()) {
+            return null;
+        }
+        return initMethod;
     }
 }
 

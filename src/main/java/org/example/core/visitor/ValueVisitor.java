@@ -133,7 +133,7 @@ public class ValueVisitor extends AbstractShimpleValueSwitch<AbstractExprNode> {
 
     @Override
     public void caseCaughtExceptionRef(CaughtExceptionRef v) {
-        // do nothing
+        this.setNopResult();
     }
 
     @Override

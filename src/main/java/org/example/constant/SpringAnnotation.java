@@ -9,4 +9,6 @@ public class SpringAnnotation {
     // field annotation
     public static String resourceAnnotation = "Ljavax/annotation/Resource;";
     public static String autoWireAnnotation = "Lorg/springframework/beans/factory/annotation/Autowired;";
+    public static String valueAnnotation = "Lorg/springframework/beans/factory/annotation/Value;";
+
 }

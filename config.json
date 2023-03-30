@@ -131,6 +131,10 @@
       "name": "sql_injection",
       "sinks": [
         {
+          "expression": "<java.sql.PreparedStatement: java.sql.ResultSet executeQuery()>",
+          "index": []
+        },
+        {
           "expression": "<com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper: java.lang.Object orderByDesc(java.lang.Object[])>",
           "index": [0]
         },

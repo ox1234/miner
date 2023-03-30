@@ -22,6 +22,21 @@ public class TagUtil {
         return Global.rule.filter.requestMethodTags.contains(tag.getType());
     }
 
+    public static String getMethodRoutePath(SootMethod sootMethod) {
+        for (String routeAnnotation : Global.rule.filter.requestMethodTags) {
+            AnnotationTag annotationTag = searchAnnotation(getMethodAnnotation(sootMethod), routeAnnotation);
+            if (annotationTag == null) {
+                continue;
+            }
+            AnnotationElem annotationElem = getAnnotationElem(annotationTag, "value");
+            if (!(annotationElem instanceof AnnotationStringElem)) {
+                continue;
+            }
+            return ((AnnotationStringElem) annotationElem).getValue();
+        }
+        return "";
+    }
+
     public static boolean isServiceClass(SootClass sootClass) {
         return checkAnnotation(getClassAnnotation(sootClass), SpringAnnotation.serviceAnnotation);
     }
@@ -38,8 +53,25 @@ public class TagUtil {
         return checkAnnotation(getFieldAnnotation(sootField), SpringAnnotation.autoWireAnnotation);
     }
 
+    public static boolean isValueField(SootField sootField) {
+        return checkAnnotation(getFieldAnnotation(sootField), SpringAnnotation.valueAnnotation);
+    }
+
     public static boolean isResourceField(SootField sootField) {
         return checkAnnotation(getFieldAnnotation(sootField), SpringAnnotation.resourceAnnotation);
+    }
+
+    public static AnnotationTag getValueAnnotation(SootField sootField) {
+        return searchAnnotation(getFieldAnnotation(sootField), SpringAnnotation.valueAnnotation);
+    }
+
+    public static String getValueAnnotationValue(SootField sootField) {
+        AnnotationTag annotationTag = getValueAnnotation(sootField);
+        AnnotationElem annotationElem = getAnnotationElem(annotationTag, "value");
+        if (annotationElem instanceof AnnotationStringElem) {
+            return ((AnnotationStringElem) annotationElem).getValue();
+        }
+        return "";
     }
 
     public static AnnotationTag getServiceAnnotation(SootClass sootClass) {
@@ -101,7 +133,7 @@ public class TagUtil {
 
 
     private static boolean checkAnnotation(List<AnnotationTag> annotationTags, String annotationType) {
-        return searchAnnotation(annotationTags, annotationType) == null;
+        return searchAnnotation(annotationTags, annotationType) != null;
     }
 
     private static AnnotationTag searchAnnotation(List<AnnotationTag> annotationTags, String annotationType) {

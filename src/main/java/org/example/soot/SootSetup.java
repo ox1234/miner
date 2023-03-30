@@ -1,11 +1,7 @@
 package org.example.soot;
 
-import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.io.FileUtils;
 import org.example.config.Global;
-import org.example.constant.Operation;
 import org.example.util.ClassUtil;
-import org.example.util.JarUtil;
 import org.example.util.Log;
 import soot.Scene;
 import soot.SootClass;
@@ -14,10 +10,6 @@ import soot.options.Options;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 // SootSetup 负责所有Soot的参数设置和Soot类的加载路径
 public class SootSetup {
@@ -81,7 +73,6 @@ public class SootSetup {
                 Scene.v().getApplicationClasses().size(),
                 Scene.v().getLibraryClasses().size(),
                 Scene.v().getPhantomClasses().size());
-
     }
 
     // 初始化方法

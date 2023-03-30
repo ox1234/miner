@@ -29,10 +29,7 @@ import soot.SootClass;
 import soot.SootMethod;
 import soot.Unit;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class TaintFlowHandler extends BasicFlowHandler {
     public TaintFlowHandler(FlowEngine flowEngine) {
@@ -113,6 +110,7 @@ public class TaintFlowHandler extends BasicFlowHandler {
 
     private boolean handleCallNode(CallNode callNode) {
         boolean retIsTaint = false;
+
         Unit callSite = callNode.getCallSite();
         for (SootMethod tgtMethod : dispatch(callNode)) {
             callNode.resetUnifyRet(tgtMethod);
@@ -136,7 +134,10 @@ public class TaintFlowHandler extends BasicFlowHandler {
                 // do call graph edge append
                 super.flowEngine.addCGEdge(callNode);
 
-                Sink sink = Global.sinkMap.get(tgtContextMethod.getSootMethod().getSignature());
+                // if base node is taint, pass it to target method
+                if(getTaintContainer().containsTaint(callNode.getBase())){
+                    tgtContextMethod.getTaintContainer().addTaint(callNode.getBase());
+                }
 
                 // do arg param taint map
                 List<Node> args = callNode.getArgs();
@@ -144,9 +145,6 @@ public class TaintFlowHandler extends BasicFlowHandler {
                     for (int i = 0; i < args.size(); i++) {
                         // map taint variable
                         if (getTaintContainer().containsTaint(args.get(i))) {
-                            if (sink != null && sink.index.contains(i)) {
-                                Log.info("!!! find vulnerability reach sink to %s", tgtContextMethod.getSootMethod().getSignature());
-                            }
                             tgtContextMethod.getTaintContainer().addTaint(tgtContextMethod.getIntraAnalyzedMethod().getParameterNodes().get(i));
                         }
                         // map point variable
@@ -157,6 +155,18 @@ public class TaintFlowHandler extends BasicFlowHandler {
                     }
                 }
 
+                // check if reach sink, if reach will report vulnerability
+                if (tgtContextMethod.checkReachSink()) {
+                    Log.info("!!! find vulnerability reach sink to %s", tgtContextMethod.getSootMethod().getSignature());
+                }
+
+                // if target method is abstract, and its parameter is taint, the method's return will be taint
+                if (tgtMethod.isAbstract() && tgtContextMethod.getTaintContainer().isParamTaint()) {
+                    retIsTaint = true;
+                    continue;
+                }
+
+                // if target method has body, will traverse it
                 if (!retIsTaint && super.flowEngine.traverse(tgtContextMethod)) {
                     retIsTaint = true;
                 }
@@ -183,7 +193,7 @@ public class TaintFlowHandler extends BasicFlowHandler {
                 }
 
                 if (classes.isEmpty()) {
-                    sootMethodSet.add(sootClass.getMethodUnsafe(methodSubSig));
+                    sootMethodSet.addAll(dispatch(sootClass, methodSubSig));
                 } else {
                     for (SootClass chaClass : classes) {
                         sootMethodSet.addAll(dispatch(chaClass, methodSubSig));
@@ -203,8 +213,8 @@ public class TaintFlowHandler extends BasicFlowHandler {
         Set<SootMethod> tgtMethods = new HashSet<>();
 
         SootMethod tgtMethod = sootClass.getMethodUnsafe(methodSubSig);
-        if (tgtMethod == null || tgtMethod.isAbstract()) {
-            List<SootClass> directSuperClass = super.flowEngine.getHierarchy().getSuperclassesOf(sootClass);
+        if (tgtMethod == null) {
+            List<SootClass> directSuperClass = getDirectSuperClasses(sootClass);
             for (SootClass superClass : directSuperClass) {
                 tgtMethods.addAll(dispatch(superClass, methodSubSig));
             }
@@ -213,5 +223,14 @@ public class TaintFlowHandler extends BasicFlowHandler {
         }
 
         return tgtMethods;
+    }
+
+    public List<SootClass> getDirectSuperClasses(SootClass targetClass) {
+        List<SootClass> directSuperClasses = new ArrayList<>();
+        if (targetClass.hasSuperclass()) {
+            directSuperClasses.add(targetClass.getSuperclass());
+        }
+        directSuperClasses.addAll(targetClass.getInterfaces());
+        return directSuperClasses;
     }
 }

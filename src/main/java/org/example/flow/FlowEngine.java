@@ -6,10 +6,12 @@ import org.example.core.basic.obj.Obj;
 import org.example.core.basic.obj.PhantomObj;
 import org.example.flow.context.ContextMethod;
 import org.example.flow.context.InstanceContextMethod;
+import org.example.flow.context.StaticContextMethod;
 import org.example.flow.handler.AbstractFlowHandler;
 import org.example.flow.handler.impl.TaintFlowHandler;
 import org.example.soot.SootHelper;
 import org.example.util.Log;
+import org.example.util.MethodUtil;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import soot.*;
@@ -40,7 +42,24 @@ public class FlowEngine {
     }
 
     public void traverse(SootMethod entryPoint) {
-        Obj fakeObj = new PhantomObj(entryPoint.getDeclaringClass());
+        // entry point need traverse init and clinit method first
+        SootClass entryClass = entryPoint.getDeclaringClass();
+        Obj fakeObj = new PhantomObj(entryClass);
+
+        SootMethod clinit = MethodUtil.getRefInitMethod(entryClass, true);
+        SootMethod init = MethodUtil.getRefInitMethod(entryClass, false);
+        if (clinit != null) {
+            ContextMethod ctxClinit = new StaticContextMethod(entryClass, clinit, null, null);
+            traverse(ctxClinit);
+        }
+
+        if (!entryPoint.isStatic() && init != null) {
+            ContextMethod ctxInit = new InstanceContextMethod(fakeObj, init, null, null);
+            traverse(ctxInit);
+        }
+
+
+        // do entry point traverse
         ContextMethod entry = new InstanceContextMethod(fakeObj, entryPoint, null, null);
         entry.setTaintAllParam(true);
         traverse(entry);
