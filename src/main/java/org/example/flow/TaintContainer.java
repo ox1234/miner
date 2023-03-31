@@ -3,19 +3,24 @@ package org.example.flow;
 import org.example.core.basic.Global;
 import org.example.core.basic.Node;
 import org.example.core.basic.field.StaticField;
+import org.example.core.basic.identity.Parameter;
 import org.example.core.basic.identity.UnifyReturn;
 
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class TaintContainer {
     private boolean isRetTaint;
+    private boolean isParamTaint;
+    private Map<Integer, Node> paramTaintMap = new HashMap<>();
     private Set<Node> taintNodes = new LinkedHashSet<>();
     private static Set<Node> globalTaintNodes = new LinkedHashSet<>();
 
     public void addTaint(Node node) {
+        if (node instanceof Parameter) {
+            paramTaintMap.put(((Parameter) node).getIdx(), node);
+            isParamTaint = true;
+        }
+
         if (node instanceof Global) {
             globalTaintNodes.add(node);
         } else if (node instanceof UnifyReturn) {
@@ -23,6 +28,14 @@ public class TaintContainer {
         } else {
             taintNodes.add(node);
         }
+    }
+
+    public boolean checkIdxParamIsTaint(int idx) {
+        return paramTaintMap.get(idx) != null;
+    }
+
+    public boolean isParamTaint() {
+        return isParamTaint;
     }
 
     public boolean isRetTaint() {

@@ -12,6 +12,9 @@ import org.example.util.Log;
 import soot.Scene;
 import soot.SootClass;
 
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.Stack;
 
 public class CallStack {
@@ -37,22 +40,20 @@ public class CallStack {
         return callStack.contains(call);
     }
 
-    public Obj getBaseRefObj(Node node) {
-        Obj obj = null;
+    public Set<Obj> getBaseRefObj(Node node) {
+        Set<Obj> obj = new LinkedHashSet<>();
         // rebase this variable
         if (node instanceof ThisVariable) {
-            obj = getLastStackObj();
+            obj = Collections.singleton(getLastStackObj());
         }
         // get point to relation
-        if (obj == null) {
+        if (obj.isEmpty()) {
             obj = callStack.peek().getPointToContainer().getPointRefObj(node);
         }
-        // can't find a obj, will make a phantom obj
-        if (obj == null) {
+        // can't find an obj, will make a phantom obj
+        if (obj.isEmpty()) {
             if (node instanceof LocalVariable) {
-                SootClass sootClass = Scene.v().getSootClass(((LocalVariable) node).getType());
-                obj = new PhantomObj(sootClass);
-                Log.warn("%s node can't find referenced object, will create a phantom obj", ((LocalVariable) node).getName());
+                obj = Collections.singleton(Obj.getPhantomObj(((LocalVariable) node).getType()));
             }
         }
         return obj;

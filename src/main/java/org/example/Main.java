@@ -1,5 +1,7 @@
 package org.example;
 
+import org.apache.commons.io.FileUtils;
+import org.example.config.Global;
 import org.example.config.NodeRepository;
 import org.example.core.Engine;
 import org.example.core.IntraAnalyzedMethod;
@@ -15,6 +17,7 @@ import soot.Scene;
 import soot.SootMethod;
 import soot.jimple.toolkits.callgraph.CallGraph;
 
+import java.io.File;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -29,6 +32,8 @@ func (){
 
 public class Main {
     public static void main(String[] args) throws Exception {
+        prepareScanEnvironment();
+
         // 配置Soot运行环境，分析对应jar包的所有类
         SootSetup setup = new SootSetup(new FatJarHandler());
         setup.initialize("/Users/bytedance/workplace/java/demo1/target/demo1-0.0.1-SNAPSHOT.jar");
@@ -55,5 +60,16 @@ public class Main {
         Scene.v().getEntryPoints().forEach(flowEngine::traverse);
 
         Log.info("java code graph construct successfully");
+    }
+
+    public static void prepareScanEnvironment() {
+        // if tmp dir exist before scan, delete it
+        try {
+            Log.info("start clean tmp path(%s)", Global.outputPath);
+            FileUtils.cleanDirectory(new File(Global.outputPath));
+        } catch (Exception e) {
+            Log.error("clean output path fail: %s", e.toString());
+        }
+        return;
     }
 }

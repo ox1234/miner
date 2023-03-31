@@ -71,21 +71,19 @@ public class StmtVisitor extends AbstractStmtSwitch<Void> {
 
     @Override
     public void caseGotoStmt(GotoStmt stmt) {
-        stmt.getTarget().apply(this);
+        // do nothing
     }
 
     @Override
     public void caseIfStmt(IfStmt stmt) {
+        // just visit if condition
         Value op = stmt.getCondition();
         op.apply(valueVisitor);
-        stmt.getTarget().apply(this);
     }
 
     @Override
     public void caseLookupSwitchStmt(LookupSwitchStmt stmt) {
-        for (IntConstant lookupValue : stmt.getLookupValues()) {
-            stmt.getTarget(lookupValue.value).apply(this);
-        }
+        // do nothing
     }
 
     @Override

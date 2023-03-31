@@ -3,12 +3,13 @@ package org.example.core.basic.identity;
 import org.example.core.basic.MethodLevelSite;
 import org.example.core.basic.TypeNode;
 import soot.SootMethod;
+import soot.Type;
 
 public class Parameter extends MethodLevelSite implements TypeNode {
     protected int idx;
-    protected String type;
+    protected Type type;
 
-    protected Parameter(int idx, SootMethod enclosingMethod, String type) {
+    protected Parameter(int idx, SootMethod enclosingMethod, Type type) {
         super(getParameterName(idx), enclosingMethod.getSignature());
         this.idx = idx;
         this.type = type;
@@ -18,9 +19,13 @@ public class Parameter extends MethodLevelSite implements TypeNode {
         return idx;
     }
 
+    public Type getSootType() {
+        return type;
+    }
+
     @Override
     public String getType() {
-        return type;
+        return type.toString();
     }
 
     public static String getParameterName(int idx) {

@@ -5,9 +5,11 @@ import org.example.config.PointRepository;
 import org.example.core.basic.Node;
 import org.example.core.basic.Site;
 import org.example.core.basic.identity.Parameter;
+import org.example.core.basic.identity.UnifyReturn;
 import org.example.core.expr.AbstractExprNode;
 import org.example.core.basic.node.CallNode;
 import org.example.core.basic.obj.Obj;
+import org.example.core.expr.MultiExprNode;
 import soot.SootClass;
 import soot.SootMethod;
 import soot.jimple.Stmt;
@@ -29,7 +31,7 @@ public class IntraAnalyzedMethod {
 
     class Flow {
         private Map<Node, AbstractExprNode> inorderFlowMap = new LinkedHashMap<>();
-        private List<Parameter> paramNodes = new ArrayList<>();
+        private Set<Parameter> paramNodes = new LinkedHashSet<>();
 
         public void addFlow(Node to, AbstractExprNode from) {
             if (from == null || from.isEmpty()) {
@@ -50,7 +52,14 @@ public class IntraAnalyzedMethod {
         }
 
         public void addInorderFlowMap(Node to, AbstractExprNode from) {
-            inorderFlowMap.put(to, from);
+            if (to instanceof UnifyReturn) {
+                if (!inorderFlowMap.containsKey(to)) {
+                    inorderFlowMap.put(to, new MultiExprNode());
+                }
+                inorderFlowMap.get(to).addNodes(from.getAllNodes());
+            } else {
+                inorderFlowMap.put(to, from);
+            }
         }
 
         private void addParamNode(Parameter parameter) {
@@ -71,7 +80,7 @@ public class IntraAnalyzedMethod {
         this.flow = new Flow();
 
         for (int i = 0; i < sootMethod.getParameterCount(); i++) {
-            Node paramNode = Site.getNodeInstance(Parameter.class, i, sootMethod, sootMethod.getParameterType(i).toString());
+            Node paramNode = Site.getNodeInstance(Parameter.class, i, sootMethod, sootMethod.getParameterType(i));
             assert paramNode != null;
             flow.addParamNode((Parameter) paramNode);
         }
@@ -100,6 +109,6 @@ public class IntraAnalyzedMethod {
     }
 
     public List<Parameter> getParameterNodes() {
-        return flow.paramNodes;
+        return new ArrayList<>(flow.paramNodes);
     }
 }

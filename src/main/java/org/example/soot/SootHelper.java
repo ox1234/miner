@@ -42,13 +42,8 @@ public class SootHelper {
             for (AnnotationTag annotationTag : TagUtil.getClassAnnotation(sootClass)) {
                 if (TagUtil.isSpringControllerAnnotation(annotationTag)) {
                     for (SootMethod sootMethod : sootClass.getMethods()) {
-                        // test single route method
-//                        if(!sootMethod.getName().equals("jdbc_sqli_vul")){
-//                            continue;
-//                        }
-
                         if (MethodUtil.isRouteMethod(sootMethod)) {
-                            Log.info("find %s method is route method", sootMethod.getSignature());
+                            Log.info("find %s method is route method with %s route path", sootMethod.getSignature(), TagUtil.getMethodRoutePath(sootMethod));
                             routeMethods.add(sootMethod);
                         }
                     }
