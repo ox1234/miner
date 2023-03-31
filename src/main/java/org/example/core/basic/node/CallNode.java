@@ -47,7 +47,7 @@ public class CallNode extends UnitLevelSite {
         this.subSignature = callee.getSubSignature();
         this.params = new ArrayList<>();
         for (int i = 0; i < callee.getParameterCount(); i++) {
-            Node paramNode = Site.getNodeInstance(Parameter.class, i, callee, callee.getParameterType(i).toString());
+            Node paramNode = Site.getNodeInstance(Parameter.class, i, callee, callee.getParameterType(i));
             params.add(paramNode);
         }
         if (!(callee.getReturnType() instanceof VoidType)) {

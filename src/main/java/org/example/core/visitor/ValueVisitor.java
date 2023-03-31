@@ -128,7 +128,7 @@ public class ValueVisitor extends AbstractShimpleValueSwitch<AbstractExprNode> {
 
     @Override
     public void caseParameterRef(ParameterRef v) {
-        this.setResult(new SingleExprNode(Site.getNodeInstance(Parameter.class, v.getIndex(), currentMethod, v.getType().toString())));
+        this.setResult(new SingleExprNode(Site.getNodeInstance(Parameter.class, v.getIndex(), currentMethod, v.getType())));
     }
 
     @Override

@@ -42,7 +42,24 @@ public class PatchJimple {
     }
 
     public void patchAutoWireField(SootField sootField) {
+        SootMethod initMethodRef = getTargetPatchMethod(sootClass.isStatic());
+        Body body = initMethodRef.retrieveActiveBody();
+        UnitPatchingChain patchingChain = body.getUnits();
+        DefaultLocalGenerator localGenerator = new DefaultLocalGenerator(body);
 
+        Type fieldType = sootField.getType();
+        if (fieldType instanceof RefType) {
+            List<Unit> addUnits = new ArrayList<>();
+            Local local = localGenerator.generateLocal(fieldType);
+
+            addUnits.add(Jimple.v().newAssignStmt(local, Jimple.v().newNewExpr((RefType) fieldType)));
+            addUnits.add(Jimple.v().newAssignStmt(Jimple.v().newInstanceFieldRef(body.getThisLocal(), sootField.makeRef()), local));
+
+            Collections.reverse(addUnits);
+            for (Unit unit : addUnits) {
+                patchingChain.addFirst(unit);
+            }
+        }
     }
 
     public void patchValueField(SootField sootField) {

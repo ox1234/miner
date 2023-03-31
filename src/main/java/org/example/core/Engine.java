@@ -13,6 +13,7 @@ import soot.jimple.toolkits.callgraph.Edge;
 import soot.tagkit.AnnotationElem;
 import soot.tagkit.AnnotationStringElem;
 import soot.tagkit.AnnotationTag;
+import soot.toolkits.graph.UnitGraph;
 
 import java.util.*;
 import java.util.function.Consumer;

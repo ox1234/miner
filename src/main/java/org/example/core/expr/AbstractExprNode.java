@@ -37,4 +37,12 @@ abstract public class AbstractExprNode {
     public void setNodesRefStmt(Stmt stmt) {
         nodes.forEach(node -> node.setRefStmt(stmt));
     }
+
+    public void addNode(Node node) {
+        nodes.add(node);
+    }
+
+    public void addNodes(List<Node> addNodes) {
+        nodes.addAll(addNodes);
+    }
 }

@@ -5,16 +5,25 @@ import org.example.core.basic.TypeNode;
 import org.example.core.basic.UnitLevelSite;
 import org.example.core.basic.field.InstanceField;
 import org.example.tags.LocationTag;
+import org.example.util.Log;
+import soot.Scene;
+import soot.SootClass;
+import soot.Type;
 import soot.Unit;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 abstract public class Obj extends UnitLevelSite implements TypeNode {
     private Map<String, ObjField> fieldMap = new HashMap<>();
 
     protected Obj(String type, Unit unit) {
         super(type, LocationTag.getLocation(unit));
+    }
+
+    protected Obj(String type, String id) {
+        super(type, "fake-" + id);
     }
 
     protected Obj(String type) {
@@ -46,5 +55,22 @@ abstract public class Obj extends UnitLevelSite implements TypeNode {
             fieldMap.put(field.getName(), objField);
         }
         objField.setTaint(true);
+    }
+
+    public static Obj getPhantomObj(String type) {
+        return new PhantomObj(type);
+    }
+
+    public static Obj getPhantomObj(Type type, String id) {
+        return getPhantomObj(type.toString(), id);
+    }
+
+    public static Obj getPhantomObj(String type, String id) {
+        SootClass sootClass = Scene.v().getSootClass(type);
+        Obj obj = new PhantomObj(sootClass, id);
+        if (sootClass.isApplicationClass()) {
+            Log.error("%s node can't find referenced object, will create a phantom obj", type);
+        }
+        return obj;
     }
 }
