@@ -51,7 +51,7 @@ public class Main {
         Log.info("writing jimple file to soot output directory");
 
         FlowEngine flowEngine = new FlowEngine(analyzedMethodSet);
-        Scene.v().getEntryPoints().forEach(flowEngine::buildCG);
+        Scene.v().getEntryPoints().forEach(flowEngine::doAnalysis);
 
         Log.info("java code graph construct successfully");
     }

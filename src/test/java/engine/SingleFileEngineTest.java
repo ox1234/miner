@@ -29,6 +29,6 @@ public class SingleFileEngineTest {
         Map<String, IntraAnalyzedMethod> analyzedMethodSet = engine.extractPointRelation();
 
         FlowEngine flowEngine = new FlowEngine(analyzedMethodSet);
-        Scene.v().getEntryPoints().forEach(flowEngine::buildCG);
+        Scene.v().getEntryPoints().forEach(flowEngine::doAnalysis);
     }
 }

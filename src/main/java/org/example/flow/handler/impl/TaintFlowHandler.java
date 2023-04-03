@@ -1,5 +1,6 @@
 package org.example.flow.handler.impl;
 
+import org.example.core.IntraAnalyzedMethod;
 import org.example.core.basic.Node;
 import org.example.core.basic.field.InstanceField;
 import org.example.core.basic.field.StaticField;
@@ -19,6 +20,13 @@ import java.util.*;
 public class TaintFlowHandler extends AbstractFlowHandler<Boolean> {
     public TaintFlowHandler(FlowEngine flowEngine) {
         super(flowEngine);
+    }
+
+    public void taintMethodParam(ContextMethod contextMethod) {
+        IntraAnalyzedMethod analyzedMethod = contextMethod.getIntraAnalyzedMethod();
+        if (analyzedMethod != null) {
+            analyzedMethod.getParameterNodes().forEach(parameter -> contextMethod.getTaintContainer().addTaint(parameter));
+        }
     }
 
     @Override

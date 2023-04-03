@@ -55,7 +55,7 @@ abstract public class AbstractFlowHandler<T> implements FlowHandler<T> {
         Set<ContextMethod> callees = ctxCG.getCallNodeDispatchMethods(callNode);
         for (ContextMethod callee : callees) {
             preProcessCallNode(callNode, callee);
-            flowEngine.doAnalysis(callee);
+            flowEngine.doAnalysis(callee, this);
             postProcessCallNode(callNode, callee);
         }
 

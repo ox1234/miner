@@ -1,6 +1,5 @@
 package org.example.flow.handler.impl;
 
-import fj.data.fingertrees.Single;
 import org.example.constant.InvokeType;
 import org.example.core.basic.Node;
 import org.example.core.basic.field.InstanceField;
@@ -97,7 +96,7 @@ public class PointFlowHandler extends AbstractFlowHandler<Set<Obj>> {
 
                 // build call graph, manual call pre and post handler
                 preProcessCallNode(callNode, tgtContextMethod);
-                flowEngine.buildCG(tgtContextMethod);
+                flowEngine.doAnalysis(tgtContextMethod, this);
                 postProcessCallNode(callNode, tgtContextMethod);
             }
         }
