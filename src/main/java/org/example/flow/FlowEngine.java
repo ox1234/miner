@@ -1,40 +1,41 @@
 package org.example.flow;
 
 import org.example.core.IntraAnalyzedMethod;
-import org.example.core.basic.Node;
-import org.example.core.basic.identity.LocalVariable;
-import org.example.core.basic.node.CallNode;
 import org.example.core.basic.obj.Obj;
 import org.example.core.basic.obj.PhantomObj;
-import org.example.core.expr.AbstractExprNode;
 import org.example.flow.context.ContextMethod;
 import org.example.flow.context.InstanceContextMethod;
 import org.example.flow.context.StaticContextMethod;
 import org.example.flow.handler.AbstractFlowHandler;
+import org.example.flow.handler.FlowHandler;
 import org.example.flow.handler.impl.PointFlowHandler;
 import org.example.flow.handler.impl.TaintFlowHandler;
 import org.example.soot.SootHelper;
 import org.example.util.Log;
 import org.example.util.MethodUtil;
-import org.jgrapht.Graph;
-import org.jgrapht.graph.DefaultDirectedGraph;
-import soot.*;
+import soot.Hierarchy;
+import soot.Scene;
+import soot.SootClass;
+import soot.SootMethod;
 
 import java.util.*;
-import java.util.function.BiConsumer;
 
 public class FlowEngine {
+    ContextMethod entryCtxMethod;
+
     private Map<FlowHandlerEnum, AbstractFlowHandler> flowHandlers;
 
     public static Map<String, IntraAnalyzedMethod> intraAnalyzedMethodMap;
-    private Graph<SootMethod, CallNode> cg = new DefaultDirectedGraph<>(CallNode.class);
 
+
+    private CtxCG ctxCG;
     private CallStack callStack;
     private Hierarchy hierarchy;
 
     public FlowEngine(Map<String, IntraAnalyzedMethod> analyzedMethodMap) {
         intraAnalyzedMethodMap = analyzedMethodMap;
 
+        this.ctxCG = new CtxCG();
         this.callStack = new CallStack();
         this.hierarchy = Scene.v().getActiveHierarchy();
 
@@ -42,6 +43,7 @@ public class FlowEngine {
         registerFlowHandler(FlowHandlerEnum.POINT_FLOW_HANDLER, new PointFlowHandler(this));
         registerFlowHandler(FlowHandlerEnum.TAINT_FLOW_HANDLER, new TaintFlowHandler(this));
     }
+
 
     public void registerFlowHandler(FlowHandlerEnum flowType, AbstractFlowHandler flowHandler) {
         flowHandlers.put(flowType, flowHandler);
@@ -51,8 +53,8 @@ public class FlowEngine {
         return flowHandlers.get(flowType);
     }
 
-    public void traverse(SootMethod entryPoint) {
-        // entry point need traverse init and clinit method first
+    public void doAnalysis(SootMethod entryPoint) {
+        // entry point need doAnalysis init and clinit method first
         SootClass entryClass = entryPoint.getDeclaringClass();
         Obj fakeObj = new PhantomObj(entryClass);
 
@@ -60,51 +62,39 @@ public class FlowEngine {
         SootMethod init = MethodUtil.getRefInitMethod(entryClass, false);
         if (clinit != null) {
             ContextMethod ctxClinit = new StaticContextMethod(entryClass, clinit, null, null);
-            traverse(ctxClinit);
+            doAnalysis(ctxClinit, flowHandlers.get(FlowHandlerEnum.POINT_FLOW_HANDLER));
         }
 
         if (!entryPoint.isStatic() && init != null) {
             ContextMethod ctxInit = new InstanceContextMethod(fakeObj, init, null, null);
-            traverse(ctxInit);
+            doAnalysis(ctxInit, flowHandlers.get(FlowHandlerEnum.POINT_FLOW_HANDLER));
         }
 
-        // do entry point traverse
         ContextMethod entry = new InstanceContextMethod(fakeObj, entryPoint, null, null);
-        entry.setTaintAllParam(true);
+        entryCtxMethod = entry;
         entry.genFakeParamObj();
 
-        traverse(entry);
+        // do point analysis, and build call graph
+        doAnalysis(entry, flowHandlers.get(FlowHandlerEnum.POINT_FLOW_HANDLER));
+
+        // do taint analysis
+        TaintFlowHandler taintFlowHandler = (TaintFlowHandler) flowHandlers.get(FlowHandlerEnum.TAINT_FLOW_HANDLER);
+        taintFlowHandler.taintMethodParam(entry);
+        doAnalysis(entry, taintFlowHandler);
     }
 
-    public void traverse(ContextMethod entry) {
+    public void doAnalysis(ContextMethod entry, FlowHandler flowHandler) {
         callStack.push(entry);
         IntraAnalyzedMethod analyzedMethod = entry.getIntraAnalyzedMethod();
         if (analyzedMethod != null) {
-            // if taint all param, all parameter of this method will be taint
-            if (entry.isTaintAllParam()) {
-                analyzedMethod.getParameterNodes().forEach(parameter -> entry.getTaintContainer().addTaint(parameter));
-            }
-
-            // do point analysis
-            analyzedMethod.getOrderedFlowMap().forEach((node, abstractExprNode) -> getFlowHandler(FlowHandlerEnum.POINT_FLOW_HANDLER).handle(node, abstractExprNode));
-            // do taint analysis
-            analyzedMethod.getOrderedFlowMap().forEach((node, abstractExprNode) -> {
-                TaintContainer taintContainer = entry.getTaintContainer();
-                Log.debug("%s method with stmt %s such taint: %s", entry.getSootMethod().getSignature(), node.getRefStmt(), taintContainer);
-                getFlowHandler(FlowHandlerEnum.TAINT_FLOW_HANDLER).handle(node, abstractExprNode);
-            });
+            analyzedMethod.getOrderedFlowMap().forEach(flowHandler::handle);
         }
         callStack.pop();
     }
 
-    public void addCGEdge(CallNode callNode) {
-        SootMethod srcMethod = callNode.getCaller();
-        SootMethod tgtMethod = callNode.getCallee();
-        cg.addVertex(srcMethod);
-        cg.addVertex(tgtMethod);
-        cg.addEdge(srcMethod, tgtMethod, callNode);
+    public CtxCG getCtxCG() {
+        return ctxCG;
     }
-
 
     public CallStack getCallStack() {
         return callStack;

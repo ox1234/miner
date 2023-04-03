@@ -30,7 +30,6 @@ public abstract class ContextMethod {
     private CallNode callNode;
     private Set<Node> taintNodes;
     private boolean retTaint;
-    private boolean taintAllParam;
     private TaintContainer taintContainer;
     private PointToContainer pointToContainer;
     private IntraAnalyzedMethod intraAnalyzedMethod;
@@ -52,14 +51,6 @@ public abstract class ContextMethod {
 
     public IntraAnalyzedMethod getIntraAnalyzedMethod() {
         return intraAnalyzedMethod;
-    }
-
-    public boolean isTaintAllParam() {
-        return taintAllParam;
-    }
-
-    public void setTaintAllParam(boolean taintAllParam) {
-        this.taintAllParam = taintAllParam;
     }
 
     public void genFakeParamObj() {

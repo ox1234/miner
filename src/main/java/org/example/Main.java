@@ -2,10 +2,8 @@ package org.example;
 
 import org.apache.commons.io.FileUtils;
 import org.example.config.Global;
-import org.example.config.NodeRepository;
 import org.example.core.Engine;
 import org.example.core.IntraAnalyzedMethod;
-import org.example.core.basic.Node;
 import org.example.flow.FlowEngine;
 import org.example.soot.SootHelper;
 import org.example.soot.SootSetup;
@@ -14,14 +12,10 @@ import org.example.util.Log;
 import soot.Hierarchy;
 import soot.PackManager;
 import soot.Scene;
-import soot.SootMethod;
 import soot.jimple.toolkits.callgraph.CallGraph;
 
 import java.io.File;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
-import java.util.function.Consumer;
 
 /*
 
@@ -57,7 +51,7 @@ public class Main {
         Log.info("writing jimple file to soot output directory");
 
         FlowEngine flowEngine = new FlowEngine(analyzedMethodSet);
-        Scene.v().getEntryPoints().forEach(flowEngine::traverse);
+        Scene.v().getEntryPoints().forEach(flowEngine::doAnalysis);
 
         Log.info("java code graph construct successfully");
     }
