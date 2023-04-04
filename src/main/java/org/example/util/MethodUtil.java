@@ -1,6 +1,7 @@
 package org.example.util;
 
 import org.example.config.Global;
+import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
 import soot.VoidType;
@@ -21,20 +22,8 @@ public class MethodUtil {
         return false;
     }
 
-    public static boolean isSinkMethod(SootMethod sootMethod) {
-        return Global.sinks.contains(sootMethod.getSignature());
-    }
-
-    public static boolean isLibraryMethod(SootMethod sootMethod) {
-        return sootMethod.getDeclaringClass().isLibraryClass();
-    }
-
-    public static boolean isPhantomMethod(SootMethod sootMethod) {
-        return sootMethod.isPhantom();
-    }
-
-    public static boolean isAppMethod(SootMethod sootMethod) {
-        return sootMethod.getDeclaringClass().isApplicationClass();
+    public static SootMethod getSootMethod(String signature) {
+        return Scene.v().getMethod(signature);
     }
 
     public static SootMethod getRefInitMethod(SootClass sootClass, boolean isStatic) {

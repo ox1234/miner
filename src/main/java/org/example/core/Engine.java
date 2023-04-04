@@ -1,37 +1,30 @@
 package org.example.core;
 
-import org.example.core.basic.Site;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.example.core.visitor.StmtVisitor;
 import org.example.tags.LocationTag;
-import org.example.util.Log;
 import org.example.util.TagUtil;
 import soot.*;
 import soot.Unit;
-import soot.jimple.Jimple;
 import soot.jimple.toolkits.callgraph.CallGraph;
-import soot.jimple.toolkits.callgraph.Edge;
-import soot.tagkit.AnnotationElem;
-import soot.tagkit.AnnotationStringElem;
-import soot.tagkit.AnnotationTag;
-import soot.toolkits.graph.UnitGraph;
 
 import java.util.*;
 import java.util.function.Consumer;
 
 public class Engine {
+    private final Logger logger = LogManager.getLogger(Engine.class);
     private Hierarchy hierarchy;
-    private CallGraph callGraph;
     private Set<SootClass> patchedClasses;
 
-    public Engine(Hierarchy hierarchy, CallGraph callGraph) {
+    public Engine(Hierarchy hierarchy) {
         this.hierarchy = hierarchy;
-        this.callGraph = callGraph;
         this.patchedClasses = new HashSet<>();
     }
 
     // doIntraProcedureAnalysis 对给定的SootMethod，进行过程内的指针分析
     public IntraAnalyzedMethod doIntraProcedureAnalysis(SootMethod method) {
-        Log.info("do intra procedure analysis on %s", method.getSignature());
+        logger.info(String.format("do intra procedure analysis on %s", method.getSignature()));
         if (!method.isConcrete()) {
             return null;
         }
@@ -42,7 +35,8 @@ public class Engine {
             patchJimple.patch();
         }
 
-        IntraAnalyzedMethod analyzedMethod = new IntraAnalyzedMethod(method);
+        IntraAnalyzedMethod analyzedMethod = IntraAnalyzedMethod.getInstance(method);
+
         int order = 1;
         for (Unit unit : body.getUnits()) {
             unit.addTag(new LocationTag(method, order, unit));
@@ -55,18 +49,10 @@ public class Engine {
 
     public Map<String, IntraAnalyzedMethod> extractPointRelation() {
         Map<String, IntraAnalyzedMethod> intraAnalyzedMethods = new HashMap<>();
-        Set<String> visitedMethods = new HashSet<>();
         Scene.v().getApplicationClasses().snapshotIterator().forEachRemaining(sootClass -> sootClass.getMethods().forEach(new Consumer<SootMethod>() {
             @Override
             public void accept(SootMethod sootMethod) {
-                if (needDoIntraAnalysis(sootMethod)) {
-                    addAnalyzedMethod(doIntraProcedureAnalysis(sootMethod));
-                }
-                visitedMethods.add(sootMethod.getSignature());
-            }
-
-            private boolean needDoIntraAnalysis(SootMethod sootMethod) {
-                return !visitedMethods.contains(sootMethod.getSignature());
+                addAnalyzedMethod(doIntraProcedureAnalysis(sootMethod));
             }
 
             private void addAnalyzedMethod(IntraAnalyzedMethod analyzedMethod) {

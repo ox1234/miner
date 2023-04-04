@@ -87,6 +87,9 @@ public class PointFlowHandler extends AbstractFlowHandler<Set<Obj>> {
         Set<ContextMethod> calleeContextMethods = new LinkedHashSet<>();
         for (SootMethod tgtMethod : dispatch(callNode)) {
             for (ContextMethod tgtContextMethod : getTargetContextMethod(callNode, tgtMethod)) {
+                if (callStack.contains(tgtContextMethod)) {
+                    continue;
+                }
                 // add to call graph
                 flowEngine.getCtxCG().addCtxCGEdge(callStack.peek(), tgtContextMethod);
                 flowEngine.getCtxCG().addCallNodeDispatch(callNode, tgtContextMethod);

@@ -1,6 +1,7 @@
 package org.example.core;
 
-import org.example.util.Log;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.example.util.MethodUtil;
 import org.example.util.TagUtil;
 import soot.*;
@@ -11,14 +12,14 @@ import soot.jimple.StringConstant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Consumer;
 
 public class PatchJimple {
+    private final Logger logger = LogManager.getLogger(PatchJimple.class);
     private Hierarchy hierarchy;
     private SootClass sootClass;
 
     public PatchJimple(Hierarchy hierarchy, SootClass sootClass) {
-        this.hierarchy = Scene.v().getActiveHierarchy();
+        this.hierarchy = hierarchy;
         this.sootClass = sootClass;
     }
 
@@ -26,16 +27,19 @@ public class PatchJimple {
         sootClass.getFields().forEach(sootField -> {
             // patch resource field
             if (TagUtil.isResourceField(sootField)) {
+                logger.info(String.format("%s class patch @Resource field %s", sootClass.getName(), sootField.getName()));
                 patchResourceField(sootField);
             }
 
             // patch autowire field
             if (TagUtil.isAutoWireField(sootField)) {
+                logger.info(String.format("%s class patch @Autowire field %s", sootClass.getName(), sootField.getName()));
                 patchAutoWireField(sootField);
             }
 
             // patch value field
             if (TagUtil.isValueField(sootField)) {
+                logger.info(String.format("%s class patch @Value field %s", sootClass.getName(), sootField.getName()));
                 patchValueField(sootField);
             }
         });
@@ -99,7 +103,7 @@ public class PatchJimple {
         }
 
         if (beanRefClass == null) {
-            Log.warn("get %s class %s field resource bean class fail", sootField.getDeclaringClass().getName(), sootField.getName());
+            logger.warn(String.format("get %s class %s field resource bean class fail", sootField.getDeclaringClass().getName(), sootField.getName()));
             return;
         }
 

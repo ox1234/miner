@@ -1,21 +1,18 @@
 package org.example.flow;
 
+import org.example.core.basic.Site;
 import org.example.flow.context.ContextMethod;
 import org.example.flow.context.InstanceContextMethod;
-import org.example.config.NodeRepository;
 import org.example.core.basic.Node;
 import org.example.core.basic.identity.LocalVariable;
 import org.example.core.basic.identity.ThisVariable;
 import org.example.core.basic.obj.Obj;
 import org.example.core.basic.obj.PhantomObj;
-import org.example.util.Log;
-import soot.Scene;
+import soot.RefType;
 import soot.SootClass;
+import soot.Type;
 
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.Set;
-import java.util.Stack;
+import java.util.*;
 
 public class CallStack {
     private Stack<ContextMethod> callStack;
@@ -53,7 +50,13 @@ public class CallStack {
         // can't find an obj, will make a phantom obj
         if (obj.isEmpty()) {
             if (node instanceof LocalVariable) {
-                obj = Collections.singleton(Obj.getPhantomObj(((LocalVariable) node).getType()));
+                LocalVariable localVariable = (LocalVariable) node;
+                Type localType = localVariable.getSootType();
+                if (localType instanceof RefType) {
+                    SootClass refClass = ((RefType) localType).getSootClass();
+                    Obj refObj = (Obj) Site.getNodeInstance(PhantomObj.class, refClass, localVariable.getRefStmt());
+                    obj = Collections.singleton(refObj);
+                }
             }
         }
         return obj;
@@ -65,5 +68,13 @@ public class CallStack {
             return ((InstanceContextMethod) contextMethod).getObj();
         }
         return null;
+    }
+
+    public List<String> toArrString() {
+        List<String> cg = new ArrayList<>();
+        for (ContextMethod contextMethod : callStack) {
+            cg.add(contextMethod.getSootMethod().getSignature());
+        }
+        return cg;
     }
 }

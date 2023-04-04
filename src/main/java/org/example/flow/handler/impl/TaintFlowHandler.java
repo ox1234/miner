@@ -1,5 +1,7 @@
 package org.example.flow.handler.impl;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.example.core.IntraAnalyzedMethod;
 import org.example.core.basic.Node;
 import org.example.core.basic.field.InstanceField;
@@ -13,11 +15,12 @@ import org.example.core.expr.*;
 import org.example.flow.FlowEngine;
 import org.example.flow.context.ContextMethod;
 import org.example.flow.handler.AbstractFlowHandler;
-import org.example.util.Log;
 
 import java.util.*;
 
 public class TaintFlowHandler extends AbstractFlowHandler<Boolean> {
+    private final Logger logger = LogManager.getLogger(TaintFlowHandler.class);
+
     public TaintFlowHandler(FlowEngine flowEngine) {
         super(flowEngine);
     }
@@ -25,6 +28,7 @@ public class TaintFlowHandler extends AbstractFlowHandler<Boolean> {
     public void taintMethodParam(ContextMethod contextMethod) {
         IntraAnalyzedMethod analyzedMethod = contextMethod.getIntraAnalyzedMethod();
         if (analyzedMethod != null) {
+            logger.info(String.format("set %s method param is all taint", contextMethod.getSootMethod().getSignature()));
             analyzedMethod.getParameterNodes().forEach(parameter -> contextMethod.getTaintContainer().addTaint(parameter));
         }
     }
@@ -67,6 +71,12 @@ public class TaintFlowHandler extends AbstractFlowHandler<Boolean> {
         return isRightTaint(from.getFirstNode());
     }
 
+
+    @Override
+    public void postProcessMethod(ContextMethod currentMethod) {
+        currentMethod.getTaintContainer().printTaintTable(currentMethod.getSootMethod().getSignature(), callStack.toArrString());
+    }
+
     @Override
     public void preProcessCallNode(CallNode callNode, ContextMethod tgtContextMethod) {
         // if base node is taint, pass it to target method
@@ -92,7 +102,7 @@ public class TaintFlowHandler extends AbstractFlowHandler<Boolean> {
 
         // check if reach sink, if reach will report vulnerability
         if (tgtContextMethod.checkReachSink()) {
-            Log.info("!!! find vulnerability reach sink to %s", tgtContextMethod.getSootMethod().getSignature());
+            logger.info(String.format("!!! find vulnerability reach sink to %s", tgtContextMethod.getSootMethod().getSignature()));
         }
 
         // if target method is abstract, and its parameter is taint, the method's return will be taint

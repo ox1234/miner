@@ -1,6 +1,8 @@
 package org.example.util;
 
 import org.example.soot.SourceType;
+import soot.Hierarchy;
+import soot.Scene;
 import soot.SootClass;
 
 public class ClassUtil {

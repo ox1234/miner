@@ -54,6 +54,9 @@ abstract public class AbstractFlowHandler<T> implements FlowHandler<T> {
         CtxCG ctxCG = flowEngine.getCtxCG();
         Set<ContextMethod> callees = ctxCG.getCallNodeDispatchMethods(callNode);
         for (ContextMethod callee : callees) {
+            if (callStack.contains(callee)) {
+                continue;
+            }
             preProcessCallNode(callNode, callee);
             flowEngine.doAnalysis(callee, this);
             postProcessCallNode(callNode, callee);
@@ -68,6 +71,16 @@ abstract public class AbstractFlowHandler<T> implements FlowHandler<T> {
 
     @Override
     public void postProcessCallNode(CallNode callNode, ContextMethod tgtContextMethod) {
+    }
+
+    @Override
+    public void preProcessMethod(ContextMethod currentMethod) {
+
+    }
+
+    @Override
+    public void postProcessMethod(ContextMethod currentMethod) {
+
     }
 
     // ---------------------------------------------- helper methods -----------------------------------------------------------

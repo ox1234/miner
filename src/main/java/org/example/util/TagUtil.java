@@ -1,17 +1,15 @@
 package org.example.util;
 
 import org.example.config.Global;
+import org.example.constant.MyBatisAnnotation;
 import org.example.constant.SpringAnnotation;
 import soot.SootClass;
 import soot.SootField;
 import soot.SootMethod;
-import soot.tagkit.AnnotationElem;
-import soot.tagkit.AnnotationStringElem;
-import soot.tagkit.AnnotationTag;
-import soot.tagkit.VisibilityAnnotationTag;
+import soot.tagkit.*;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.function.Consumer;
 
 public class TagUtil {
     public static boolean isSpringControllerAnnotation(AnnotationTag tag) {
@@ -22,19 +20,24 @@ public class TagUtil {
         return Global.rule.filter.requestMethodTags.contains(tag.getType());
     }
 
-    public static String getMethodRoutePath(SootMethod sootMethod) {
+    public static List<String> getMethodRoutePath(SootMethod sootMethod) {
+        List<String> routeList = new ArrayList<>();
         for (String routeAnnotation : Global.rule.filter.requestMethodTags) {
             AnnotationTag annotationTag = searchAnnotation(getMethodAnnotation(sootMethod), routeAnnotation);
             if (annotationTag == null) {
                 continue;
             }
             AnnotationElem annotationElem = getAnnotationElem(annotationTag, "value");
-            if (!(annotationElem instanceof AnnotationStringElem)) {
-                continue;
+            if (annotationElem instanceof AnnotationArrayElem) {
+                ((AnnotationArrayElem) annotationElem).getValues().forEach(annotationElem1 -> {
+                    if (annotationElem1 instanceof AnnotationStringElem) {
+                        routeList.add(((AnnotationStringElem) annotationElem1).getValue());
+                    }
+                });
             }
-            return ((AnnotationStringElem) annotationElem).getValue();
+            return routeList;
         }
-        return "";
+        return routeList;
     }
 
     public static boolean isServiceClass(SootClass sootClass) {
@@ -46,7 +49,7 @@ public class TagUtil {
     }
 
     public static boolean isMyBatisWrapper(SootClass sootClass) {
-        return checkAnnotation(getClassAnnotation(sootClass), SpringAnnotation.mybatisMapperAnnotation);
+        return checkAnnotation(getClassAnnotation(sootClass), MyBatisAnnotation.mybatisMapperAnnotation);
     }
 
     public static boolean isAutoWireField(SootField sootField) {
@@ -74,6 +77,44 @@ public class TagUtil {
         return "";
     }
 
+    public static List<String> getMybatisSelectAnnotationValue(SootMethod sootMethod) {
+        List<String> sqlExprs = new ArrayList<>();
+        AnnotationTag annotationTag = searchAnnotation(getMethodAnnotation(sootMethod), MyBatisAnnotation.mybatisSelectAnnotation);
+        if (annotationTag != null) {
+            AnnotationElem annotationElem = getAnnotationElem(annotationTag, "value");
+            if (annotationElem instanceof AnnotationArrayElem) {
+                ((AnnotationArrayElem) annotationElem).getValues().forEach(annotationElem1 -> {
+                    if (annotationElem1 instanceof AnnotationStringElem) {
+                        sqlExprs.add(((AnnotationStringElem) annotationElem1).getValue());
+                    }
+                });
+            }
+        }
+        return sqlExprs;
+    }
+
+    public static Map<String, Integer> getMyBatisParamAnnotationValue(SootMethod sootMethod) {
+        Map<String, Integer> paramMap = new HashMap<>();
+        for (Tag tag : sootMethod.getTags()) {
+            if (tag instanceof VisibilityParameterAnnotationTag) {
+                VisibilityParameterAnnotationTag visibilityParameterAnnotationTag = (VisibilityParameterAnnotationTag) tag;
+                for (int i = 0; i < visibilityParameterAnnotationTag.getNumParams(); i++) {
+                    VisibilityAnnotationTag visibilityAnnotationTag = visibilityParameterAnnotationTag.getVisibilityAnnotations().get(i);
+                    for (AnnotationTag annotationTag : visibilityAnnotationTag.getAnnotations()) {
+                        if (annotationTag.getType().equals(MyBatisAnnotation.mybatisParamAnnotation)) {
+                            for (AnnotationElem elem : annotationTag.getElems()) {
+                                if (elem instanceof AnnotationStringElem) {
+                                    paramMap.put(((AnnotationStringElem) elem).getValue(), i);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return paramMap;
+    }
+
     public static AnnotationTag getServiceAnnotation(SootClass sootClass) {
         return searchAnnotation(getClassAnnotation(sootClass), SpringAnnotation.serviceAnnotation);
     }
@@ -83,7 +124,7 @@ public class TagUtil {
     }
 
     public static AnnotationTag getMyBatisAnnotation(SootClass sootClass) {
-        return searchAnnotation(getClassAnnotation(sootClass), SpringAnnotation.mybatisMapperAnnotation);
+        return searchAnnotation(getClassAnnotation(sootClass), MyBatisAnnotation.mybatisMapperAnnotation);
     }
 
     public static AnnotationTag getAutoWireAnnotation(SootField sootField) {

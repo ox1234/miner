@@ -14,11 +14,6 @@ public class NormalObj extends Obj {
         this.sootClass = sootClass;
     }
 
-    public NormalObj(SootClass sootClass) {
-        super(sootClass.getName());
-        this.sootClass = sootClass;
-    }
-
     @Override
     public String toString() {
         return String.format("%s(normal)", super.getType());

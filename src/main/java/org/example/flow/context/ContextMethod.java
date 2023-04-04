@@ -2,26 +2,25 @@ package org.example.flow.context;
 
 import org.example.config.Global;
 import org.example.core.IntraAnalyzedMethod;
+import org.example.core.MyBatisIntraAnalyzedMethod;
 import org.example.core.basic.Node;
-import org.example.core.basic.field.InstanceField;
-import org.example.core.basic.field.StaticField;
+import org.example.core.basic.Site;
 import org.example.core.basic.identity.Parameter;
-import org.example.core.basic.identity.UnifyReturn;
 import org.example.core.basic.node.CallNode;
 import org.example.core.basic.obj.Obj;
+import org.example.core.basic.obj.PhantomObj;
 import org.example.flow.FlowEngine;
 import org.example.flow.PointToContainer;
 import org.example.flow.TaintContainer;
 import org.example.rule.Sink;
-import org.example.util.Log;
 import soot.RefType;
 import soot.SootMethod;
 import soot.Type;
 import soot.Unit;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 public abstract class ContextMethod {
@@ -58,7 +57,9 @@ public abstract class ContextMethod {
             Parameter parameter = intraAnalyzedMethod.getParameterNodes().get(i);
             Type paramType = parameter.getSootType();
             if (paramType instanceof RefType) {
-                getPointToContainer().addLocalPointRelation(parameter, Collections.singleton(Obj.getPhantomObj(paramType, String.format("%s-param-%d", sootMethod.getSignature(), i))));
+                RefType refType = (RefType) paramType;
+                Obj refPhantomObj = (Obj) Site.getNodeInstance(PhantomObj.class, refType.getSootClass(), parameter.getRefStmt());
+                getPointToContainer().addLocalPointRelation(parameter, Collections.singleton(refPhantomObj));
             }
         }
     }
@@ -97,6 +98,16 @@ public abstract class ContextMethod {
     }
 
     public boolean checkReachSink() {
+        // check mybatis sql injection
+        if (intraAnalyzedMethod instanceof MyBatisIntraAnalyzedMethod) {
+            Set<Integer> injectedParamIdxs = ((MyBatisIntraAnalyzedMethod) intraAnalyzedMethod).getInjectedParamIdxs();
+            for (int i : injectedParamIdxs) {
+                if (taintContainer.checkIdxParamIsTaint(i)) {
+                    return true;
+                }
+            }
+        }
+
         Sink sink = Global.sinkMap.get(getSootMethod().getSignature());
         if (sink == null) {
             return false;
