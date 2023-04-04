@@ -26,22 +26,6 @@ public class MethodUtil {
         return Scene.v().getMethod(signature);
     }
 
-    public static boolean isSinkMethod(SootMethod sootMethod) {
-        return Global.sinks.contains(sootMethod.getSignature());
-    }
-
-    public static boolean isLibraryMethod(SootMethod sootMethod) {
-        return sootMethod.getDeclaringClass().isLibraryClass();
-    }
-
-    public static boolean isPhantomMethod(SootMethod sootMethod) {
-        return sootMethod.isPhantom();
-    }
-
-    public static boolean isAppMethod(SootMethod sootMethod) {
-        return sootMethod.getDeclaringClass().isApplicationClass();
-    }
-
     public static SootMethod getRefInitMethod(SootClass sootClass, boolean isStatic) {
         if (isStatic) {
             return sootClass.getMethodUnsafe(CLINIT_METHOD_NAME, Collections.emptyList(), VoidType.v());

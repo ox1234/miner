@@ -10,6 +10,7 @@ import org.example.core.expr.AbstractExprNode;
 import org.example.core.basic.node.CallNode;
 import org.example.core.basic.obj.Obj;
 import org.example.core.expr.MultiExprNode;
+import org.example.util.TagUtil;
 import soot.SootClass;
 import soot.SootMethod;
 import soot.jimple.Stmt;
@@ -67,7 +68,7 @@ public class IntraAnalyzedMethod {
         }
     }
 
-    public IntraAnalyzedMethod(SootMethod sootMethod) {
+    protected IntraAnalyzedMethod(SootMethod sootMethod) {
         this.name = sootMethod.getName();
         this.signature = sootMethod.getSignature();
         this.subSignature = sootMethod.getSubSignature();
@@ -110,5 +111,13 @@ public class IntraAnalyzedMethod {
 
     public List<Parameter> getParameterNodes() {
         return new ArrayList<>(flow.paramNodes);
+    }
+
+    public static IntraAnalyzedMethod getInstance(SootMethod sootMethod) {
+        if (TagUtil.isMyBatisWrapper(sootMethod.getDeclaringClass())) {
+            return new MyBatisIntraAnalyzedMethod(sootMethod);
+        } else {
+            return new IntraAnalyzedMethod(sootMethod);
+        }
     }
 }

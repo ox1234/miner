@@ -2,6 +2,7 @@ package org.example.flow.context;
 
 import org.example.config.Global;
 import org.example.core.IntraAnalyzedMethod;
+import org.example.core.MyBatisIntraAnalyzedMethod;
 import org.example.core.basic.Node;
 import org.example.core.basic.Site;
 import org.example.core.basic.identity.Parameter;
@@ -19,6 +20,7 @@ import soot.Unit;
 
 import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 public abstract class ContextMethod {
@@ -96,6 +98,16 @@ public abstract class ContextMethod {
     }
 
     public boolean checkReachSink() {
+        // check mybatis sql injection
+        if (intraAnalyzedMethod instanceof MyBatisIntraAnalyzedMethod) {
+            Set<Integer> injectedParamIdxs = ((MyBatisIntraAnalyzedMethod) intraAnalyzedMethod).getInjectedParamIdxs();
+            for (int i : injectedParamIdxs) {
+                if (taintContainer.checkIdxParamIsTaint(i)) {
+                    return true;
+                }
+            }
+        }
+
         Sink sink = Global.sinkMap.get(getSootMethod().getSignature());
         if (sink == null) {
             return false;

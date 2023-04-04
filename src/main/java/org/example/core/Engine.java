@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.example.core.visitor.StmtVisitor;
 import org.example.tags.LocationTag;
+import org.example.util.TagUtil;
 import soot.*;
 import soot.Unit;
 import soot.jimple.toolkits.callgraph.CallGraph;
@@ -34,7 +35,8 @@ public class Engine {
             patchJimple.patch();
         }
 
-        IntraAnalyzedMethod analyzedMethod = new IntraAnalyzedMethod(method);
+        IntraAnalyzedMethod analyzedMethod = IntraAnalyzedMethod.getInstance(method);
+
         int order = 1;
         for (Unit unit : body.getUnits()) {
             unit.addTag(new LocationTag(method, order, unit));

@@ -124,7 +124,7 @@ public class FlowEngine {
         if (intraAnalyzedMethod == null) {
             SootMethod sootMethod = MethodUtil.getSootMethod(signature);
             if (sootMethod != null) {
-                intraAnalyzedMethod = new IntraAnalyzedMethod(sootMethod);
+                intraAnalyzedMethod = IntraAnalyzedMethod.getInstance(sootMethod);
             }
         }
         return intraAnalyzedMethod;
