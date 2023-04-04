@@ -23,4 +23,8 @@ public interface FlowHandler<T> {
     void preProcessCallNode(CallNode callNode, ContextMethod tgtContextMethod);
 
     void postProcessCallNode(CallNode callNode, ContextMethod tgtContextMethod);
+
+    void preProcessMethod(ContextMethod currentMethod);
+
+    void postProcessMethod(ContextMethod currentMethod);
 }

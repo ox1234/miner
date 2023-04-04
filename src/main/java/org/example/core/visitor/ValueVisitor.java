@@ -47,9 +47,9 @@ public class ValueVisitor extends AbstractShimpleValueSwitch<AbstractExprNode> {
         Node node = NodeRepository.getNode(MethodLevelSite.getLevelSiteID(v.getName(), currentMethod.getSignature()));
         if (node == null) {
             if (v.getName().equals("this")) {
-                node = Site.getNodeInstance(ThisVariable.class, currentMethod, v.getType().toString());
+                node = Site.getNodeInstance(ThisVariable.class, currentMethod, v.getType());
             } else {
-                node = Site.getNodeInstance(LocalVariable.class, v.getName(), currentMethod, v.getType().toString());
+                node = Site.getNodeInstance(LocalVariable.class, v.getName(), currentMethod, v.getType());
             }
         }
         this.setResult(new SingleExprNode(node));

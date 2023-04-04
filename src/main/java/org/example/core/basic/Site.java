@@ -1,20 +1,15 @@
 package org.example.core.basic;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.example.config.NodeRepository;
-import org.example.core.basic.obj.Obj;
-import org.example.util.Log;
-import soot.SootMethod;
-import soot.Unit;
 import soot.jimple.Stmt;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
 
 public abstract class Site implements Node {
+    private static final Logger logger = LogManager.getLogger(Site.class);
     protected String id;
     protected Stmt refStmt;
 
@@ -46,7 +41,7 @@ public abstract class Site implements Node {
             return NodeRepository.addNode(node);
         } catch (InvocationTargetException | InstantiationException | IllegalArgumentException |
                  IllegalAccessException e) {
-            Log.error("construct %s class instance fail", nodeClass.getName());
+            logger.error(String.format("construct %s class instance fail", nodeClass.getName()));
         }
         return null;
     }

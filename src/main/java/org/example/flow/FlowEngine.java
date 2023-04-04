@@ -1,17 +1,16 @@
 package org.example.flow;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.example.core.IntraAnalyzedMethod;
 import org.example.core.basic.obj.Obj;
 import org.example.core.basic.obj.PhantomObj;
 import org.example.flow.context.ContextMethod;
 import org.example.flow.context.InstanceContextMethod;
 import org.example.flow.context.StaticContextMethod;
-import org.example.flow.handler.AbstractFlowHandler;
 import org.example.flow.handler.FlowHandler;
 import org.example.flow.handler.impl.PointFlowHandler;
 import org.example.flow.handler.impl.TaintFlowHandler;
-import org.example.soot.SootHelper;
-import org.example.util.Log;
 import org.example.util.MethodUtil;
 import soot.Hierarchy;
 import soot.Scene;
@@ -21,10 +20,8 @@ import soot.SootMethod;
 import java.util.*;
 
 public class FlowEngine {
-    ContextMethod entryCtxMethod;
-
-    private Map<FlowHandlerEnum, AbstractFlowHandler> flowHandlers;
-
+    private final Logger logger = LogManager.getLogger(FlowEngine.class);
+    private Map<FlowHandlerEnum, FlowHandler<?>> flowHandlers;
     public static Map<String, IntraAnalyzedMethod> intraAnalyzedMethodMap;
 
 
@@ -45,50 +42,64 @@ public class FlowEngine {
     }
 
 
-    public void registerFlowHandler(FlowHandlerEnum flowType, AbstractFlowHandler flowHandler) {
+    public void registerFlowHandler(FlowHandlerEnum flowType, FlowHandler<?> flowHandler) {
         flowHandlers.put(flowType, flowHandler);
     }
 
-    public AbstractFlowHandler getFlowHandler(FlowHandlerEnum flowType) {
+    public FlowHandler<?> getFlowHandler(FlowHandlerEnum flowType) {
         return flowHandlers.get(flowType);
     }
 
     public void doAnalysis(SootMethod entryPoint) {
-        // entry point need doAnalysis init and clinit method first
         SootClass entryClass = entryPoint.getDeclaringClass();
-        Obj fakeObj = new PhantomObj(entryClass);
 
+        // no matter what, clinit method will always be called
         SootMethod clinit = MethodUtil.getRefInitMethod(entryClass, true);
-        SootMethod init = MethodUtil.getRefInitMethod(entryClass, false);
         if (clinit != null) {
             ContextMethod ctxClinit = new StaticContextMethod(entryClass, clinit, null, null);
-            doAnalysis(ctxClinit, flowHandlers.get(FlowHandlerEnum.POINT_FLOW_HANDLER));
+            logger.info(String.format("do %s class clinit method's point analysis", entryPoint.getSignature()));
+            doAnalysis(ctxClinit, getFlowHandler(FlowHandlerEnum.POINT_FLOW_HANDLER));
         }
 
-        if (!entryPoint.isStatic() && init != null) {
-            ContextMethod ctxInit = new InstanceContextMethod(fakeObj, init, null, null);
-            doAnalysis(ctxInit, flowHandlers.get(FlowHandlerEnum.POINT_FLOW_HANDLER));
+        ContextMethod entry;
+        if (entryPoint.isStatic()) {
+            entry = new StaticContextMethod(entryClass, entryPoint, null, null);
+        } else {
+            // entry point need doAnalysis init and clinit method first
+            Obj fakeObj = new PhantomObj(entryClass, entryPoint.getActiveBody().getThisUnit());
+            SootMethod init = MethodUtil.getRefInitMethod(entryClass, false);
+            if (init != null) {
+                ContextMethod ctxInit = new InstanceContextMethod(fakeObj, init, null, null);
+                logger.info(String.format("do %s class init method's point analysis", entryPoint.getSignature()));
+                doAnalysis(ctxInit, getFlowHandler(FlowHandlerEnum.POINT_FLOW_HANDLER));
+            }
+            entry = new InstanceContextMethod(fakeObj, entryPoint, null, null);
         }
 
-        ContextMethod entry = new InstanceContextMethod(fakeObj, entryPoint, null, null);
-        entryCtxMethod = entry;
+        // generate input param object
         entry.genFakeParamObj();
 
         // do point analysis, and build call graph
-        doAnalysis(entry, flowHandlers.get(FlowHandlerEnum.POINT_FLOW_HANDLER));
+        logger.info(String.format("do point analysis and build call graph from %s entry", entryPoint.getSignature()));
+        doAnalysis(entry, getFlowHandler(FlowHandlerEnum.POINT_FLOW_HANDLER));
 
         // do taint analysis
-        TaintFlowHandler taintFlowHandler = (TaintFlowHandler) flowHandlers.get(FlowHandlerEnum.TAINT_FLOW_HANDLER);
+        logger.info(String.format("do taint analysis from %s entry", entryPoint.getSignature()));
+        TaintFlowHandler taintFlowHandler = (TaintFlowHandler) getFlowHandler(FlowHandlerEnum.TAINT_FLOW_HANDLER);
+
         taintFlowHandler.taintMethodParam(entry);
         doAnalysis(entry, taintFlowHandler);
+        logger.info(String.format("flow analysis is finished from %s entry", entryPoint.getSignature()));
     }
 
-    public void doAnalysis(ContextMethod entry, FlowHandler flowHandler) {
+    public void doAnalysis(ContextMethod entry, FlowHandler<?> flowHandler) {
         callStack.push(entry);
+        flowHandler.preProcessMethod(entry);
         IntraAnalyzedMethod analyzedMethod = entry.getIntraAnalyzedMethod();
         if (analyzedMethod != null) {
             analyzedMethod.getOrderedFlowMap().forEach(flowHandler::handle);
         }
+        flowHandler.postProcessMethod(entry);
         callStack.pop();
     }
 
@@ -111,15 +122,11 @@ public class FlowEngine {
     public static IntraAnalyzedMethod getAnalysedMethod(String signature) {
         IntraAnalyzedMethod intraAnalyzedMethod = intraAnalyzedMethodMap.get(signature);
         if (intraAnalyzedMethod == null) {
-            SootMethod sootMethod = SootHelper.getSootMethod(signature);
+            SootMethod sootMethod = MethodUtil.getSootMethod(signature);
             if (sootMethod != null) {
                 intraAnalyzedMethod = new IntraAnalyzedMethod(sootMethod);
             }
         }
         return intraAnalyzedMethod;
-    }
-
-    public static void addAnalysedMethod(IntraAnalyzedMethod intraAnalyzedMethod) {
-        intraAnalyzedMethodMap.put(intraAnalyzedMethod.getSignature(), intraAnalyzedMethod);
     }
 }

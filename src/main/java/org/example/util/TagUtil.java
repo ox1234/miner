@@ -5,13 +5,12 @@ import org.example.constant.SpringAnnotation;
 import soot.SootClass;
 import soot.SootField;
 import soot.SootMethod;
-import soot.tagkit.AnnotationElem;
-import soot.tagkit.AnnotationStringElem;
-import soot.tagkit.AnnotationTag;
-import soot.tagkit.VisibilityAnnotationTag;
+import soot.tagkit.*;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class TagUtil {
     public static boolean isSpringControllerAnnotation(AnnotationTag tag) {
@@ -22,19 +21,24 @@ public class TagUtil {
         return Global.rule.filter.requestMethodTags.contains(tag.getType());
     }
 
-    public static String getMethodRoutePath(SootMethod sootMethod) {
+    public static List<String> getMethodRoutePath(SootMethod sootMethod) {
+        List<String> routeList = new ArrayList<>();
         for (String routeAnnotation : Global.rule.filter.requestMethodTags) {
             AnnotationTag annotationTag = searchAnnotation(getMethodAnnotation(sootMethod), routeAnnotation);
             if (annotationTag == null) {
                 continue;
             }
             AnnotationElem annotationElem = getAnnotationElem(annotationTag, "value");
-            if (!(annotationElem instanceof AnnotationStringElem)) {
-                continue;
+            if (annotationElem instanceof AnnotationArrayElem) {
+                ((AnnotationArrayElem) annotationElem).getValues().forEach(annotationElem1 -> {
+                    if (annotationElem1 instanceof AnnotationStringElem) {
+                        routeList.add(((AnnotationStringElem) annotationElem1).getValue());
+                    }
+                });
             }
-            return ((AnnotationStringElem) annotationElem).getValue();
+            return routeList;
         }
-        return "";
+        return routeList;
     }
 
     public static boolean isServiceClass(SootClass sootClass) {

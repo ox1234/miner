@@ -5,6 +5,7 @@ import org.example.core.basic.Node;
 import org.example.core.basic.field.StaticField;
 import org.example.core.basic.identity.Parameter;
 import org.example.core.basic.identity.UnifyReturn;
+import org.example.util.PrintUtil;
 
 import java.util.*;
 
@@ -21,10 +22,12 @@ public class TaintContainer {
             isParamTaint = true;
         }
 
+        if (node instanceof UnifyReturn) {
+            isRetTaint = true;
+        }
+
         if (node instanceof Global) {
             globalTaintNodes.add(node);
-        } else if (node instanceof UnifyReturn) {
-            isRetTaint = true;
         } else {
             taintNodes.add(node);
         }
@@ -50,12 +53,18 @@ public class TaintContainer {
         globalTaintNodes.add(node);
     }
 
-    @Override
-    public String toString() {
-        List<String> nodeStr = new ArrayList<>();
-        for (Node taintNode : taintNodes) {
-            nodeStr.add(taintNode.toString());
+    public void printTaintTable(String methodSig, List<String> callStackArr) {
+        List<List<String>> table = new ArrayList<>();
+        table.add(Arrays.asList("id", "variable", "node type", "ref stmt"));
+        for (Node node : taintNodes) {
+            String stmt = null;
+            if (node.getRefStmt() != null) {
+                stmt = node.getRefStmt().toString();
+            } else {
+                stmt = "null";
+            }
+            table.add(Arrays.asList(node.getID(), node.toString(), node.getClass().getSimpleName(), stmt));
         }
-        return String.format("[%s]", String.join(", ", nodeStr));
+        PrintUtil.printTable(table, methodSig, callStackArr);
     }
 }

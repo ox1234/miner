@@ -3,7 +3,6 @@ package engine;
 import org.example.core.Engine;
 import org.example.core.IntraAnalyzedMethod;
 import org.example.flow.FlowEngine;
-import org.example.soot.SootHelper;
 import org.example.soot.SootSetup;
 import org.example.soot.impl.SingleClassHandler;
 import org.junit.jupiter.api.Test;
