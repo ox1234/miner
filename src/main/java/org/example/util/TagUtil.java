@@ -1,7 +1,7 @@
 package org.example.util;
 
 import org.example.config.Global;
-import org.example.constant.MyBatisAnnotation;
+import org.example.constant.MyBatis;
 import org.example.constant.SpringAnnotation;
 import soot.SootClass;
 import soot.SootField;
@@ -9,7 +9,6 @@ import soot.SootMethod;
 import soot.tagkit.*;
 
 import java.util.*;
-import java.util.function.Consumer;
 
 public class TagUtil {
     public static boolean isSpringControllerAnnotation(AnnotationTag tag) {
@@ -49,7 +48,7 @@ public class TagUtil {
     }
 
     public static boolean isMyBatisWrapper(SootClass sootClass) {
-        return checkAnnotation(getClassAnnotation(sootClass), MyBatisAnnotation.mybatisMapperAnnotation);
+        return checkAnnotation(getClassAnnotation(sootClass), MyBatis.mybatisMapperAnnotation);
     }
 
     public static boolean isAutoWireField(SootField sootField) {
@@ -77,9 +76,13 @@ public class TagUtil {
         return "";
     }
 
+    public static boolean isMybatisSelectMethod(SootMethod sootMethod) {
+        return checkAnnotation(getMethodAnnotation(sootMethod), MyBatis.mybatisSelectAnnotation);
+    }
+
     public static List<String> getMybatisSelectAnnotationValue(SootMethod sootMethod) {
         List<String> sqlExprs = new ArrayList<>();
-        AnnotationTag annotationTag = searchAnnotation(getMethodAnnotation(sootMethod), MyBatisAnnotation.mybatisSelectAnnotation);
+        AnnotationTag annotationTag = searchAnnotation(getMethodAnnotation(sootMethod), MyBatis.mybatisSelectAnnotation);
         if (annotationTag != null) {
             AnnotationElem annotationElem = getAnnotationElem(annotationTag, "value");
             if (annotationElem instanceof AnnotationArrayElem) {
@@ -101,7 +104,7 @@ public class TagUtil {
                 for (int i = 0; i < visibilityParameterAnnotationTag.getNumParams(); i++) {
                     VisibilityAnnotationTag visibilityAnnotationTag = visibilityParameterAnnotationTag.getVisibilityAnnotations().get(i);
                     for (AnnotationTag annotationTag : visibilityAnnotationTag.getAnnotations()) {
-                        if (annotationTag.getType().equals(MyBatisAnnotation.mybatisParamAnnotation)) {
+                        if (annotationTag.getType().equals(MyBatis.mybatisParamAnnotation)) {
                             for (AnnotationElem elem : annotationTag.getElems()) {
                                 if (elem instanceof AnnotationStringElem) {
                                     paramMap.put(((AnnotationStringElem) elem).getValue(), i);
@@ -124,7 +127,7 @@ public class TagUtil {
     }
 
     public static AnnotationTag getMyBatisAnnotation(SootClass sootClass) {
-        return searchAnnotation(getClassAnnotation(sootClass), MyBatisAnnotation.mybatisMapperAnnotation);
+        return searchAnnotation(getClassAnnotation(sootClass), MyBatis.mybatisMapperAnnotation);
     }
 
     public static AnnotationTag getAutoWireAnnotation(SootField sootField) {

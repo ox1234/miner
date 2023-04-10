@@ -61,6 +61,7 @@ public class SootSetup {
         Options.v().set_keep_offset(true);
         Options.v().set_output_dir(Global.sootOutputPath);
         Options.v().set_no_writeout_body_releasing(true);
+        Options.v().set_verbose(true);
 
         Options.v().setPhaseOption("jb", "use-original-names:true");
         Options.v().setPhaseOption("cg", "spark:false");
