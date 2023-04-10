@@ -1,6 +1,6 @@
 package org.example.flow;
 
-import org.example.core.basic.Global;
+import org.example.config.Global;
 import org.example.core.basic.Node;
 import org.example.core.basic.field.StaticField;
 import org.example.core.basic.identity.Parameter;
@@ -65,6 +65,9 @@ public class TaintContainer {
             }
             table.add(Arrays.asList(node.getID(), node.toString(), node.getClass().getSimpleName(), stmt));
         }
-        PrintUtil.printTable(table, methodSig, callStackArr);
+
+        if (Global.debug) {
+            PrintUtil.printTable(table, methodSig, callStackArr);
+        }
     }
 }

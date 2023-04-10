@@ -102,7 +102,7 @@ public class TaintFlowHandler extends AbstractFlowHandler<Boolean> {
 
         // check if reach sink, if reach will report vulnerability
         if (tgtContextMethod.checkReachSink()) {
-            logger.info(String.format("!!! find vulnerability reach sink to %s", tgtContextMethod.getSootMethod().getSignature()));
+            logger.error(String.format("!!! find vulnerability reach sink to %s", tgtContextMethod.getSootMethod().getSignature()));
         }
 
         // if target method is abstract, and its parameter is taint, the method's return will be taint
