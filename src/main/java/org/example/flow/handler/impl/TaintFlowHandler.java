@@ -33,6 +33,7 @@ public class TaintFlowHandler extends AbstractFlowHandler<Boolean> {
         }
     }
 
+
     @Override
     public void transferLeft(Node to, Boolean from) {
         if (!from) {

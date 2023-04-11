@@ -174,7 +174,7 @@ public class PointFlowHandler extends AbstractFlowHandler<Set<Obj>> {
             // if obj is a phantom object, will reduce to CHA algorithm
             for (Obj obj : objs) {
                 if (obj instanceof PhantomObj) {
-                    SootClass sootClass = Scene.v().loadClassAndSupport(base.getType());
+                    SootClass sootClass = Scene.v().loadClassAndSupport(base.getType().toString());
                     List<SootClass> classes = new ArrayList<>();
                     if (sootClass.isInterface()) {
                         classes.addAll(flowEngine.getHierarchy().getImplementersOf(sootClass));
@@ -190,7 +190,7 @@ public class PointFlowHandler extends AbstractFlowHandler<Set<Obj>> {
                         }
                     }
                 } else {
-                    SootClass sootClass = Scene.v().loadClassAndSupport(obj.getType());
+                    SootClass sootClass = Scene.v().loadClassAndSupport(obj.getType().toString());
                     sootMethodSet.addAll(dispatch(sootClass, methodSubSig));
                 }
             }

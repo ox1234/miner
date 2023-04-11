@@ -10,7 +10,7 @@ public class NormalObj extends Obj {
     private SootClass sootClass;
 
     protected NormalObj(SootClass sootClass, Unit unit) {
-        super(sootClass.getName(), unit);
+        super(sootClass.getType(), unit);
         this.sootClass = sootClass;
     }
 

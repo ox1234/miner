@@ -17,7 +17,7 @@ public class LocalVariable extends MethodLevelSite implements TypeNode {
     }
 
     @Override
-    public String getType() {
-        return type.toString();
+    public Type getType() {
+        return type;
     }
 }

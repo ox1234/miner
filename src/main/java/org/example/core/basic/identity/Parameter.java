@@ -24,8 +24,8 @@ public class Parameter extends MethodLevelSite implements TypeNode {
     }
 
     @Override
-    public String getType() {
-        return type.toString();
+    public Type getType() {
+        return type;
     }
 
     public static String getParameterName(int idx) {

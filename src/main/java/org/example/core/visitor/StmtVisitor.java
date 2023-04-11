@@ -48,7 +48,7 @@ public class StmtVisitor extends AbstractStmtSwitch<Void> {
 
         AbstractExprNode nodeSet = valueVisitor.getResult();
         if (!(currentMethod.getReturnType() instanceof VoidType)) {
-            Node node = Site.getNodeInstance(UnifyReturn.class, currentMethod, currentMethod.getReturnType().toString());
+            Node node = Site.getNodeInstance(UnifyReturn.class, currentMethod, currentMethod.getReturnType());
             assert node != null;
             analyzedMethod.addFlow(node, nodeSet, stmt);
         }

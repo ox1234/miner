@@ -5,7 +5,7 @@ import soot.Unit;
 
 public class PhantomObj extends Obj {
     public PhantomObj(SootClass sootClass, Unit location) {
-        super(sootClass.getName(), location);
+        super(sootClass.getType(), location);
     }
 
     @Override

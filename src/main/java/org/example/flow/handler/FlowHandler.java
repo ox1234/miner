@@ -5,10 +5,14 @@ import org.example.core.basic.node.CallNode;
 import org.example.core.expr.*;
 import org.example.flow.context.ContextMethod;
 
-import java.util.Set;
-
 public interface FlowHandler<T> {
+    void preHandle(Node to, AbstractExprNode from);
+
+    void postHandle(Node to, AbstractExprNode from);
+
     void handle(Node to, AbstractExprNode from);
+
+    boolean preTransferLeft(Node to, T from);
 
     void transferLeft(Node to, T from);
 

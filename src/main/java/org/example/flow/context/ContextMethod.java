@@ -5,6 +5,7 @@ import org.example.core.IntraAnalyzedMethod;
 import org.example.core.MyBatisIntraAnalyzedMethod;
 import org.example.core.basic.Node;
 import org.example.core.basic.Site;
+import org.example.core.basic.TypeNode;
 import org.example.core.basic.identity.Parameter;
 import org.example.core.basic.node.CallNode;
 import org.example.core.basic.obj.Obj;
@@ -13,15 +14,9 @@ import org.example.flow.FlowEngine;
 import org.example.flow.PointToContainer;
 import org.example.flow.TaintContainer;
 import org.example.rule.Sink;
-import soot.RefType;
-import soot.SootMethod;
-import soot.Type;
-import soot.Unit;
+import soot.*;
 
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public abstract class ContextMethod {
     private SootMethod sootMethod;
@@ -100,11 +95,16 @@ public abstract class ContextMethod {
     public boolean checkReachSink() {
         // check mybatis sql injection
         if (intraAnalyzedMethod instanceof MyBatisIntraAnalyzedMethod) {
-            Set<Integer> injectedParamIdxs = ((MyBatisIntraAnalyzedMethod) intraAnalyzedMethod).getInjectedParamIdxs();
-            for (int i : injectedParamIdxs) {
-                if (taintContainer.checkIdxParamIsTaint(i)) {
-                    return true;
+            MyBatisIntraAnalyzedMethod myBatisIntraAnalyzedMethod = (MyBatisIntraAnalyzedMethod) intraAnalyzedMethod;
+            List<String> taintPlaceHolders = new ArrayList<>();
+            for (String placeHolder : myBatisIntraAnalyzedMethod.getPlaceHolderList()) {
+                if (isTaintMyBatisPlaceHolder(placeHolder, myBatisIntraAnalyzedMethod.getSqlParamMap())) {
+                    taintPlaceHolders.add(placeHolder);
                 }
+            }
+
+            if (!taintPlaceHolders.isEmpty()) {
+                return true;
             }
         }
 
@@ -121,6 +121,49 @@ public abstract class ContextMethod {
         for (int idx : sink.index) {
             if (getTaintContainer().checkIdxParamIsTaint(idx)) {
                 return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isTaintMyBatisPlaceHolder(String placeHolder, Map<String, Integer> paramAlias) {
+        // check if @Param annotation is exists, if exist will map the parameter
+        if (paramAlias.containsKey(placeHolder)) {
+            return getTaintContainer().checkIdxParamIsTaint(paramAlias.get(placeHolder));
+        }
+
+        // check if is ${_parameter} pattern, will map the first parameter
+        if (placeHolder.equals("_parameter")) {
+            return getTaintContainer().checkIdxParamIsTaint(0);
+        }
+
+        // check if is ${0} pattern, will map the parameter index
+        try {
+            int idx = Integer.parseInt(placeHolder, 10);
+            return getTaintContainer().checkIdxParamIsTaint(idx);
+        } catch (NumberFormatException ignored) {
+        }
+
+        // single parameter handle
+        if (intraAnalyzedMethod.getParameterNodes().size() == 1) {
+            Parameter paramNode = intraAnalyzedMethod.getParameterNodes().get(0);
+            Type paramType = paramNode.getType();
+            // if param is prim type, won't be taint
+            if (paramType instanceof PrimType) {
+                return false;
+            } else if (paramType instanceof RefType) {
+                // if param is string type, will check taint container
+                if (((RefType) paramType).getSootClass().getName().equals("java.lang.String")) {
+                    return getTaintContainer().checkIdxParamIsTaint(0);
+                }
+
+                // if param is other type, possibly a POJO, will check field
+                Set<Obj> objs = getPointToContainer().getPointRefObj(paramNode);
+                for (Obj perObj : objs) {
+                    if (perObj.isTaintField(placeHolder)) {
+                        return true;
+                    }
+                }
             }
         }
         return false;
