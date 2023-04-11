@@ -10,6 +10,7 @@ import org.example.flow.context.InstanceContextMethod;
 import org.example.flow.context.StaticContextMethod;
 import org.example.flow.handler.FlowHandler;
 import org.example.flow.handler.impl.PointFlowHandler;
+import org.example.flow.handler.impl.SanitizedTaintFlowHandler;
 import org.example.flow.handler.impl.TaintFlowHandler;
 import org.example.util.MethodUtil;
 import soot.Hierarchy;
@@ -38,7 +39,7 @@ public class FlowEngine {
 
         this.flowHandlers = new HashMap<>();
         registerFlowHandler(FlowHandlerEnum.POINT_FLOW_HANDLER, new PointFlowHandler(this));
-        registerFlowHandler(FlowHandlerEnum.TAINT_FLOW_HANDLER, new TaintFlowHandler(this));
+        registerFlowHandler(FlowHandlerEnum.TAINT_FLOW_HANDLER, new SanitizedTaintFlowHandler(this));
     }
 
 

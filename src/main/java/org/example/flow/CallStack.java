@@ -54,8 +54,9 @@ public class CallStack {
                 Type localType = localVariable.getSootType();
                 if (localType instanceof RefType) {
                     SootClass refClass = ((RefType) localType).getSootClass();
-                    Obj refObj = (Obj) Site.getNodeInstance(PhantomObj.class, refClass, localVariable.getRefStmt());
-                    obj = Collections.singleton(refObj);
+                    Node refObj = Site.getNodeInstance(PhantomObj.class, refClass, localVariable.getRefStmt());
+                    Obj obj1 = (Obj) refObj;
+                    obj = Collections.singleton(obj1);
                 }
             }
         }

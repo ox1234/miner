@@ -1,5 +1,7 @@
 package org.example.core.basic;
 
+import soot.Type;
+
 public interface TypeNode {
-    String getType();
+    Type getType();
 }

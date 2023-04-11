@@ -1,20 +1,10 @@
 package org.example.flow.handler;
 
-import org.example.constant.InvokeType;
 import org.example.core.basic.Node;
-import org.example.core.basic.identity.LocalVariable;
 import org.example.core.basic.node.CallNode;
-import org.example.core.basic.obj.Obj;
-import org.example.core.basic.obj.PhantomObj;
 import org.example.core.expr.*;
 import org.example.flow.*;
 import org.example.flow.context.ContextMethod;
-import org.example.flow.context.InstanceContextMethod;
-import org.example.flow.context.SpecialContextMethod;
-import org.example.flow.context.StaticContextMethod;
-import soot.Scene;
-import soot.SootClass;
-import soot.SootMethod;
 
 import java.util.*;
 
@@ -36,7 +26,18 @@ abstract public class AbstractFlowHandler<T> implements FlowHandler<T> {
     }
 
     @Override
+    public void preHandle(Node to, AbstractExprNode from) {
+
+    }
+
+    @Override
+    public void postHandle(Node to, AbstractExprNode from) {
+
+    }
+
+    @Override
     public void handle(Node to, AbstractExprNode from) {
+        preHandle(to, from);
         T rightRes = null;
         if (from instanceof EmptyExprNode) {
             rightRes = handleEmptyExprNode((EmptyExprNode) from);
@@ -47,7 +48,15 @@ abstract public class AbstractFlowHandler<T> implements FlowHandler<T> {
         } else if (from instanceof SingleExprNode) {
             rightRes = handleSingleExprNode((SingleExprNode) from);
         }
-        transferLeft(to, rightRes);
+        if (preTransferLeft(to, rightRes)) {
+            transferLeft(to, rightRes);
+        }
+        postHandle(to, from);
+    }
+
+    @Override
+    public boolean preTransferLeft(Node to, T from) {
+        return true;
     }
 
     protected Set<ContextMethod> handleCallNode(CallNode callNode) {

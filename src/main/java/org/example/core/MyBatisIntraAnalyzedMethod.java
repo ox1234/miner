@@ -3,7 +3,10 @@ package org.example.core;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.example.constant.MyBatis;
+import org.example.core.basic.Node;
+import org.example.core.basic.obj.Obj;
 import org.example.extra.MybatisXMLMapperHandler;
+import org.example.flow.context.ContextMethod;
 import org.example.util.TagUtil;
 import soot.SootMethod;
 
@@ -15,11 +18,10 @@ public class MyBatisIntraAnalyzedMethod extends IntraAnalyzedMethod {
     private final Logger logger = LogManager.getLogger(MyBatisIntraAnalyzedMethod.class);
     private List<String> sqlExprs;
     private Map<String, Integer> sqlParamMap;
-    private Set<Integer> injectedParamIdxs;
+    private List<String> placeHolderList = new ArrayList<>();
 
     public MyBatisIntraAnalyzedMethod(SootMethod sootMethod) {
         super(sootMethod);
-        injectedParamIdxs = new HashSet<>();
         sqlParamMap = TagUtil.getMyBatisParamAnnotationValue(sootMethod);
 
         if (TagUtil.isMybatisSelectMethod(sootMethod)) {
@@ -27,6 +29,10 @@ public class MyBatisIntraAnalyzedMethod extends IntraAnalyzedMethod {
         } else {
             handleMapperMethod(sootMethod);
         }
+    }
+
+    public Map<String, Integer> getSqlParamMap() {
+        return sqlParamMap;
     }
 
     private void handleMapperMethod(SootMethod sootMethod) {
@@ -44,28 +50,13 @@ public class MyBatisIntraAnalyzedMethod extends IntraAnalyzedMethod {
 
     private void mapSqlExpr(String sqlExpr) {
         Matcher matcher = MyBatis.mybatisPlaceHolderPattern.matcher(sqlExpr);
-        if (matcher.find()) {
-            String sqlParamName = matcher.group(1);
-            if (sqlParamMap.containsKey(sqlParamName)) {
-                injectedParamIdxs.add(sqlParamMap.get(sqlParamName));
-            } else if (sqlParamName.equals("_parameter")) {
-                injectedParamIdxs.add(0);
-            } else {
-                try {
-                    int idx = Integer.parseInt(sqlParamName, 10);
-                    injectedParamIdxs.add(idx);
-                } catch (NumberFormatException e) {
-                    logger.error(String.format("%s sql's %s parameter is not a valid param idx used in mybatis", sqlExpr, sqlParamName));
-                }
-            }
+        while (matcher.find()) {
+            String sqlParamName = matcher.group(1).split(",")[0];
+            placeHolderList.add(sqlParamName);
         }
     }
 
-    public List<String> getSqlExprs() {
-        return sqlExprs;
-    }
-
-    public Set<Integer> getInjectedParamIdxs() {
-        return injectedParamIdxs;
+    public List<String> getPlaceHolderList() {
+        return placeHolderList;
     }
 }

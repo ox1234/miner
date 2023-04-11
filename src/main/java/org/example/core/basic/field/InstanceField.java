@@ -4,6 +4,7 @@ import org.example.core.basic.*;
 import org.example.core.basic.obj.Obj;
 import soot.SootField;
 import soot.SootMethod;
+import soot.Type;
 
 public class InstanceField extends MethodLevelSite implements TypeNode {
     protected SootField field;
@@ -29,8 +30,8 @@ public class InstanceField extends MethodLevelSite implements TypeNode {
     }
 
     @Override
-    public String getType() {
-        return field.getDeclaringClass().getName();
+    public Type getType() {
+        return field.getDeclaringClass().getType();
     }
 
     @Override

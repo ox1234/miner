@@ -1,15 +1,15 @@
 package org.example.core.basic.obj;
 
 import org.example.core.basic.TypeNode;
+import soot.Type;
 import soot.Unit;
 
 public class ConstantObj extends Obj implements TypeNode {
     private String value;
 
-    protected ConstantObj(String constant, String type, Unit unit) {
-        super(constant, unit);
+    protected ConstantObj(String constant, Type type, Unit unit) {
+        super(type, unit);
         this.value = constant;
-        super.type = type;
     }
 
     public String getValue() {

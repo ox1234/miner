@@ -31,7 +31,7 @@ public class CallNode extends UnitLevelSite {
     private Obj thisRef;
 
     protected CallNode(SootMethod callee, SootMethod caller, Unit nodeSite, Collection<Node> args, Node base, InvokeType invokeType) {
-        super(nodeSite.toString(), LocationTag.getLocation(nodeSite));
+        super(LocationTag.getLocation(nodeSite));
         this.base = base;
         this.caller = caller;
         this.callSite = nodeSite;
@@ -51,7 +51,7 @@ public class CallNode extends UnitLevelSite {
             params.add(paramNode);
         }
         if (!(callee.getReturnType() instanceof VoidType)) {
-            this.unifyRet = Site.getNodeInstance(UnifyReturn.class, callee, callee.getReturnType().toString());
+            this.unifyRet = Site.getNodeInstance(UnifyReturn.class, callee, callee.getReturnType());
         }
     }
 
@@ -95,10 +95,6 @@ public class CallNode extends UnitLevelSite {
 
     public String getEnclosingMethodSig() {
         return caller.getSignature();
-    }
-
-    public static String getCallNodeID(Unit nodeSite) {
-        return getLevelSiteID(nodeSite.toString(), LocationTag.getLocation(nodeSite));
     }
 
     public Node getBase() {

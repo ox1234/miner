@@ -5,6 +5,7 @@ import org.example.core.basic.TypeNode;
 import org.example.core.basic.UnitLevelSite;
 import org.example.core.basic.field.InstanceField;
 import org.example.tags.LocationTag;
+import soot.Type;
 import soot.Unit;
 
 import java.util.HashMap;
@@ -12,17 +13,15 @@ import java.util.Map;
 
 abstract public class Obj extends UnitLevelSite implements TypeNode {
     private Map<String, ObjField> fieldMap = new HashMap<>();
+    protected Type type;
 
-    protected Obj(String type, Unit unit) {
-        super(type, LocationTag.getLocation(unit));
-    }
-
-    protected Obj(String type) {
-        super(type, "fake");
+    protected Obj(Type type, Unit unit) {
+        super(type.toString(), LocationTag.getLocation(unit));
+        this.type = type;
     }
 
     @Override
-    public String getType() {
+    public Type getType() {
         return type;
     }
 
@@ -35,8 +34,7 @@ abstract public class Obj extends UnitLevelSite implements TypeNode {
     }
 
     public boolean isTaintField(InstanceField field) {
-        ObjField objField = fieldMap.get(field.getName());
-        return objField != null && objField.isTaint();
+        return isTaintField(field.getName());
     }
 
     public void setTaintField(InstanceField field) {
@@ -46,5 +44,10 @@ abstract public class Obj extends UnitLevelSite implements TypeNode {
             fieldMap.put(field.getName(), objField);
         }
         objField.setTaint(true);
+    }
+
+    public boolean isTaintField(String fieldName) {
+        ObjField objField = fieldMap.get(fieldName);
+        return objField != null && objField.isTaint();
     }
 }

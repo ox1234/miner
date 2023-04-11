@@ -1,15 +1,16 @@
 package org.example.core.basic;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import soot.Type;
 
 public abstract class ClassLevelSite extends Site {
     private String name;
-    private String className;
+    private String typeStr;
 
-    protected ClassLevelSite(String name, String className) {
+    protected ClassLevelSite(String name, String type) {
         this.name = name;
-        this.className = className;
-        super.id = getLevelSiteID(name, className);
+        this.typeStr = type;
+        super.id = getLevelSiteID(name, type);
     }
 
     public static String getLevelSiteID(String name, String className) {
@@ -18,6 +19,6 @@ public abstract class ClassLevelSite extends Site {
 
     @Override
     public String toString() {
-        return String.format("%s.%s", className, name);
+        return String.format("%s.%s", typeStr, name);
     }
 }
