@@ -1,15 +1,14 @@
 package org.example.core.basic.node;
 
 import org.example.constant.InvokeType;
+import org.example.core.Loc;
 import org.example.core.basic.Node;
 import org.example.core.basic.Site;
 import org.example.core.basic.UnitLevelSite;
 import org.example.core.basic.identity.Parameter;
 import org.example.core.basic.identity.UnifyReturn;
 import org.example.core.basic.obj.Obj;
-import org.example.tags.LocationTag;
 import soot.SootMethod;
-import soot.Unit;
 import soot.VoidType;
 
 import java.util.ArrayList;
@@ -26,15 +25,16 @@ public class CallNode extends UnitLevelSite {
     private Node base;
     private Node unifyRet;
     private Node retVar;
-    private Unit callSite;
+    private Loc callSite;
     private InvokeType invokeType;
     private Obj thisRef;
 
-    protected CallNode(SootMethod callee, SootMethod caller, Unit nodeSite, Collection<Node> args, Node base, InvokeType invokeType) {
-        super(LocationTag.getLocation(nodeSite));
+    protected CallNode(SootMethod callee, SootMethod caller, Loc loc, Collection<Node> args, Node base, InvokeType invokeType) {
+        super(loc.toString());
+        super.setLoc(loc);
         this.base = base;
         this.caller = caller;
-        this.callSite = nodeSite;
+        this.callSite = loc;
         this.args = new ArrayList<>(args);
         this.invokeType = invokeType;
 
@@ -56,7 +56,6 @@ public class CallNode extends UnitLevelSite {
     }
 
 
-
     public void setThisRef(Obj thisRef) {
         this.thisRef = thisRef;
     }
@@ -65,7 +64,7 @@ public class CallNode extends UnitLevelSite {
         return subSignature;
     }
 
-    public Unit getCallSite() {
+    public Loc getCallSite() {
         return callSite;
     }
 

@@ -1,22 +1,31 @@
 package org.example.core.basic.obj;
 
+import org.example.core.Loc;
 import org.example.core.basic.Node;
 import org.example.core.basic.TypeNode;
 import org.example.core.basic.UnitLevelSite;
+import org.example.core.basic.field.ArrayLoad;
 import org.example.core.basic.field.InstanceField;
-import org.example.tags.LocationTag;
+import org.example.flow.basic.ArrayField;
+import org.example.flow.basic.ObjField;
 import soot.Type;
-import soot.Unit;
 
 import java.util.HashMap;
 import java.util.Map;
 
 abstract public class Obj extends UnitLevelSite implements TypeNode {
     private Map<String, ObjField> fieldMap = new HashMap<>();
+    private Map<Obj, ArrayField> arrMap = new HashMap<>();
     protected Type type;
 
-    protected Obj(Type type, Unit unit) {
-        super(type.toString(), LocationTag.getLocation(unit));
+    protected Obj(Type type, Loc loc) {
+        super(type.toString(), loc.toString());
+        super.setLoc(loc);
+        this.type = type;
+    }
+
+    protected Obj(Type type, String id) {
+        super(type.toString(), id);
         this.type = type;
     }
 
@@ -29,8 +38,17 @@ abstract public class Obj extends UnitLevelSite implements TypeNode {
         fieldMap.put(field.getName(), new ObjField(field, value));
     }
 
+    public void putArrayField(ArrayLoad arrLoad, Obj idx, Node value) {
+        arrMap.put(idx, new ArrayField(arrLoad, value));
+    }
+
     public ObjField getInstanceField(InstanceField field) {
         return fieldMap.get(field.getName());
+    }
+
+
+    public ArrayField getArrayLoad(Obj idx) {
+        return arrMap.get(idx);
     }
 
     public boolean isTaintField(InstanceField field) {

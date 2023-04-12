@@ -1,12 +1,16 @@
 package org.example.core.basic.obj;
 
+import org.example.core.Loc;
+import org.example.core.basic.Node;
 import soot.SootClass;
+import soot.Type;
 import soot.Unit;
 
 public class PhantomObj extends Obj {
-    public PhantomObj(SootClass sootClass, Unit location) {
-        super(sootClass.getType(), location);
+    public PhantomObj(Type type, Node orignalNode) {
+        super(type, orignalNode.getID());
     }
+
 
     @Override
     public String toString() {

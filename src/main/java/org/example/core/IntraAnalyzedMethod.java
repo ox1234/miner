@@ -99,9 +99,7 @@ public class IntraAnalyzedMethod {
         return methodRef;
     }
 
-    public void addFlow(Node to, AbstractExprNode from, Stmt stmt) {
-        to.setRefStmt(stmt);
-        from.setNodesRefStmt(stmt);
+    public void addFlow(Node to, AbstractExprNode from) {
         flow.addFlow(to, from);
     }
 
@@ -116,6 +114,8 @@ public class IntraAnalyzedMethod {
     public static IntraAnalyzedMethod getInstance(SootMethod sootMethod) {
         if (TagUtil.isMyBatisWrapper(sootMethod.getDeclaringClass())) {
             return new MyBatisIntraAnalyzedMethod(sootMethod);
+        } else if (TagUtil.isRouteMethod(sootMethod)) {
+            return new RouteIntraAnalyzedMethod(sootMethod);
         } else {
             return new IntraAnalyzedMethod(sootMethod);
         }

@@ -51,6 +51,10 @@ public class TagUtil {
         return checkAnnotation(getClassAnnotation(sootClass), MyBatis.mybatisMapperAnnotation);
     }
 
+    public static boolean isRouteMethod(SootMethod sootMethod) {
+        return sootMethod.getTag("routes") != null;
+    }
+
     public static boolean isAutoWireField(SootField sootField) {
         return checkAnnotation(getFieldAnnotation(sootField), SpringAnnotation.autoWireAnnotation);
     }
