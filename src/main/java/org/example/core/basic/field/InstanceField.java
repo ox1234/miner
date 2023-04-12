@@ -9,7 +9,6 @@ import soot.Type;
 public class InstanceField extends MethodLevelSite implements TypeNode {
     protected SootField field;
     protected MethodLevelSite base;
-    protected Obj refObj;
 
     protected InstanceField(MethodLevelSite baseNode, SootField field, SootMethod enclosingMethod) {
         super(String.format("%s.%s", baseNode.getName(), field.getName()), enclosingMethod.getSignature());
@@ -19,14 +18,6 @@ public class InstanceField extends MethodLevelSite implements TypeNode {
 
     public Node getBase() {
         return base;
-    }
-
-    public SootField getFieldRef() {
-        return field;
-    }
-
-    public void setRefObj(Obj refObj) {
-        this.refObj = refObj;
     }
 
     @Override

@@ -14,6 +14,7 @@ import org.example.core.basic.obj.Obj;
 import org.example.core.expr.*;
 import org.example.flow.FlowEngine;
 import org.example.flow.context.ContextMethod;
+import org.example.flow.context.SpecialContextMethod;
 import org.example.flow.handler.AbstractFlowHandler;
 
 import java.util.*;
@@ -74,7 +75,7 @@ public class TaintFlowHandler extends AbstractFlowHandler<Boolean> {
 
 
     @Override
-    public void postProcessMethod(ContextMethod currentMethod) {
+    public void preProcessMethod(ContextMethod currentMethod) {
         currentMethod.getTaintContainer().printTaintTable(currentMethod.getSootMethod().getSignature(), callStack.toArrString());
     }
 
@@ -83,6 +84,9 @@ public class TaintFlowHandler extends AbstractFlowHandler<Boolean> {
         // if base node is taint, pass it to target method
         if (getTaintContainer().containsTaint(callNode.getBase())) {
             tgtContextMethod.getTaintContainer().addTaint(callNode.getBase());
+            if (!tgtContextMethod.getSootMethod().getDeclaringClass().isApplicationClass()) {
+                tgtContextMethod.setReturnTaint(true);
+            }
         }
 
         // do arg param taint map
@@ -103,11 +107,15 @@ public class TaintFlowHandler extends AbstractFlowHandler<Boolean> {
 
         // check if reach sink, if reach will report vulnerability
         if (tgtContextMethod.checkReachSink()) {
+            flowEngine.setRouteIsTaint();
             logger.error(String.format("!!! find vulnerability reach sink to %s", tgtContextMethod.getSootMethod().getSignature()));
         }
 
-        // if target method is abstract, and its parameter is taint, the method's return will be taint
-        if (tgtContextMethod.getSootMethod().isAbstract() && tgtContextMethod.getTaintContainer().isParamTaint()) {
+        // if target method is not application class, and its parameter is taint, the method's return will be taint, this will case false positive
+        if (!tgtContextMethod.getSootMethod().getDeclaringClass().isApplicationClass() && tgtContextMethod.getTaintContainer().isParamTaint()) {
+            if (tgtContextMethod instanceof SpecialContextMethod) {
+                callStack.peek().getTaintContainer().addTaint(callNode.getBase());
+            }
             tgtContextMethod.setReturnTaint(true);
         }
     }
@@ -155,6 +163,11 @@ public class TaintFlowHandler extends AbstractFlowHandler<Boolean> {
                 }
             }
         }
+        return false;
+    }
+
+    private boolean additionalTaintStep(CallNode callNode) {
+//        if(callNode.getCallee().)
         return false;
     }
 }

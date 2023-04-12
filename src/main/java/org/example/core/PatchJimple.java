@@ -82,31 +82,7 @@ public class PatchJimple {
         }
     }
 
-    public void patchResourceField(SootField sootField) {
-        SootClass beanRefClass = null;
-        String beanName = TagUtil.getFieldBeanName(sootField);
-
-        List<SootClass> subClasses = hierarchy.getSubclassesOf(sootField.getDeclaringClass());
-        if (subClasses.size() == 0) {
-            return;
-        }
-        for (SootClass subClass : subClasses) {
-            String classBean = TagUtil.getClassBeanName(subClass);
-            if (classBean != null && classBean.equals(beanName)) {
-                beanRefClass = subClass;
-                break;
-            }
-            // find service annotation
-            if (beanName == null) {
-                beanRefClass = subClass;
-            }
-        }
-
-        if (beanRefClass == null) {
-            logger.warn(String.format("get %s class %s field resource bean class fail", sootField.getDeclaringClass().getName(), sootField.getName()));
-            return;
-        }
-
+    private void patchDependencyInject(SootField sootField, SootClass beanRefClass) {
         // create a $stack = new beanClass();
         SootMethod initMethodRef = getTargetPatchMethod(sootClass.isStatic());
         Body body = initMethodRef.retrieveActiveBody();
@@ -117,12 +93,50 @@ public class PatchJimple {
         List<Unit> addUnits = new ArrayList<>();
         addUnits.add(Jimple.v().newAssignStmt(local, Jimple.v().newNewExpr(beanRefClass.getType())));
         // invoke init method: $stack.special invoke
-        addUnits.add(Jimple.v().newInvokeStmt(Jimple.v().newSpecialInvokeExpr(local, initMethodRef.makeRef())));
+        addUnits.add(Jimple.v().newInvokeStmt(Jimple.v().newSpecialInvokeExpr(local, MethodUtil.getRefInitMethod(beanRefClass, beanRefClass.isStatic()).makeRef())));
         // assign the field
         addUnits.add(Jimple.v().newAssignStmt(Jimple.v().newInstanceFieldRef(body.getThisLocal(), sootField.makeRef()), local));
-
         Collections.reverse(addUnits);
-        patchingChain.addAll(addUnits);
+        for (Unit unit : addUnits) {
+            patchingChain.addFirst(unit);
+        }
+    }
+
+    public void patchResourceField(SootField sootField) {
+        SootClass beanRefClass = null;
+        String beanName = TagUtil.getFieldBeanName(sootField);
+
+        SootClass fieldClass = ((RefType) sootField.getType()).getSootClass();
+        List<SootClass> subClasses;
+        if (fieldClass.isInterface()) {
+            subClasses = hierarchy.getImplementersOf(fieldClass);
+        } else {
+            subClasses = hierarchy.getSubclassesOfIncluding(fieldClass);
+        }
+        if (subClasses.size() == 0) {
+            return;
+        }
+        for (SootClass subClass : subClasses) {
+            // find service annotation
+            if (beanName == null) {
+                beanRefClass = subClass;
+                break;
+            }
+
+            String classBean = TagUtil.getClassBeanName(subClass);
+            if (classBean != null && classBean.equals(beanName)) {
+                beanRefClass = subClass;
+                break;
+            }
+        }
+
+        if (beanRefClass == null) {
+            logger.warn(String.format("get %s class %s field resource bean class fail", sootField.getDeclaringClass().getName(), sootField.getName()));
+            return;
+        }
+
+        patchDependencyInject(sootField, beanRefClass);
+
     }
 
 

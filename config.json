@@ -941,15 +941,15 @@
         },
         {
           "expression": "<java.io.File: boolean createNewFile()>",
-          "index": null
+          "index": []
         },
         {
           "expression": "<java.io.File: boolean delete()>",
-          "index": null
+          "index": []
         },
         {
           "expression": "<java.io.File: void deleteOnExit()>",
-          "index": null
+          "index": []
         },
         {
           "expression": "<java.nio.file.Files: java.nio.file.Path createFile(java.nio.file.Path,java.nio.file.attribute.FileAttribute[])>",
@@ -1491,6 +1491,12 @@
           ]
         },
         {
+          "expression": "<org.springframework.web.client.RestTemplate: org.springframework.http.ResponseEntity exchange(java.lang.String,org.springframework.http.HttpMethod,org.springframework.http.HttpEntity,java.lang.Class,java.lang.Object[])>",
+          "index": [
+            0
+          ]
+        },
+        {
           "expression": "<org.openqa.selenium.WebDriver: void get(java.lang.String)>",
           "index": [
             0
@@ -1762,11 +1768,11 @@
         },
         {
           "expression": "<java.net.URL: java.net.URLConnection openConnection()>",
-          "index": null
+          "index": []
         },
         {
           "expression": "<java.net.URL: java.io.InputStream openStream()>",
-          "index": null
+          "index": []
         },
         {
           "expression": "<org.jsoup.Jsoup: org.jsoup.Connection connect(java.lang.String)>",
@@ -2025,7 +2031,7 @@
         },
         {
           "expression": "<java.io.ObjectInputStream: java.lang.Object readObject()>",
-          "index": null
+          "index": []
         },
         {
           "expression": "<com.thoughtworks.xstream.XStream: java.lang.Object fromXML(java.lang.String)>",

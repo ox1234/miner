@@ -1,5 +1,6 @@
 package org.example.core.expr;
 
+import org.example.core.Loc;
 import org.example.core.basic.Node;
 import org.example.core.basic.obj.Obj;
 import soot.jimple.Stmt;
@@ -32,14 +33,6 @@ abstract public class AbstractExprNode {
 
     public boolean isObj() {
         return nodes.size() == 1 && getFirstNode() instanceof Obj;
-    }
-
-    public void setNodesRefStmt(Stmt stmt) {
-        nodes.forEach(node -> node.setRefStmt(stmt));
-    }
-
-    public void addNode(Node node) {
-        nodes.add(node);
     }
 
     public void addNodes(List<Node> addNodes) {

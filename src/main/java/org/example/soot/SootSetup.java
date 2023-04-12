@@ -1,8 +1,10 @@
 package org.example.soot;
 
+import org.apache.commons.lang3.time.StopWatch;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.example.config.Global;
+import org.example.tags.RouteTag;
 import org.example.util.ClassUtil;
 import org.example.util.MethodUtil;
 import org.example.util.TagUtil;
@@ -13,9 +15,10 @@ import soot.tagkit.AnnotationTag;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.*;
+import java.util.function.BiConsumer;
 
 // SootSetup 负责所有Soot的参数设置和Soot类的加载路径
 public class SootSetup {
@@ -53,7 +56,7 @@ public class SootSetup {
         Options.v().set_prepend_classpath(true);
         Options.v().set_allow_phantom_refs(true);
         Options.v().set_allow_phantom_elms(true);
-        Options.v().set_whole_program(true);
+        Options.v().set_whole_program(false);
         Options.v().set_no_bodies_for_excluded(true);
         Options.v().set_whole_shimple(true);
         Options.v().set_output_format(Options.output_format_shimp);
@@ -61,10 +64,20 @@ public class SootSetup {
         Options.v().set_keep_offset(true);
         Options.v().set_output_dir(Global.sootOutputPath);
         Options.v().set_no_writeout_body_releasing(true);
-        Options.v().set_verbose(true);
 
+        // speed up soot
         Options.v().setPhaseOption("jb", "use-original-names:true");
-        Options.v().setPhaseOption("cg", "spark:false");
+        Options.v().setPhaseOption("jb.cp-ule", "enabled:false");
+        Options.v().setPhaseOption("jb.dae", "enabled:false");
+
+        // disable some phase
+        Options.v().setPhaseOption("cg", "enabled:false");
+        Options.v().setPhaseOption("jop", "enabled:false");
+        Options.v().setPhaseOption("jap.baf", "enabled:false");
+        Options.v().setPhaseOption("bop", "enabled:false");
+        Options.v().setPhaseOption("jtp.grimp", "enabled:false");
+
+
     }
 
     public void cleanupOutput() {
@@ -90,8 +103,13 @@ public class SootSetup {
     }
 
     private void setupEntryPoints() {
-        Scene.v().setEntryPoints(getRouteMethods(Scene.v().getApplicationClasses()));
-        logger.info(String.format("set %d entry points", Scene.v().getEntryPoints().size()));
+        List<SootMethod> entryMethods = new ArrayList<>();
+        getRouteMethods(Scene.v().getApplicationClasses()).forEach((sootMethod, routes) -> {
+            sootMethod.addTag(new RouteTag(routes));
+            entryMethods.add(sootMethod);
+        });
+        logger.info(String.format("collect %d route methods", entryMethods.size()));
+        Scene.v().setEntryPoints(entryMethods);
     }
 
     private void runPacks() {
@@ -101,18 +119,29 @@ public class SootSetup {
 
     // 初始化方法
     public void initialize(String target) throws Exception {
+        StopWatch sw = new StopWatch();
+
         // set soot options
         setOptions();
         setScanTarget(target);
 
         // load all classes
+        sw.reset();
+        sw.start();
         loadSootClasses();
+        sw.stop();
+        logger.info(String.format("load classes into Scene cost %s time", sw));
 
         // set up entry points
         setupEntryPoints();
 
         // run packs
+        sw.reset();
+        sw.start();
         runPacks();
+        sw.stop();
+        logger.info(String.format("run soot packs cost %s time", sw));
+
 
         // build hierarchy
         hierarchy = buildHierarchy();
@@ -123,16 +152,19 @@ public class SootSetup {
         return Scene.v().getActiveHierarchy();
     }
 
-    public List<SootMethod> getRouteMethods(Collection<SootClass> classes) {
-        List<SootMethod> routeMethods = new ArrayList<>();
+    public Map<SootMethod, Set<String>> getRouteMethods(Collection<SootClass> classes) {
+        logger.info(String.format("start route collect in %d classes", classes.size()));
+        Map<SootMethod, Set<String>> routeMethods = new LinkedHashMap<>();
         for (SootClass sootClass : classes) {
-            logger.info(String.format("searching %s class route methods in application classes", sootClass.getName()));
             for (AnnotationTag annotationTag : TagUtil.getClassAnnotation(sootClass)) {
                 if (TagUtil.isSpringControllerAnnotation(annotationTag)) {
                     for (SootMethod sootMethod : sootClass.getMethods()) {
                         if (MethodUtil.isRouteMethod(sootMethod)) {
                             logger.info(String.format("find %s method is route method with %s route path", sootMethod.getSignature(), String.join(",", TagUtil.getMethodRoutePath(sootMethod))));
-                            routeMethods.add(sootMethod);
+                            if (!routeMethods.containsKey(sootMethod)) {
+                                routeMethods.put(sootMethod, new HashSet<>());
+                            }
+                            routeMethods.get(sootMethod).addAll(TagUtil.getMethodRoutePath(sootMethod));
                         }
                     }
                 }

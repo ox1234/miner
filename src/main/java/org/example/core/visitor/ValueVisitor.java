@@ -4,23 +4,25 @@ import org.example.config.NodeRepository;
 import org.example.constant.InvokeType;
 import org.example.constant.Operation;
 import org.example.core.IntraAnalyzedMethod;
-import org.example.core.expr.AbstractExprNode;
+import org.example.core.Loc;
+import org.example.core.basic.obj.ArrayObj;
+import org.example.core.basic.obj.MapCollectionObj;
+import org.example.core.expr.*;
 import org.example.core.basic.MethodLevelSite;
 import org.example.core.basic.Node;
 import org.example.core.basic.Site;
-import org.example.core.expr.EmptyExprNode;
-import org.example.core.expr.SingleExprNode;
-import org.example.core.expr.OpExprNode;
-import org.example.core.basic.field.ArrayReference;
+import org.example.core.basic.field.ArrayLoad;
 import org.example.core.basic.node.CallNode;
 import org.example.core.basic.field.InstanceField;
 import org.example.core.basic.field.StaticField;
 import org.example.core.basic.identity.*;
 import org.example.core.basic.obj.ConstantObj;
 import org.example.core.basic.obj.NormalObj;
+import org.example.util.ClassUtil;
 import soot.*;
 import soot.jimple.*;
 import soot.shimple.AbstractShimpleValueSwitch;
+import soot.shimple.PhiExpr;
 
 import java.util.*;
 
@@ -28,16 +30,16 @@ public class ValueVisitor extends AbstractShimpleValueSwitch<AbstractExprNode> {
     private static final ValueVisitor instance = new ValueVisitor();
 
     public SootMethod currentMethod;
-    public Unit currentUnit;
+    public Loc loc;
     public IntraAnalyzedMethod analyzedMethod;
 
     private ValueVisitor() {
     }
 
-    public static ValueVisitor getInstance(IntraAnalyzedMethod analyzedMethod, Unit unit) {
+    public static ValueVisitor getInstance(IntraAnalyzedMethod analyzedMethod, Loc loc) {
         instance.analyzedMethod = analyzedMethod;
         instance.currentMethod = analyzedMethod.getMethodRef();
-        instance.currentUnit = unit;
+        instance.loc = loc;
         return instance;
     }
 
@@ -57,37 +59,37 @@ public class ValueVisitor extends AbstractShimpleValueSwitch<AbstractExprNode> {
 
     @Override
     public void caseDoubleConstant(DoubleConstant v) {
-        this.setResult(new SingleExprNode(Site.getNodeInstance(ConstantObj.class, String.valueOf(v.value), v.getType(), currentUnit)));
+        this.setResult(new SingleExprNode(Site.getNodeInstance(ConstantObj.class, String.valueOf(v.value), v.getType(), loc)));
     }
 
     @Override
     public void caseFloatConstant(FloatConstant v) {
-        this.setResult(new SingleExprNode(Site.getNodeInstance(ConstantObj.class, String.valueOf(v.value), v.getType(), currentUnit)));
+        this.setResult(new SingleExprNode(Site.getNodeInstance(ConstantObj.class, String.valueOf(v.value), v.getType(), loc)));
     }
 
     @Override
     public void caseIntConstant(IntConstant v) {
-        this.setResult(new SingleExprNode(Site.getNodeInstance(ConstantObj.class, String.valueOf(v.value), v.getType(), currentUnit)));
+        this.setResult(new SingleExprNode(Site.getNodeInstance(ConstantObj.class, String.valueOf(v.value), v.getType(), loc)));
     }
 
     @Override
     public void caseLongConstant(LongConstant v) {
-        this.setResult(new SingleExprNode(Site.getNodeInstance(ConstantObj.class, String.valueOf(v.value), v.getType(), currentUnit)));
+        this.setResult(new SingleExprNode(Site.getNodeInstance(ConstantObj.class, String.valueOf(v.value), v.getType(), loc)));
     }
 
     @Override
     public void caseNullConstant(NullConstant v) {
-        this.setResult(new SingleExprNode(Site.getNodeInstance(ConstantObj.class, "null", v.getType(), currentUnit)));
+        this.setResult(new SingleExprNode(Site.getNodeInstance(ConstantObj.class, "null", v.getType(), loc)));
     }
 
     @Override
     public void caseStringConstant(StringConstant v) {
-        this.setResult(new SingleExprNode(Site.getNodeInstance(ConstantObj.class, String.valueOf(v.value), v.getType(), currentUnit)));
+        this.setResult(new SingleExprNode(Site.getNodeInstance(ConstantObj.class, String.valueOf(v.value), v.getType(), loc)));
     }
 
     @Override
     public void caseClassConstant(ClassConstant v) {
-        this.setResult(new SingleExprNode(Site.getNodeInstance(ConstantObj.class, String.valueOf(v.value), v.getType(), currentUnit)));
+        this.setResult(new SingleExprNode(Site.getNodeInstance(ConstantObj.class, String.valueOf(v.value), v.getType(), loc)));
     }
 
 
@@ -110,7 +112,7 @@ public class ValueVisitor extends AbstractShimpleValueSwitch<AbstractExprNode> {
         v.getIndex().apply(this);
         Node idxNode = this.getResult().getFirstNode();
 
-        this.setResult(new SingleExprNode(Site.getNodeInstance(ArrayReference.class, baseNode, idxNode)));
+        this.setResult(new SingleExprNode(Site.getNodeInstance(ArrayLoad.class, baseNode, idxNode)));
     }
 
     @Override
@@ -144,7 +146,12 @@ public class ValueVisitor extends AbstractShimpleValueSwitch<AbstractExprNode> {
     // --------------------------------------------------------- expr visitor ----------------------------------------------
     @Override
     public void caseNewExpr(NewExpr v) {
-        setResult(new SingleExprNode(Site.getNodeInstance(NormalObj.class, v.getBaseType().getSootClass(), currentUnit)));
+        SootClass baseClass = v.getBaseType().getSootClass();
+        if (ClassUtil.isMapClass(baseClass)) {
+            setResult(new SingleExprNode(Site.getNodeInstance(MapCollectionObj.class, baseClass, loc)));
+        } else {
+            setResult(new SingleExprNode(Site.getNodeInstance(NormalObj.class, baseClass, loc)));
+        }
     }
 
     @Override
@@ -222,10 +229,18 @@ public class ValueVisitor extends AbstractShimpleValueSwitch<AbstractExprNode> {
             base = Site.getNodeInstance(ClassTypeNode.class, v.getType());
         }
 
-        this.setResult(new SingleExprNode(Site.getNodeInstance(CallNode.class, targetMethod, currentMethod, currentUnit, args, base, InvokeType.getInvokeType(v))));
+        this.setResult(new SingleExprNode(Site.getNodeInstance(CallNode.class, targetMethod, currentMethod, loc, args, base, InvokeType.getInvokeType(v))));
     }
 
-    // TODO: 处理所有expr语句
+    @Override
+    public void casePhiExpr(PhiExpr e) {
+        MultiExprNode multiExprNode = new MultiExprNode();
+        for (Value value : e.getValues()) {
+            value.apply(this);
+            multiExprNode.addNodes(getResult().getAllNodes());
+        }
+        this.setResult(multiExprNode);
+    }
 
     @Override
     public void caseAndExpr(AndExpr v) {
@@ -334,7 +349,8 @@ public class ValueVisitor extends AbstractShimpleValueSwitch<AbstractExprNode> {
 
     @Override
     public void caseNewArrayExpr(NewArrayExpr v) {
-        setNopResult();
+        Node node = Site.getNodeInstance(ArrayObj.class, v.getBaseType(), loc);
+        setResult(new SingleExprNode(node));
     }
 
     @Override

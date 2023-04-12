@@ -1,24 +1,22 @@
 package org.example.core.visitor;
 
 import org.example.core.IntraAnalyzedMethod;
+import org.example.core.Loc;
 import org.example.core.basic.Node;
 import org.example.core.basic.Site;
 import org.example.core.expr.AbstractExprNode;
 import org.example.core.basic.identity.UnifyReturn;
-import org.example.core.basic.node.VoidNode;
+import org.example.core.basic.identity.VoidNode;
 import soot.SootMethod;
-import soot.Unit;
 import soot.Value;
 import soot.VoidType;
 import soot.jimple.*;
 
 public class StmtVisitor extends AbstractStmtSwitch<Void> {
     private static final StmtVisitor instance = new StmtVisitor();
-    private static ValueVisitor valueVisitor;
-
     public IntraAnalyzedMethod analyzedMethod;
     public SootMethod currentMethod;
-    public Unit currentUnit;
+    public int order;
 
     private StmtVisitor() {
     }
@@ -35,22 +33,26 @@ public class StmtVisitor extends AbstractStmtSwitch<Void> {
 
     @Override
     public void caseInvokeStmt(InvokeStmt stmt) {
-        stmt.getInvokeExpr().apply(valueVisitor);
+        Value expr = stmt.getInvokeExpr();
+        ValueVisitor valueVisitor = ValueVisitor.getInstance(analyzedMethod, new Loc(expr, order));
+        expr.apply(valueVisitor);
+
         AbstractExprNode nodeSet = valueVisitor.getResult();
-        Node voidNode = Site.getNodeInstance(VoidNode.class, stmt);
-        analyzedMethod.addFlow(voidNode, nodeSet, stmt);
+        Node voidNode = Site.getNodeInstance(VoidNode.class);
+        analyzedMethod.addFlow(voidNode, nodeSet);
     }
 
     @Override
     public void caseReturnStmt(ReturnStmt stmt) {
         Value op = stmt.getOp();
+        ValueVisitor valueVisitor = ValueVisitor.getInstance(analyzedMethod, new Loc(op, order));
         op.apply(valueVisitor);
 
         AbstractExprNode nodeSet = valueVisitor.getResult();
         if (!(currentMethod.getReturnType() instanceof VoidType)) {
             Node node = Site.getNodeInstance(UnifyReturn.class, currentMethod, currentMethod.getReturnType());
             assert node != null;
-            analyzedMethod.addFlow(node, nodeSet, stmt);
+            analyzedMethod.addFlow(node, nodeSet);
         }
     }
 
@@ -61,12 +63,16 @@ public class StmtVisitor extends AbstractStmtSwitch<Void> {
 
     @Override
     public void caseEnterMonitorStmt(EnterMonitorStmt stmt) {
-        stmt.getOp().apply(valueVisitor);
+        Value op = stmt.getOp();
+        ValueVisitor valueVisitor = ValueVisitor.getInstance(analyzedMethod, new Loc(op, order));
+        op.apply(valueVisitor);
     }
 
     @Override
     public void caseExitMonitorStmt(ExitMonitorStmt stmt) {
-        stmt.getOp().apply(valueVisitor);
+        Value op = stmt.getOp();
+        ValueVisitor valueVisitor = ValueVisitor.getInstance(analyzedMethod, new Loc(op, order));
+        op.apply(valueVisitor);
     }
 
     @Override
@@ -78,6 +84,7 @@ public class StmtVisitor extends AbstractStmtSwitch<Void> {
     public void caseIfStmt(IfStmt stmt) {
         // just visit if condition
         Value op = stmt.getCondition();
+        ValueVisitor valueVisitor = ValueVisitor.getInstance(analyzedMethod, new Loc(op, order));
         op.apply(valueVisitor);
     }
 
@@ -93,7 +100,9 @@ public class StmtVisitor extends AbstractStmtSwitch<Void> {
 
     @Override
     public void caseRetStmt(RetStmt stmt) {
-        stmt.getStmtAddress().apply(valueVisitor);
+        Value expr = stmt.getStmtAddress();
+        ValueVisitor valueVisitor = ValueVisitor.getInstance(analyzedMethod, new Loc(expr, order));
+        expr.apply(valueVisitor);
     }
 
     @Override
@@ -109,6 +118,7 @@ public class StmtVisitor extends AbstractStmtSwitch<Void> {
     @Override
     public void caseThrowStmt(ThrowStmt stmt) {
         Value op = stmt.getOp();
+        ValueVisitor valueVisitor = ValueVisitor.getInstance(analyzedMethod, new Loc(op, order));
         op.apply(valueVisitor);
     }
 
@@ -116,23 +126,24 @@ public class StmtVisitor extends AbstractStmtSwitch<Void> {
         Value leftVal = stmt.getLeftOp();
         Value rightVal = stmt.getRightOp();
 
-        leftVal.apply(valueVisitor);
-        AbstractExprNode leftNodes = valueVisitor.getResult();
+        ValueVisitor leftVisitor = ValueVisitor.getInstance(analyzedMethod, new Loc(leftVal, order));
+        leftVal.apply(leftVisitor);
+        AbstractExprNode leftNodes = leftVisitor.getResult();
         assert leftNodes.size() == 1;
 
-        rightVal.apply(valueVisitor);
-        AbstractExprNode rightNode = valueVisitor.getResult();
+        ValueVisitor rightVisitor = ValueVisitor.getInstance(analyzedMethod, new Loc(rightVal, order));
+        rightVal.apply(rightVisitor);
+        AbstractExprNode rightNode = rightVisitor.getResult();
 
         Node node = leftNodes.getFirstNode();
-        analyzedMethod.addFlow(node, rightNode, stmt);
+        analyzedMethod.addFlow(node, rightNode);
     }
 
 
-    public static StmtVisitor getInstance(IntraAnalyzedMethod analyzedMethod, Unit unit) {
+    public static StmtVisitor getInstance(IntraAnalyzedMethod analyzedMethod, int order) {
         instance.analyzedMethod = analyzedMethod;
+        instance.order = order;
         instance.currentMethod = analyzedMethod.getMethodRef();
-        instance.currentUnit = unit;
-        valueVisitor = ValueVisitor.getInstance(analyzedMethod, unit);
         return instance;
     }
 }

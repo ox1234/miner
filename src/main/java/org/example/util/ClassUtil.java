@@ -32,4 +32,25 @@ public class ClassUtil {
         }
     }
 
+    public static boolean isMapClass(SootClass testClass) {
+        return isTargetClassSubClass(testClass, "java.util.Map");
+    }
+
+
+    public static boolean isTargetClassSubClass(SootClass testClass, SootClass superClass) {
+        Hierarchy hierarchy = Scene.v().getActiveHierarchy();
+        if (superClass.isInterface()) {
+            return hierarchy.getImplementersOf(superClass).contains(testClass);
+        } else {
+            return hierarchy.getSubclassesOfIncluding(superClass).contains(testClass);
+        }
+    }
+
+    public static boolean isTargetClassSubClass(SootClass testClass, String superClassName) {
+        SootClass superClass = Scene.v().loadClassAndSupport(superClassName);
+        if (superClass != null) {
+            return isTargetClassSubClass(testClass, superClass);
+        }
+        return false;
+    }
 }

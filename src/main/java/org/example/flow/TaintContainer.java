@@ -57,13 +57,13 @@ public class TaintContainer {
         List<List<String>> table = new ArrayList<>();
         table.add(Arrays.asList("id", "variable", "node type", "ref stmt"));
         for (Node node : taintNodes) {
-            String stmt = null;
-            if (node.getRefStmt() != null) {
-                stmt = node.getRefStmt().toString();
-            } else {
-                stmt = "null";
-            }
-            table.add(Arrays.asList(node.getID(), node.toString(), node.getClass().getSimpleName(), stmt));
+//            String stmt = null;
+//            if (node.getLoc() != null) {
+//                stmt = node.getLoc().toString();
+//            } else {
+//                stmt = "null";
+//            }
+//            table.add(Arrays.asList(node.getID(), node.toString(), node.getClass().getSimpleName(), stmt));
         }
 
         if (Global.debug) {

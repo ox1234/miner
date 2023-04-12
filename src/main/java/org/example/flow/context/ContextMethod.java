@@ -2,6 +2,7 @@ package org.example.flow.context;
 
 import org.example.config.Global;
 import org.example.core.IntraAnalyzedMethod;
+import org.example.core.Loc;
 import org.example.core.MyBatisIntraAnalyzedMethod;
 import org.example.core.basic.Node;
 import org.example.core.basic.Site;
@@ -20,7 +21,7 @@ import java.util.*;
 
 public abstract class ContextMethod {
     private SootMethod sootMethod;
-    private Unit callSite;
+    private Loc callSite;
     private CallNode callNode;
     private Set<Node> taintNodes;
     private boolean retTaint;
@@ -28,7 +29,7 @@ public abstract class ContextMethod {
     private PointToContainer pointToContainer;
     private IntraAnalyzedMethod intraAnalyzedMethod;
 
-    public ContextMethod(SootMethod sootMethod, CallNode callNode, Unit callSite) {
+    public ContextMethod(SootMethod sootMethod, CallNode callNode, Loc callSite) {
         this.sootMethod = sootMethod;
         this.callSite = callSite;
         this.callNode = callNode;
@@ -50,12 +51,8 @@ public abstract class ContextMethod {
     public void genFakeParamObj() {
         for (int i = 0; i < intraAnalyzedMethod.getParameterNodes().size(); i++) {
             Parameter parameter = intraAnalyzedMethod.getParameterNodes().get(i);
-            Type paramType = parameter.getSootType();
-            if (paramType instanceof RefType) {
-                RefType refType = (RefType) paramType;
-                Obj refPhantomObj = (Obj) Site.getNodeInstance(PhantomObj.class, refType.getSootClass(), parameter.getRefStmt());
-                getPointToContainer().addLocalPointRelation(parameter, Collections.singleton(refPhantomObj));
-            }
+            Obj refPhantomObj = (Obj) Site.getNodeInstance(PhantomObj.class, parameter.getType(), parameter);
+            getPointToContainer().addLocalPointRelation(parameter, Collections.singleton(refPhantomObj));
         }
     }
 

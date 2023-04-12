@@ -1,4 +1,4 @@
-package org.example.core.basic.obj;
+package org.example.flow.basic;
 
 import org.example.core.basic.Node;
 import org.example.core.basic.field.InstanceField;

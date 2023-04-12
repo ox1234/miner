@@ -1,5 +1,6 @@
 package org.example.flow;
 
+import org.example.core.Loc;
 import org.example.core.basic.Site;
 import org.example.flow.context.ContextMethod;
 import org.example.flow.context.InstanceContextMethod;
@@ -52,12 +53,9 @@ public class CallStack {
             if (node instanceof LocalVariable) {
                 LocalVariable localVariable = (LocalVariable) node;
                 Type localType = localVariable.getSootType();
-                if (localType instanceof RefType) {
-                    SootClass refClass = ((RefType) localType).getSootClass();
-                    Node refObj = Site.getNodeInstance(PhantomObj.class, refClass, localVariable.getRefStmt());
-                    Obj obj1 = (Obj) refObj;
-                    obj = Collections.singleton(obj1);
-                }
+                Node refObj = Site.getNodeInstance(PhantomObj.class, localType, localVariable);
+                Obj obj1 = (Obj) refObj;
+                obj = Collections.singleton(obj1);
             }
         }
         return obj;

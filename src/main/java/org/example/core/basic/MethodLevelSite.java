@@ -1,6 +1,7 @@
 package org.example.core.basic;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.example.core.Loc;
 
 public abstract class MethodLevelSite extends Site {
     private String name;

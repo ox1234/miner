@@ -3,6 +3,11 @@ package org.example.flow;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.example.core.IntraAnalyzedMethod;
+import org.example.core.Loc;
+import org.example.core.RouteIntraAnalyzedMethod;
+import org.example.core.basic.Node;
+import org.example.core.basic.Site;
+import org.example.core.basic.identity.ThisVariable;
 import org.example.core.basic.obj.Obj;
 import org.example.core.basic.obj.PhantomObj;
 import org.example.flow.context.ContextMethod;
@@ -13,10 +18,7 @@ import org.example.flow.handler.impl.PointFlowHandler;
 import org.example.flow.handler.impl.SanitizedTaintFlowHandler;
 import org.example.flow.handler.impl.TaintFlowHandler;
 import org.example.util.MethodUtil;
-import soot.Hierarchy;
-import soot.Scene;
-import soot.SootClass;
-import soot.SootMethod;
+import soot.*;
 
 import java.util.*;
 
@@ -29,6 +31,10 @@ public class FlowEngine {
     private CtxCG ctxCG;
     private CallStack callStack;
     private Hierarchy hierarchy;
+    private static Map<Set<String>, Boolean> routeIsVuln = new HashMap<>();
+    private static Map<Set<String>, Boolean> routeIsNotVuln = new HashMap<>();
+
+    private Set<String> currentRoute;
 
     public FlowEngine(Map<String, IntraAnalyzedMethod> analyzedMethodMap) {
         intraAnalyzedMethodMap = analyzedMethodMap;
@@ -66,8 +72,9 @@ public class FlowEngine {
         if (entryPoint.isStatic()) {
             entry = new StaticContextMethod(entryClass, entryPoint, null, null);
         } else {
-            // entry point need doAnalysis init and clinit method first
-            Obj fakeObj = new PhantomObj(entryClass, entryPoint.getActiveBody().getThisUnit());
+            Local thisLocal = entryPoint.getActiveBody().getThisLocal();
+            Node thisNode = Site.getNodeInstance(ThisVariable.class, entryPoint, thisLocal.getType());
+            Obj fakeObj = (Obj) Site.getNodeInstance(PhantomObj.class, entryClass.getType(), thisNode);
             SootMethod init = MethodUtil.getRefInitMethod(entryClass, false);
             if (init != null) {
                 ContextMethod ctxInit = new InstanceContextMethod(fakeObj, init, null, null);
@@ -79,6 +86,13 @@ public class FlowEngine {
 
         // generate input param object
         entry.genFakeParamObj();
+
+        // inject the route
+        if (entry.getIntraAnalyzedMethod() instanceof RouteIntraAnalyzedMethod) {
+            RouteIntraAnalyzedMethod routeIntraAnalyzedMethod = (RouteIntraAnalyzedMethod) entry.getIntraAnalyzedMethod();
+            routeIsNotVuln.put(routeIntraAnalyzedMethod.getRoutes(), false);
+            currentRoute = routeIntraAnalyzedMethod.getRoutes();
+        }
 
         // do point analysis, and build call graph
         logger.info(String.format("do point analysis and build call graph from %s entry", entryPoint.getSignature()));
@@ -113,7 +127,12 @@ public class FlowEngine {
     }
 
     public Hierarchy getHierarchy() {
-        return hierarchy;
+        return Scene.v().getActiveHierarchy();
+    }
+
+    public void setRouteIsTaint() {
+        routeIsNotVuln.remove(currentRoute);
+        routeIsVuln.put(currentRoute, true);
     }
 
     public static IntraAnalyzedMethod getAnalysedMethod(SootMethod sootMethod) {

@@ -1,14 +1,20 @@
 package org.example.flow.handler.impl;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.example.constant.InvokeType;
 import org.example.core.basic.Node;
+import org.example.core.basic.Site;
+import org.example.core.basic.field.ArrayLoad;
 import org.example.core.basic.field.InstanceField;
+import org.example.core.basic.field.StaticField;
 import org.example.core.basic.identity.LocalVariable;
 import org.example.core.basic.identity.Parameter;
 import org.example.core.basic.identity.UnifyReturn;
 import org.example.core.basic.node.CallNode;
 import org.example.core.basic.obj.Obj;
-import org.example.core.basic.obj.ObjField;
+import org.example.flow.basic.ArrayField;
+import org.example.flow.basic.ObjField;
 import org.example.core.basic.obj.PhantomObj;
 import org.example.core.expr.*;
 import org.example.flow.FlowEngine;
@@ -20,10 +26,12 @@ import org.example.flow.handler.AbstractFlowHandler;
 import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
+import soot.VoidType;
 
 import java.util.*;
 
 public class PointFlowHandler extends AbstractFlowHandler<Set<Obj>> {
+    private final Logger logger = LogManager.getLogger(PointFlowHandler.class);
 
     public PointFlowHandler(FlowEngine flowEngine) {
         super(flowEngine);
@@ -55,7 +63,12 @@ public class PointFlowHandler extends AbstractFlowHandler<Set<Obj>> {
         if (node instanceof CallNode) {
             Set<ContextMethod> tgtContextMethods = handleCallNode((CallNode) node);
             for (ContextMethod contextMethod : tgtContextMethods) {
-                resObj.addAll(contextMethod.getPointToContainer().getReturnObjs());
+                if (contextMethod.getSootMethod().getDeclaringClass().isApplicationClass()) {
+                    resObj.addAll(contextMethod.getPointToContainer().getReturnObjs());
+                } else if (!(contextMethod instanceof SpecialContextMethod) && !contextMethod.getSootMethod().getReturnType().equals(VoidType.v())) {
+                    Node objNode = Site.getNodeInstance(PhantomObj.class, contextMethod.getSootMethod().getReturnType(), ((CallNode) node).getRetVar());
+                    resObj.add((Obj) objNode);
+                }
             }
         } else {
             resObj.addAll(getNodeRefObj(node));
@@ -79,6 +92,19 @@ public class PointFlowHandler extends AbstractFlowHandler<Set<Obj>> {
             getPointContainer().addPointRelation(to, from);
         } else if (to instanceof UnifyReturn) {
             getPointContainer().addPointRelation(to, from);
+        } else if (to instanceof StaticField) {
+            getPointContainer().addPointRelation(to, from);
+        } else if (to instanceof ArrayLoad) {
+            ArrayLoad arrLoad = (ArrayLoad) to;
+            Set<Obj> baseObjs = getNodeRefObj(arrLoad.getBaseNode());
+            Set<Obj> idxObjs = getNodeRefObj(arrLoad.getIdxNode());
+            for (Node obj : from) {
+                for (Obj baseObj : baseObjs) {
+                    for (Obj idxObj : idxObjs) {
+                        baseObj.putArrayField(arrLoad, idxObj, obj);
+                    }
+                }
+            }
         }
     }
 
@@ -127,12 +153,36 @@ public class PointFlowHandler extends AbstractFlowHandler<Set<Obj>> {
             Set<Obj> refObjs = new LinkedHashSet<>();
             for (Obj baseObj : baseObjs) {
                 ObjField refField = baseObj.getInstanceField(field);
-                Node val = refField.getValueNode();
-                refObjs.addAll(getNodeRefObj(val));
+                if (refField != null) {
+                    Node val = refField.getValueNode();
+                    refObjs.addAll(getNodeRefObj(val));
+                } else {
+                    logger.debug(String.format("%s class %s field not initialized, will skip tracing", baseObj.getType(), field.getName()));
+                }
             }
             objs.addAll(refObjs);
         } else if (rightNode instanceof Parameter) {
             objs.addAll(getPointContainer().getPointRefObj(rightNode));
+        } else if (rightNode instanceof StaticField) {
+            objs.addAll(getPointContainer().getPointRefObj(rightNode));
+        } else if (rightNode instanceof ArrayLoad) {
+            ArrayLoad arrLoad = (ArrayLoad) rightNode;
+            Set<Obj> baseObjs = getNodeRefObj(arrLoad.getBaseNode());
+            Set<Obj> idxObjs = getNodeRefObj(arrLoad.getIdxNode());
+
+            Set<Obj> refObjs = new LinkedHashSet<>();
+            for (Obj baseObj : baseObjs) {
+                for(Obj idxObj : idxObjs){
+                    ArrayField refField = baseObj.getArrayLoad(idxObj);
+                    if (refField != null) {
+                        Node val = refField.getValueNode();
+                        refObjs.addAll(getNodeRefObj(val));
+                    } else {
+                        logger.debug(String.format("%s array %s index is not initialized, will skip tracing", arrLoad.getBaseNode(), arrLoad.getIdxNode()));
+                    }
+                }
+            }
+            objs.addAll(refObjs);
         }
         return objs;
     }
