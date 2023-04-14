@@ -21,6 +21,7 @@ import org.example.util.MethodUtil;
 import soot.*;
 
 import java.util.*;
+import java.util.function.BiConsumer;
 
 public class FlowEngine {
     private final Logger logger = LogManager.getLogger(FlowEngine.class);
@@ -47,7 +48,6 @@ public class FlowEngine {
         registerFlowHandler(FlowHandlerEnum.POINT_FLOW_HANDLER, new PointFlowHandler(this));
         registerFlowHandler(FlowHandlerEnum.TAINT_FLOW_HANDLER, new SanitizedTaintFlowHandler(this));
     }
-
 
     public void registerFlowHandler(FlowHandlerEnum flowType, FlowHandler<?> flowHandler) {
         flowHandlers.put(flowType, flowHandler);
@@ -102,7 +102,7 @@ public class FlowEngine {
         logger.info(String.format("do taint analysis from %s entry", entryPoint.getSignature()));
         TaintFlowHandler taintFlowHandler = (TaintFlowHandler) getFlowHandler(FlowHandlerEnum.TAINT_FLOW_HANDLER);
 
-        taintFlowHandler.taintMethodParam(entry);
+        entry.taintAllParams();
         doAnalysis(entry, taintFlowHandler);
         logger.info(String.format("flow analysis is finished from %s entry", entryPoint.getSignature()));
     }
@@ -148,5 +148,9 @@ public class FlowEngine {
             }
         }
         return intraAnalyzedMethod;
+    }
+
+    public static void printRouteTable() {
+        routeIsNotVuln.forEach((strings, aBoolean) -> System.out.printf("%s\t%b%n", String.join(",", strings), aBoolean));
     }
 }

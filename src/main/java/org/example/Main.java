@@ -33,8 +33,8 @@ public class Main {
         // 配置Soot运行环境，分析对应jar包的所有类
         SootSetup setup = new SootSetup(new FatJarHandler());
 //        setup.initialize("/Users/bytedance/workplace/java/demo1/target/demo1-0.0.1-SNAPSHOT.jar");
-        setup.initialize("/Users/bytedance/workplace/java/java-sec-code/target/java-sec-code-1.0.0.jar");
-//        setup.initialize("/Users/bytedance/workplace/java/java-sec-code-origin/target/java-sec-code-1.0.0.jar");
+//        setup.initialize("/Users/bytedance/workplace/java/java-sec-code/target/java-sec-code-1.0.0.jar");
+        setup.initialize("/Users/bytedance/workplace/java/java-sec-code-origin/target/java-sec-code-1.0.0.jar");
 
         // initialize analyze engine and do analysis
         Hierarchy hierarchy = setup.getHierarchy();
@@ -56,6 +56,7 @@ public class Main {
         FlowEngine flowEngine = new FlowEngine(analyzedMethodSet);
         Scene.v().getEntryPoints().forEach(flowEngine::doAnalysis);
 
+        FlowEngine.printRouteTable();
         logger.info("java code graph construct successfully");
     }
 

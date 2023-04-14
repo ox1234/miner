@@ -13,16 +13,18 @@ import org.example.core.basic.identity.Parameter;
 import org.example.core.basic.identity.UnifyReturn;
 import org.example.core.basic.node.CallNode;
 import org.example.core.basic.obj.Obj;
-import org.example.flow.basic.ArrayField;
-import org.example.flow.basic.ObjField;
 import org.example.core.basic.obj.PhantomObj;
-import org.example.core.expr.*;
+import org.example.core.expr.EmptyExprNode;
+import org.example.core.expr.MultiExprNode;
+import org.example.core.expr.OpExprNode;
+import org.example.core.expr.SingleExprNode;
 import org.example.flow.FlowEngine;
 import org.example.flow.context.ContextMethod;
 import org.example.flow.context.InstanceContextMethod;
 import org.example.flow.context.SpecialContextMethod;
 import org.example.flow.context.StaticContextMethod;
 import org.example.flow.handler.AbstractFlowHandler;
+import org.example.util.NodeUtil;
 import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
@@ -51,7 +53,7 @@ public class PointFlowHandler extends AbstractFlowHandler<Set<Obj>> {
     public Set<Obj> handleMultiExprNode(MultiExprNode from) {
         Set<Obj> refObjs = new LinkedHashSet<>();
         for (Node node : from.getAllNodes()) {
-            refObjs.addAll(getNodeRefObj(node));
+            refObjs.addAll(callStack.getRefObjs(node));
         }
         return refObjs;
     }
@@ -71,7 +73,7 @@ public class PointFlowHandler extends AbstractFlowHandler<Set<Obj>> {
                 }
             }
         } else {
-            resObj.addAll(getNodeRefObj(node));
+            resObj.addAll(callStack.getRefObjs(node));
         }
         return resObj;
     }
@@ -82,12 +84,8 @@ public class PointFlowHandler extends AbstractFlowHandler<Set<Obj>> {
             getPointContainer().addPointRelation(to, from);
         } else if (to instanceof InstanceField) {
             InstanceField field = (InstanceField) to;
-            Set<Obj> baseObjs = callStack.getBaseRefObj(field.getBase());
-            for (Node obj : from) {
-                for (Obj baseObj : baseObjs) {
-                    baseObj.putInstanceField(field, obj);
-                }
-            }
+            Set<Obj> baseObjs = callStack.getRefObjs(field.getBase());
+            handleFieldStore(baseObjs, Collections.singleton(field), from);
         } else if (to instanceof Parameter) {
             getPointContainer().addPointRelation(to, from);
         } else if (to instanceof UnifyReturn) {
@@ -96,14 +94,16 @@ public class PointFlowHandler extends AbstractFlowHandler<Set<Obj>> {
             getPointContainer().addPointRelation(to, from);
         } else if (to instanceof ArrayLoad) {
             ArrayLoad arrLoad = (ArrayLoad) to;
-            Set<Obj> baseObjs = getNodeRefObj(arrLoad.getBaseNode());
-            Set<Obj> idxObjs = getNodeRefObj(arrLoad.getIdxNode());
-            for (Node obj : from) {
-                for (Obj baseObj : baseObjs) {
-                    for (Obj idxObj : idxObjs) {
-                        baseObj.putArrayField(arrLoad, idxObj, obj);
-                    }
-                }
+            Set<Obj> baseObjs = callStack.getRefObjs(arrLoad.getBaseNode());
+            Set<Obj> idxObjs = callStack.getRefObjs(arrLoad.getIdxNode());
+            handleFieldStore(baseObjs, NodeUtil.convertToNodeSet(idxObjs), from);
+        }
+    }
+
+    public void handleFieldStore(Set<Obj> baseOBjs, Set<Node> fieldNodes, Set<Obj> storeObjs) {
+        for (Obj baseObj : baseOBjs) {
+            for (Node fieldNode : fieldNodes) {
+                baseObj.putField(fieldNode, storeObjs);
             }
         }
     }
@@ -137,54 +137,8 @@ public class PointFlowHandler extends AbstractFlowHandler<Set<Obj>> {
         for (int i = 0; i < callNode.getArgs().size(); i++) {
             Node argNode = callNode.getArgs().get(i);
             Node paramNode = tgtContextMethod.getIntraAnalyzedMethod().getParameterNodes().get(i);
-            tgtContextMethod.getPointToContainer().addLocalPointRelation(paramNode, getNodeRefObj(argNode));
+            tgtContextMethod.getPointToContainer().addLocalPointRelation(paramNode, callStack.getRefObjs(argNode));
         }
-    }
-
-    private Set<Obj> getNodeRefObj(Node rightNode) {
-        Set<Obj> objs = new LinkedHashSet<>();
-        if (rightNode instanceof Obj) {
-            objs.add((Obj) rightNode);
-        } else if (rightNode instanceof LocalVariable) {
-            objs.addAll(getPointContainer().getPointRefObj(rightNode));
-        } else if (rightNode instanceof InstanceField) {
-            InstanceField field = (InstanceField) rightNode;
-            Set<Obj> baseObjs = callStack.getBaseRefObj(field.getBase());
-            Set<Obj> refObjs = new LinkedHashSet<>();
-            for (Obj baseObj : baseObjs) {
-                ObjField refField = baseObj.getInstanceField(field);
-                if (refField != null) {
-                    Node val = refField.getValueNode();
-                    refObjs.addAll(getNodeRefObj(val));
-                } else {
-                    logger.debug(String.format("%s class %s field not initialized, will skip tracing", baseObj.getType(), field.getName()));
-                }
-            }
-            objs.addAll(refObjs);
-        } else if (rightNode instanceof Parameter) {
-            objs.addAll(getPointContainer().getPointRefObj(rightNode));
-        } else if (rightNode instanceof StaticField) {
-            objs.addAll(getPointContainer().getPointRefObj(rightNode));
-        } else if (rightNode instanceof ArrayLoad) {
-            ArrayLoad arrLoad = (ArrayLoad) rightNode;
-            Set<Obj> baseObjs = getNodeRefObj(arrLoad.getBaseNode());
-            Set<Obj> idxObjs = getNodeRefObj(arrLoad.getIdxNode());
-
-            Set<Obj> refObjs = new LinkedHashSet<>();
-            for (Obj baseObj : baseObjs) {
-                for(Obj idxObj : idxObjs){
-                    ArrayField refField = baseObj.getArrayLoad(idxObj);
-                    if (refField != null) {
-                        Node val = refField.getValueNode();
-                        refObjs.addAll(getNodeRefObj(val));
-                    } else {
-                        logger.debug(String.format("%s array %s index is not initialized, will skip tracing", arrLoad.getBaseNode(), arrLoad.getIdxNode()));
-                    }
-                }
-            }
-            objs.addAll(refObjs);
-        }
-        return objs;
     }
 
     protected Set<ContextMethod> getTargetContextMethod(CallNode callNode, SootMethod tgtMethod) {
@@ -194,7 +148,7 @@ public class PointFlowHandler extends AbstractFlowHandler<Set<Obj>> {
             // if this invokes is a instance invoke, will get obj
             Node baseNode = callNode.getBase();
             // if base node is this, will get last call stack obj
-            Set<Obj> objs = callStack.getBaseRefObj(baseNode);
+            Set<Obj> objs = callStack.getRefObjs(baseNode);
             for (Obj obj : objs) {
                 callNode.setThisRef(obj);
                 ContextMethod tgtContextMethod = new InstanceContextMethod(obj, tgtMethod, callNode, callNode.getCallSite());
@@ -204,7 +158,7 @@ public class PointFlowHandler extends AbstractFlowHandler<Set<Obj>> {
             ContextMethod tgtContextMethod = new StaticContextMethod(tgtMethod.getDeclaringClass(), tgtMethod, callNode, callNode.getCallSite());
             tgtContextMethods.add(tgtContextMethod);
         } else if (callNode.getInvokeType() == InvokeType.SPECIAL_INVOKE) {
-            Set<Obj> objs = callStack.getBaseRefObj(callNode.getBase());
+            Set<Obj> objs = callStack.getRefObjs(callNode.getBase());
             for (Obj obj : objs) {
                 callNode.setThisRef(obj);
                 ContextMethod tgtContextMethod = new SpecialContextMethod(obj, tgtMethod, callNode, callNode.getCallSite());
@@ -220,7 +174,7 @@ public class PointFlowHandler extends AbstractFlowHandler<Set<Obj>> {
         String methodSubSig = callNode.getSubSignature();
         if (callNode.getInvokeType() == InvokeType.INSTANCE_INVOKE) {
             LocalVariable base = (LocalVariable) callNode.getBase();
-            Set<Obj> objs = callStack.getBaseRefObj(base);
+            Set<Obj> objs = callStack.getRefObjs(base);
             // if obj is a phantom object, will reduce to CHA algorithm
             for (Obj obj : objs) {
                 if (obj instanceof PhantomObj) {

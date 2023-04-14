@@ -5,6 +5,7 @@ import org.example.constant.InvokeType;
 import org.example.constant.Operation;
 import org.example.core.IntraAnalyzedMethod;
 import org.example.core.Loc;
+import org.example.core.basic.node.MapPutCallNode;
 import org.example.core.basic.obj.ArrayObj;
 import org.example.core.basic.obj.MapCollectionObj;
 import org.example.core.expr.*;
@@ -19,6 +20,7 @@ import org.example.core.basic.identity.*;
 import org.example.core.basic.obj.ConstantObj;
 import org.example.core.basic.obj.NormalObj;
 import org.example.util.ClassUtil;
+import org.example.util.MethodUtil;
 import soot.*;
 import soot.jimple.*;
 import soot.shimple.AbstractShimpleValueSwitch;
@@ -229,7 +231,11 @@ public class ValueVisitor extends AbstractShimpleValueSwitch<AbstractExprNode> {
             base = Site.getNodeInstance(ClassTypeNode.class, v.getType());
         }
 
-        this.setResult(new SingleExprNode(Site.getNodeInstance(CallNode.class, targetMethod, currentMethod, loc, args, base, InvokeType.getInvokeType(v))));
+        if (MethodUtil.isMapPutMethod(targetMethod)) {
+            this.setResult(new SingleExprNode(Site.getNodeInstance(MapPutCallNode.class, targetMethod, currentMethod, loc, args, base, InvokeType.getInvokeType(v))));
+        } else {
+            this.setResult(new SingleExprNode(Site.getNodeInstance(CallNode.class, targetMethod, currentMethod, loc, args, base, InvokeType.getInvokeType(v))));
+        }
     }
 
     @Override

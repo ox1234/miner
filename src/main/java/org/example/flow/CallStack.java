@@ -1,21 +1,22 @@
 package org.example.flow;
 
-import org.example.core.Loc;
-import org.example.core.basic.Site;
-import org.example.flow.context.ContextMethod;
-import org.example.flow.context.InstanceContextMethod;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.example.core.basic.Node;
+import org.example.core.basic.Site;
 import org.example.core.basic.identity.LocalVariable;
 import org.example.core.basic.identity.ThisVariable;
 import org.example.core.basic.obj.Obj;
 import org.example.core.basic.obj.PhantomObj;
-import soot.RefType;
-import soot.SootClass;
+import org.example.flow.context.ContextMethod;
+import org.example.flow.context.InstanceContextMethod;
 import soot.Type;
 
 import java.util.*;
 
 public class CallStack {
+    private final Logger logger = LogManager.getLogger(CallStack.class);
+
     private Stack<ContextMethod> callStack;
 
     public CallStack() {
@@ -38,16 +39,17 @@ public class CallStack {
         return callStack.contains(call);
     }
 
-    public Set<Obj> getBaseRefObj(Node node) {
-        Set<Obj> obj = new LinkedHashSet<>();
+    public Set<Obj> getRefObjs(Node node) {
+        Set<Obj> obj;
         // rebase this variable
         if (node instanceof ThisVariable) {
             obj = Collections.singleton(getLastStackObj());
         }
-        // get point to relation
-        if (obj.isEmpty()) {
-            obj = callStack.peek().getPointToContainer().getPointRefObj(node);
-        }
+
+        // get node from point to container
+        PointToContainer pointToContainer = callStack.peek().getPointToContainer();
+        obj = pointToContainer.getNodeRefObj(node);
+
         // can't find an obj, will make a phantom obj
         if (obj.isEmpty()) {
             if (node instanceof LocalVariable) {

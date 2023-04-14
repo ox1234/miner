@@ -105,6 +105,10 @@ public class SootSetup {
     private void setupEntryPoints() {
         List<SootMethod> entryMethods = new ArrayList<>();
         getRouteMethods(Scene.v().getApplicationClasses()).forEach((sootMethod, routes) -> {
+            // TODO: test
+//            if (!sootMethod.getDeclaringClass().getShortName().equals("SSRF") || !sootMethod.getName().equals("httpURLConnectionVuln")) {
+//                return;
+//            }
             sootMethod.addTag(new RouteTag(routes));
             entryMethods.add(sootMethod);
         });

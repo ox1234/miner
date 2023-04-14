@@ -2,9 +2,9 @@ package org.example.flow;
 
 import org.example.config.Global;
 import org.example.core.basic.Node;
-import org.example.core.basic.field.StaticField;
 import org.example.core.basic.identity.Parameter;
 import org.example.core.basic.identity.UnifyReturn;
+import org.example.core.basic.obj.Obj;
 import org.example.util.PrintUtil;
 
 import java.util.*;
@@ -12,13 +12,16 @@ import java.util.*;
 public class TaintContainer {
     private boolean isRetTaint;
     private boolean isParamTaint;
-    private Map<Integer, Node> paramTaintMap = new HashMap<>();
-    private Set<Node> taintNodes = new LinkedHashSet<>();
-    private static Set<Node> globalTaintNodes = new LinkedHashSet<>();
+    private Map<Integer, Boolean> paramTaintMap = new HashMap<>();
+    private Set<Obj> taintObjs = new LinkedHashSet<>();
+    private static Set<Obj> globalTaintObjs = new LinkedHashSet<>();
+    private Set<Node> taintNodes = new HashSet<>();
 
-    public void addTaint(Node node) {
+    public void addTaint(Node node, Set<Obj> objs) {
+        taintNodes.add(node);
+
         if (node instanceof Parameter) {
-            paramTaintMap.put(((Parameter) node).getIdx(), node);
+            paramTaintMap.put(((Parameter) node).getIdx(), true);
             isParamTaint = true;
         }
 
@@ -27,9 +30,9 @@ public class TaintContainer {
         }
 
         if (node instanceof Global) {
-            globalTaintNodes.add(node);
+            globalTaintObjs.addAll(objs);
         } else {
-            taintNodes.add(node);
+            taintObjs.addAll(objs);
         }
     }
 
@@ -41,22 +44,23 @@ public class TaintContainer {
         return isParamTaint;
     }
 
-    public boolean isRetTaint() {
-        return isRetTaint;
+    public boolean containsTaint(Obj obj) {
+        return taintObjs.contains(obj) || globalTaintObjs.contains(obj);
     }
 
-    public boolean containsTaint(Node node) {
-        return taintNodes.contains(node) || globalTaintNodes.contains(node);
-    }
-
-    public static void addGlobalTaint(Node node) {
-        globalTaintNodes.add(node);
+    public boolean containsTaint(Set<Obj> objs) {
+        for (Obj obj : objs) {
+            if (containsTaint(obj)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void printTaintTable(String methodSig, List<String> callStackArr) {
         List<List<String>> table = new ArrayList<>();
         table.add(Arrays.asList("id", "variable", "node type", "ref stmt"));
-        for (Node node : taintNodes) {
+        for (Node node : taintObjs) {
 //            String stmt = null;
 //            if (node.getLoc() != null) {
 //                stmt = node.getLoc().toString();
