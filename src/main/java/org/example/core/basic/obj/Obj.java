@@ -4,18 +4,12 @@ import org.example.core.Loc;
 import org.example.core.basic.Node;
 import org.example.core.basic.TypeNode;
 import org.example.core.basic.UnitLevelSite;
-import org.example.core.basic.field.ArrayLoad;
-import org.example.core.basic.field.InstanceField;
-import org.example.flow.basic.ArrayField;
-import org.example.flow.basic.ObjField;
 import soot.Type;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Collections;
+import java.util.Set;
 
 abstract public class Obj extends UnitLevelSite implements TypeNode {
-    private Map<String, ObjField> fieldMap = new HashMap<>();
-    private Map<Obj, ArrayField> arrMap = new HashMap<>();
     protected Type type;
 
     protected Obj(Type type, Loc loc) {
@@ -34,38 +28,10 @@ abstract public class Obj extends UnitLevelSite implements TypeNode {
         return type;
     }
 
-    public void putInstanceField(InstanceField field, Node value) {
-        fieldMap.put(field.getName(), new ObjField(field, value));
+    public void putField(Node fieldNode, Set<Obj> objNode) {
     }
 
-    public void putArrayField(ArrayLoad arrLoad, Obj idx, Node value) {
-        arrMap.put(idx, new ArrayField(arrLoad, value));
-    }
-
-    public ObjField getInstanceField(InstanceField field) {
-        return fieldMap.get(field.getName());
-    }
-
-
-    public ArrayField getArrayLoad(Obj idx) {
-        return arrMap.get(idx);
-    }
-
-    public boolean isTaintField(InstanceField field) {
-        return isTaintField(field.getName());
-    }
-
-    public void setTaintField(InstanceField field) {
-        ObjField objField = getInstanceField(field);
-        if (objField == null) {
-            objField = new ObjField(field);
-            fieldMap.put(field.getName(), objField);
-        }
-        objField.setTaint(true);
-    }
-
-    public boolean isTaintField(String fieldName) {
-        ObjField objField = fieldMap.get(fieldName);
-        return objField != null && objField.isTaint();
+    public Set<Obj> getField(Node fieldNode) {
+        return Collections.emptySet();
     }
 }

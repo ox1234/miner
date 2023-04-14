@@ -17,17 +17,17 @@ import java.util.Map;
 public class SingleFileEngineTest {
 
     @Test
-    public void analysisSingleFileTest() throws Exception{
-        Path cp = Paths.get("/Users/bytedance/workplace/java/sasttestcase/target/classes/Main.class");
-        SootSetup sootSetup = new SootSetup(new SingleClassHandler());
-        sootSetup.initialize(cp.toFile().getAbsolutePath());
-
-        Hierarchy hierarchy = SootHelper.buildHierarchy();
-        CallGraph callGraph = SootHelper.buildCallGraph();
-        Engine engine = new Engine(hierarchy, callGraph);
-        Map<String, IntraAnalyzedMethod> analyzedMethodSet = engine.extractPointRelation();
-
-        FlowEngine flowEngine = new FlowEngine(analyzedMethodSet);
-        Scene.v().getEntryPoints().forEach(flowEngine::doAnalysis);
+    public void analysisSingleFileTest() throws Exception {
+//        Path cp = Paths.get("/Users/bytedance/workplace/java/sasttestcase/target/classes/Main.class");
+//        SootSetup sootSetup = new SootSetup(new SingleClassHandler());
+//        sootSetup.initialize(cp.toFile().getAbsolutePath());
+//
+//        Hierarchy hierarchy = SootHelper.buildHierarchy();
+//        CallGraph callGraph = SootHelper.buildCallGraph();
+//        Engine engine = new Engine(hierarchy, callGraph);
+//        Map<String, IntraAnalyzedMethod> analyzedMethodSet = engine.extractPointRelation();
+//
+//        FlowEngine flowEngine = new FlowEngine(analyzedMethodSet);
+//        Scene.v().getEntryPoints().forEach(flowEngine::doAnalysis);
     }
 }

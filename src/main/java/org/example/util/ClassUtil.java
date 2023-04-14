@@ -5,6 +5,9 @@ import soot.Hierarchy;
 import soot.Scene;
 import soot.SootClass;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class ClassUtil {
     public static SourceType getClassSourceType(SootClass sootClass) {
         if (sootClass.isApplicationClass()) {
@@ -39,6 +42,10 @@ public class ClassUtil {
 
     public static boolean isTargetClassSubClass(SootClass testClass, SootClass superClass) {
         Hierarchy hierarchy = Scene.v().getActiveHierarchy();
+        if (testClass == superClass) {
+            return true;
+        }
+
         if (superClass.isInterface()) {
             return hierarchy.getImplementersOf(superClass).contains(testClass);
         } else {
@@ -52,5 +59,18 @@ public class ClassUtil {
             return isTargetClassSubClass(testClass, superClass);
         }
         return false;
+    }
+
+    public static Set<SootClass> getAllSuperClasses(SootClass sootClass) {
+        Set<SootClass> allSuperClasses = new HashSet<>();
+        for (SootClass inter : sootClass.getInterfaces()) {
+            allSuperClasses.add(inter);
+            allSuperClasses.addAll(getAllSuperClasses(inter));
+        }
+        if (sootClass.hasSuperclass()) {
+            allSuperClasses.add(sootClass.getSuperclass());
+            allSuperClasses.addAll(getAllSuperClasses(sootClass.getSuperclass()));
+        }
+        return allSuperClasses;
     }
 }

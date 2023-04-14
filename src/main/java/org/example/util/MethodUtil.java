@@ -8,6 +8,10 @@ import soot.VoidType;
 import soot.tagkit.AnnotationTag;
 
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
+import java.util.function.Consumer;
 
 public class MethodUtil {
     private static final String INIT_METHOD_NAME = "<init>";
@@ -32,5 +36,25 @@ public class MethodUtil {
         } else {
             return sootClass.getMethodUnsafe(INIT_METHOD_NAME, Collections.emptyList(), VoidType.v());
         }
+    }
+
+    public static boolean isMapPutMethod(SootMethod sootMethod) {
+        if (ClassUtil.isMapClass(sootMethod.getDeclaringClass())) {
+            return sootMethod.getName().equals("put");
+        }
+        return false;
+    }
+
+    public static Set<String> getOverrideMethodSignatureOfInclude(SootMethod sootMethod) {
+        Set<String> signatures = new HashSet<>();
+        SootClass declaredClass = sootMethod.getDeclaringClass();
+        ClassUtil.getAllSuperClasses(declaredClass).forEach(sootClass -> {
+            SootMethod superMethod = sootClass.getMethodUnsafe(sootMethod.getSubSignature());
+            if (superMethod != null) {
+                signatures.add(superMethod.getSignature());
+            }
+        });
+        signatures.add(sootMethod.getSignature());
+        return signatures;
     }
 }

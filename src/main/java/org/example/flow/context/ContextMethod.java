@@ -9,12 +9,15 @@ import org.example.core.basic.Site;
 import org.example.core.basic.TypeNode;
 import org.example.core.basic.identity.Parameter;
 import org.example.core.basic.node.CallNode;
+import org.example.core.basic.obj.NormalObj;
 import org.example.core.basic.obj.Obj;
 import org.example.core.basic.obj.PhantomObj;
+import org.example.flow.CallStack;
 import org.example.flow.FlowEngine;
 import org.example.flow.PointToContainer;
 import org.example.flow.TaintContainer;
 import org.example.rule.Sink;
+import org.example.util.MethodUtil;
 import soot.*;
 
 import java.util.*;
@@ -25,6 +28,7 @@ public abstract class ContextMethod {
     private CallNode callNode;
     private Set<Node> taintNodes;
     private boolean retTaint;
+    private boolean paramTaint;
     private TaintContainer taintContainer;
     private PointToContainer pointToContainer;
     private IntraAnalyzedMethod intraAnalyzedMethod;
@@ -38,6 +42,14 @@ public abstract class ContextMethod {
         this.pointToContainer = new PointToContainer();
 
         this.intraAnalyzedMethod = FlowEngine.getAnalysedMethod(sootMethod);
+    }
+
+    public void taintAllParams() {
+        paramTaint = true;
+    }
+
+    public boolean isAllParamTaint() {
+        return paramTaint;
     }
 
     public SootMethod getSootMethod() {
@@ -89,7 +101,7 @@ public abstract class ContextMethod {
         return pointToContainer;
     }
 
-    public boolean checkReachSink() {
+    public boolean checkReachSink(CallStack callStack) {
         // check mybatis sql injection
         if (intraAnalyzedMethod instanceof MyBatisIntraAnalyzedMethod) {
             MyBatisIntraAnalyzedMethod myBatisIntraAnalyzedMethod = (MyBatisIntraAnalyzedMethod) intraAnalyzedMethod;
@@ -105,21 +117,25 @@ public abstract class ContextMethod {
             }
         }
 
-        Sink sink = Global.sinkMap.get(getSootMethod().getSignature());
-        if (sink == null) {
-            return false;
-        }
+        for (String signature : MethodUtil.getOverrideMethodSignatureOfInclude(getSootMethod())) {
+            if (Global.sinkMap.containsKey(signature)) {
+                Sink sink = Global.sinkMap.get(signature);
 
-        // if base is taint and config defined such sink without no param, will report
-        if (getTaintContainer().containsTaint(callNode.getBase()) && sink.index.size() == 0) {
-            return true;
-        }
+                // if base is taint and config defined such sink without no param, will report
+                if (callStack.peek().getTaintContainer().containsTaint(callStack.getRefObjs(callNode.getBase())) && sink.index.size() == 0) {
+                    return true;
+                }
 
-        for (int idx : sink.index) {
-            if (getTaintContainer().checkIdxParamIsTaint(idx)) {
-                return true;
+                // check index sink is taint
+                for (int idx : sink.index) {
+                    if (getTaintContainer().checkIdxParamIsTaint(idx)) {
+                        return true;
+                    }
+                }
             }
         }
+
+
         return false;
     }
 
@@ -157,8 +173,12 @@ public abstract class ContextMethod {
                 // if param is other type, possibly a POJO, will check field
                 Set<Obj> objs = getPointToContainer().getPointRefObj(paramNode);
                 for (Obj perObj : objs) {
-                    if (perObj.isTaintField(placeHolder)) {
-                        return true;
+                    if (perObj instanceof NormalObj) {
+                        for (Obj fieldObj : ((NormalObj) perObj).getFieldObjByFieldName(placeHolder)) {
+                            if (getTaintContainer().containsTaint(fieldObj)) {
+                                return true;
+                            }
+                        }
                     }
                 }
             }

@@ -11,8 +11,12 @@ public class RouteIntraAnalyzedMethod extends IntraAnalyzedMethod {
 
     protected RouteIntraAnalyzedMethod(SootMethod sootMethod) {
         super(sootMethod);
+        routes = new HashSet<>();
+
         RouteTag routeTag = (RouteTag) sootMethod.getTag("routes");
-        routes = routeTag.getRoutes();
+        for (String route : routeTag.getRoutes()) {
+            routes.add(String.format("%s:%s", sootMethod.getDeclaringClass(), route));
+        }
     }
 
     public Set<String> getRoutes() {

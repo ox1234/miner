@@ -70,6 +70,24 @@
       "name": "rce",
       "sinks": [
         {
+          "expression": "<groovy.lang.GroovyShell: java.lang.Object evaluate(java.lang.String)>",
+          "index": [
+            0
+          ]
+        },
+        {
+          "expression": "<javax.script.ScriptEngine: java.lang.Object eval(java.lang.String,javax.script.Bindings)>",
+          "index": [
+            0
+          ]
+        },
+        {
+          "expression": "<org.yaml.snakeyaml.Yaml: java.lang.Object load(java.lang.String)>",
+          "index": [
+            0
+          ]
+        },
+        {
           "expression": "<java.lang.Runtime: java.lang.Process exec(java.lang.String)>",
           "index": [
             0
