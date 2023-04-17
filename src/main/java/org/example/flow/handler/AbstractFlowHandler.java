@@ -38,6 +38,7 @@ abstract public class AbstractFlowHandler<T> implements FlowHandler<T> {
     @Override
     public void handle(Node to, AbstractExprNode from) {
         preHandle(to, from);
+
         T rightRes = null;
         if (from instanceof EmptyExprNode) {
             rightRes = handleEmptyExprNode((EmptyExprNode) from);

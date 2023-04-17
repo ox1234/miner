@@ -2,14 +2,13 @@ package org.example.flow.handler.impl;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.example.constant.InvokeType;
 import org.example.core.IntraAnalyzedMethod;
 import org.example.core.basic.Node;
 import org.example.core.basic.field.ArrayLoad;
 import org.example.core.basic.field.InstanceField;
 import org.example.core.basic.field.StaticField;
-import org.example.core.basic.identity.LocalVariable;
-import org.example.core.basic.identity.Parameter;
-import org.example.core.basic.identity.UnifyReturn;
+import org.example.core.basic.identity.*;
 import org.example.core.basic.node.CallNode;
 import org.example.core.basic.obj.Obj;
 import org.example.core.expr.*;
@@ -40,7 +39,7 @@ public class TaintFlowHandler extends AbstractFlowHandler<Boolean> {
 
     @Override
     public void transferLeft(Node to, Boolean from) {
-        if (!from) {
+        if (!from || to instanceof VoidNode) {
             return;
         }
         addLeftTaint(to);
@@ -121,9 +120,6 @@ public class TaintFlowHandler extends AbstractFlowHandler<Boolean> {
 
         // if target method is not application class, and its parameter is taint, the method's return will be taint, this will case false positive
         if (!tgtContextMethod.getSootMethod().getDeclaringClass().isApplicationClass() && tgtContextMethod.getTaintContainer().isParamTaint()) {
-            if (tgtContextMethod instanceof SpecialContextMethod) {
-                callStack.peek().getTaintContainer().addTaint(callNode.getBase(), callStack.getRefObjs(callNode.getBase()));
-            }
             tgtContextMethod.setReturnTaint(true);
         }
     }
@@ -141,9 +137,17 @@ public class TaintFlowHandler extends AbstractFlowHandler<Boolean> {
 
     private Boolean isRightTaint(Node node) {
         if (node instanceof CallNode) {
-            Set<ContextMethod> contextMethods = super.handleCallNode((CallNode) node);
+            CallNode callNode = (CallNode) node;
+            Set<ContextMethod> contextMethods = super.handleCallNode((callNode));
             for (ContextMethod contextMethod : contextMethods) {
                 if (contextMethod.returnTaint()) {
+                    if (contextMethod instanceof SpecialContextMethod) {
+                        // if a special invoke return value is taint, the call base will taint
+                        getTaintContainer().addTaint(callNode.getBase(), callStack.getRefObjs(callNode.getBase()));
+                        if (callNode.getBase() instanceof ThisVariable) {
+                            callStack.peek().setReturnTaint(true);
+                        }
+                    }
                     return true;
                 }
             }
