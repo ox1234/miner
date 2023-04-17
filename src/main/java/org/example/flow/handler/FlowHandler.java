@@ -1,5 +1,6 @@
 package org.example.flow.handler;
 
+import org.example.core.IntraAnalyzedMethod;
 import org.example.core.basic.Node;
 import org.example.core.basic.node.CallNode;
 import org.example.core.expr.*;
@@ -10,7 +11,9 @@ public interface FlowHandler<T> {
 
     void postHandle(Node to, AbstractExprNode from);
 
-    void handle(Node to, AbstractExprNode from);
+    void handle(IntraAnalyzedMethod.AnalyzedUnit analyzedUnit);
+
+    void doAnalysis(ContextMethod entry);
 
     boolean preTransferLeft(Node to, T from);
 

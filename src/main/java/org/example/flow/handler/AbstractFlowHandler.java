@@ -1,20 +1,26 @@
 package org.example.flow.handler;
 
+import org.example.core.IntraAnalyzedMethod;
 import org.example.core.basic.Node;
 import org.example.core.basic.node.CallNode;
 import org.example.core.expr.*;
 import org.example.flow.*;
 import org.example.flow.context.ContextMethod;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 abstract public class AbstractFlowHandler<T> implements FlowHandler<T> {
     protected FlowEngine flowEngine;
     protected CallStack callStack;
+    protected List<Collector> collectors;
+    protected IntraAnalyzedMethod.AnalyzedUnit currentUnit;
 
-    protected AbstractFlowHandler(FlowEngine flowEngine) {
+
+    protected AbstractFlowHandler(FlowEngine flowEngine, Collector... collectors) {
         this.flowEngine = flowEngine;
         this.callStack = flowEngine.getCallStack();
+        this.collectors = Arrays.asList(collectors);
     }
 
     public TaintContainer getTaintContainer() {
@@ -23,6 +29,20 @@ abstract public class AbstractFlowHandler<T> implements FlowHandler<T> {
 
     public PointToContainer getPointContainer() {
         return callStack.peek().getPointToContainer();
+    }
+
+    @Override
+    public void doAnalysis(ContextMethod entry) {
+        callStack.push(entry);
+        preProcessMethod(entry);
+        IntraAnalyzedMethod analyzedMethod = entry.getIntraAnalyzedMethod();
+        if (analyzedMethod != null) {
+            analyzedMethod.getOrderedFlowMap().forEach((node, analyzedUnit) -> handle(analyzedUnit));
+        }
+        postProcessMethod(entry);
+
+        doCollect();
+        callStack.pop();
     }
 
     @Override
@@ -36,7 +56,15 @@ abstract public class AbstractFlowHandler<T> implements FlowHandler<T> {
     }
 
     @Override
-    public void handle(Node to, AbstractExprNode from) {
+    public void handle(IntraAnalyzedMethod.AnalyzedUnit analyzedUnit) {
+        Node to = analyzedUnit.getTo();
+        AbstractExprNode from = analyzedUnit.getFrom();
+
+        IntraAnalyzedMethod.AnalyzedUnit oldCurrentUnit = null;
+        if (currentUnit != null) {
+            oldCurrentUnit = currentUnit;
+        }
+        currentUnit = analyzedUnit;
         preHandle(to, from);
 
         T rightRes = null;
@@ -53,6 +81,8 @@ abstract public class AbstractFlowHandler<T> implements FlowHandler<T> {
             transferLeft(to, rightRes);
         }
         postHandle(to, from);
+
+        currentUnit = oldCurrentUnit;
     }
 
     @Override
@@ -68,11 +98,17 @@ abstract public class AbstractFlowHandler<T> implements FlowHandler<T> {
                 continue;
             }
             preProcessCallNode(callNode, callee);
-            flowEngine.doAnalysis(callee, this);
+            doAnalysis(callee);
             postProcessCallNode(callNode, callee);
         }
 
         return new LinkedHashSet<>(callees);
+    }
+
+    private void doCollect() {
+        for (Collector collector : collectors) {
+            collector.collect(callStack);
+        }
     }
 
     @Override

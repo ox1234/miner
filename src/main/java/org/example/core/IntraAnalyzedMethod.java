@@ -13,6 +13,7 @@ import org.example.core.expr.MultiExprNode;
 import org.example.util.TagUtil;
 import soot.SootClass;
 import soot.SootMethod;
+import soot.Unit;
 import soot.jimple.Stmt;
 
 import java.util.*;
@@ -30,11 +31,36 @@ public class IntraAnalyzedMethod {
     // method intra org.example.flow analysis
     private Flow flow;
 
+    public class AnalyzedUnit {
+        private Node to;
+        private AbstractExprNode from;
+        private Unit stmt;
+
+        public AnalyzedUnit(Node to, AbstractExprNode from, Unit stmt) {
+            this.to = to;
+            this.from = from;
+            this.stmt = stmt;
+        }
+
+
+        public Unit getStmt() {
+            return stmt;
+        }
+
+        public Node getTo() {
+            return to;
+        }
+
+        public AbstractExprNode getFrom() {
+            return from;
+        }
+    }
+
     class Flow {
-        private Map<Node, AbstractExprNode> inorderFlowMap = new LinkedHashMap<>();
+        private Map<Node, AnalyzedUnit> inorderFlowMap = new LinkedHashMap<>();
         private Set<Parameter> paramNodes = new LinkedHashSet<>();
 
-        public void addFlow(Node to, AbstractExprNode from) {
+        public void addFlow(Node to, AbstractExprNode from, Unit stmt) {
             if (from == null || from.isEmpty()) {
                 return;
             }
@@ -49,17 +75,17 @@ public class IntraAnalyzedMethod {
                     callNode.setRetVar(to);
                 }
             }
-            addInorderFlowMap(to, from);
+            addInorderFlowMap(to, from, stmt);
         }
 
-        public void addInorderFlowMap(Node to, AbstractExprNode from) {
+        public void addInorderFlowMap(Node to, AbstractExprNode from, Unit stmt) {
             if (to instanceof UnifyReturn) {
                 if (!inorderFlowMap.containsKey(to)) {
-                    inorderFlowMap.put(to, new MultiExprNode());
+                    inorderFlowMap.put(to, new AnalyzedUnit(to, new MultiExprNode(), stmt));
                 }
-                inorderFlowMap.get(to).addNodes(from.getAllNodes());
+                inorderFlowMap.get(to).getFrom().addNodes(from.getAllNodes());
             } else {
-                inorderFlowMap.put(to, from);
+                inorderFlowMap.put(to, new AnalyzedUnit(to, from, stmt));
             }
         }
 
@@ -99,11 +125,11 @@ public class IntraAnalyzedMethod {
         return methodRef;
     }
 
-    public void addFlow(Node to, AbstractExprNode from) {
-        flow.addFlow(to, from);
+    public void addFlow(Node to, AbstractExprNode from, Unit stmt) {
+        flow.addFlow(to, from, stmt);
     }
 
-    public Map<Node, AbstractExprNode> getOrderedFlowMap() {
+    public Map<Node, AnalyzedUnit> getOrderedFlowMap() {
         return flow.inorderFlowMap;
     }
 

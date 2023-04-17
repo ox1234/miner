@@ -4,13 +4,14 @@ import org.example.core.basic.MethodLevelSite;
 import org.example.core.basic.Node;
 import org.example.core.basic.TypeNode;
 import org.example.core.basic.node.CallNode;
+import org.example.flow.Collector;
 import org.example.flow.FlowEngine;
 import soot.PrimType;
 import soot.Type;
 
 public class SanitizedTaintFlowHandler extends TaintFlowHandler {
-    public SanitizedTaintFlowHandler(FlowEngine flowEngine) {
-        super(flowEngine);
+    public SanitizedTaintFlowHandler(FlowEngine flowEngine, Collector... collectors) {
+        super(flowEngine, collectors);
     }
 
     @Override
