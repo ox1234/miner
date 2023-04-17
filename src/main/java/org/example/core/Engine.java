@@ -23,6 +23,7 @@ public class Engine {
     public IntraAnalyzedMethod doIntraProcedureAnalysis(SootMethod method) {
         logger.info(String.format("do intra procedure analysis on %s", method.getSignature()));
         if (!method.isConcrete()) {
+            logger.debug(String.format("%s method is not concrete, will skip", method.getSignature()));
             return null;
         }
 
@@ -51,6 +52,7 @@ public class Engine {
             @Override
             public void accept(SootMethod sootMethod) {
                 if (visitedMethods.contains(sootMethod)) {
+                    logger.debug(String.format("%s method has finish intra analysis, will skip", sootMethod.getSignature()));
                     return;
                 }
                 addAnalyzedMethod(doIntraProcedureAnalysis(sootMethod));

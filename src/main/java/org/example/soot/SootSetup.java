@@ -1,5 +1,6 @@
 package org.example.soot;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -78,13 +79,6 @@ public class SootSetup {
         Options.v().setPhaseOption("jtp.grimp", "enabled:false");
 
 
-    }
-
-    public void cleanupOutput() {
-        File file = new File(Global.sootOutputPath);
-        if (file.isDirectory() && file.exists()) {
-            file.delete();
-        }
     }
 
     // 加载所有类到内存中

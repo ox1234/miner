@@ -10,6 +10,7 @@ import org.example.core.basic.Site;
 import org.example.core.basic.identity.ThisVariable;
 import org.example.core.basic.obj.Obj;
 import org.example.core.basic.obj.PhantomObj;
+import org.example.flow.collector.vuln.VulnCollector;
 import org.example.flow.context.ContextMethod;
 import org.example.flow.context.InstanceContextMethod;
 import org.example.flow.context.StaticContextMethod;
@@ -46,7 +47,7 @@ public class FlowEngine {
 
         this.flowHandlers = new HashMap<>();
         registerFlowHandler(FlowHandlerEnum.POINT_FLOW_HANDLER, new PointFlowHandler(this));
-        registerFlowHandler(FlowHandlerEnum.TAINT_FLOW_HANDLER, new SanitizedTaintFlowHandler(this));
+        registerFlowHandler(FlowHandlerEnum.TAINT_FLOW_HANDLER, new SanitizedTaintFlowHandler(this, new VulnCollector()));
     }
 
     public void registerFlowHandler(FlowHandlerEnum flowType, FlowHandler<?> flowHandler) {
@@ -65,7 +66,7 @@ public class FlowEngine {
         if (clinit != null) {
             ContextMethod ctxClinit = new StaticContextMethod(entryClass, clinit, null, null);
             logger.info(String.format("do %s class clinit method's point analysis", entryPoint.getSignature()));
-            doAnalysis(ctxClinit, getFlowHandler(FlowHandlerEnum.POINT_FLOW_HANDLER));
+            getFlowHandler(FlowHandlerEnum.POINT_FLOW_HANDLER).doAnalysis(ctxClinit);
         }
 
         ContextMethod entry;
@@ -79,7 +80,7 @@ public class FlowEngine {
             if (init != null) {
                 ContextMethod ctxInit = new InstanceContextMethod(fakeObj, init, null, null);
                 logger.info(String.format("do %s class init method's point analysis", entryPoint.getSignature()));
-                doAnalysis(ctxInit, getFlowHandler(FlowHandlerEnum.POINT_FLOW_HANDLER));
+                getFlowHandler(FlowHandlerEnum.POINT_FLOW_HANDLER).doAnalysis(ctxInit);
             }
             entry = new InstanceContextMethod(fakeObj, entryPoint, null, null);
         }
@@ -96,26 +97,15 @@ public class FlowEngine {
 
         // do point analysis, and build call graph
         logger.info(String.format("do point analysis and build call graph from %s entry", entryPoint.getSignature()));
-        doAnalysis(entry, getFlowHandler(FlowHandlerEnum.POINT_FLOW_HANDLER));
+        getFlowHandler(FlowHandlerEnum.POINT_FLOW_HANDLER).doAnalysis(entry);
 
         // do taint analysis
         logger.info(String.format("do taint analysis from %s entry", entryPoint.getSignature()));
         TaintFlowHandler taintFlowHandler = (TaintFlowHandler) getFlowHandler(FlowHandlerEnum.TAINT_FLOW_HANDLER);
 
         entry.taintAllParams();
-        doAnalysis(entry, taintFlowHandler);
+        taintFlowHandler.doAnalysis(entry);
         logger.info(String.format("flow analysis is finished from %s entry", entryPoint.getSignature()));
-    }
-
-    public void doAnalysis(ContextMethod entry, FlowHandler<?> flowHandler) {
-        callStack.push(entry);
-        flowHandler.preProcessMethod(entry);
-        IntraAnalyzedMethod analyzedMethod = entry.getIntraAnalyzedMethod();
-        if (analyzedMethod != null) {
-            analyzedMethod.getOrderedFlowMap().forEach(flowHandler::handle);
-        }
-        flowHandler.postProcessMethod(entry);
-        callStack.pop();
     }
 
     public CtxCG getCtxCG() {

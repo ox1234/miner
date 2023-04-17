@@ -70,12 +70,4 @@ public class CallStack {
         }
         return null;
     }
-
-    public List<String> toArrString() {
-        List<String> cg = new ArrayList<>();
-        for (ContextMethod contextMethod : callStack) {
-            cg.add(contextMethod.getSootMethod().getSignature());
-        }
-        return cg;
-    }
 }

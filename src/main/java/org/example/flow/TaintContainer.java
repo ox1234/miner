@@ -6,6 +6,8 @@ import org.example.core.basic.identity.Parameter;
 import org.example.core.basic.identity.UnifyReturn;
 import org.example.core.basic.obj.Obj;
 import org.example.util.PrintUtil;
+import soot.Unit;
+import soot.jimple.Stmt;
 
 import java.util.*;
 
@@ -16,9 +18,14 @@ public class TaintContainer {
     private Set<Obj> taintObjs = new LinkedHashSet<>();
     private static Set<Obj> globalTaintObjs = new LinkedHashSet<>();
     private Set<Node> taintNodes = new HashSet<>();
+    private Map<Unit, Node> inorderedTaintUnit = new LinkedHashMap<>();
 
-    public void addTaint(Node node, Set<Obj> objs) {
+    public void addTaint(Node node, Set<Obj> objs, Unit stmt) {
         taintNodes.add(node);
+
+        if (stmt != null) {
+            inorderedTaintUnit.put(stmt, node);
+        }
 
         if (node instanceof Parameter) {
             paramTaintMap.put(((Parameter) node).getIdx(), true);
@@ -55,23 +62,5 @@ public class TaintContainer {
             }
         }
         return false;
-    }
-
-    public void printTaintTable(String methodSig, List<String> callStackArr) {
-        List<List<String>> table = new ArrayList<>();
-        table.add(Arrays.asList("id", "variable", "node type", "ref stmt"));
-        for (Node node : taintObjs) {
-//            String stmt = null;
-//            if (node.getLoc() != null) {
-//                stmt = node.getLoc().toString();
-//            } else {
-//                stmt = "null";
-//            }
-//            table.add(Arrays.asList(node.getID(), node.toString(), node.getClass().getSimpleName(), stmt));
-        }
-
-        if (Global.debug) {
-            PrintUtil.printTable(table, methodSig, callStackArr);
-        }
     }
 }

@@ -28,6 +28,7 @@ public abstract class ContextMethod {
     private CallNode callNode;
     private Set<Node> taintNodes;
     private boolean retTaint;
+    private boolean baseTaint;
     private boolean paramTaint;
     private TaintContainer taintContainer;
     private PointToContainer pointToContainer;
@@ -42,6 +43,14 @@ public abstract class ContextMethod {
         this.pointToContainer = new PointToContainer();
 
         this.intraAnalyzedMethod = FlowEngine.getAnalysedMethod(sootMethod);
+    }
+
+    public void setBaseTaint(boolean baseTaint) {
+        this.baseTaint = baseTaint;
+    }
+
+    public boolean isBaseTaint() {
+        return baseTaint;
     }
 
     public void taintAllParams() {
@@ -101,88 +110,7 @@ public abstract class ContextMethod {
         return pointToContainer;
     }
 
-    public boolean checkReachSink(CallStack callStack) {
-        // check mybatis sql injection
-        if (intraAnalyzedMethod instanceof MyBatisIntraAnalyzedMethod) {
-            MyBatisIntraAnalyzedMethod myBatisIntraAnalyzedMethod = (MyBatisIntraAnalyzedMethod) intraAnalyzedMethod;
-            List<String> taintPlaceHolders = new ArrayList<>();
-            for (String placeHolder : myBatisIntraAnalyzedMethod.getPlaceHolderList()) {
-                if (isTaintMyBatisPlaceHolder(placeHolder, myBatisIntraAnalyzedMethod.getSqlParamMap())) {
-                    taintPlaceHolders.add(placeHolder);
-                }
-            }
-
-            if (!taintPlaceHolders.isEmpty()) {
-                return true;
-            }
-        }
-
-        for (String signature : MethodUtil.getOverrideMethodSignatureOfInclude(getSootMethod())) {
-            if (Global.sinkMap.containsKey(signature)) {
-                Sink sink = Global.sinkMap.get(signature);
-
-                // if base is taint and config defined such sink without no param, will report
-                if (callStack.peek().getTaintContainer().containsTaint(callStack.getRefObjs(callNode.getBase())) && sink.index.size() == 0) {
-                    return true;
-                }
-
-                // check index sink is taint
-                for (int idx : sink.index) {
-                    if (getTaintContainer().checkIdxParamIsTaint(idx)) {
-                        return true;
-                    }
-                }
-            }
-        }
-
-
-        return false;
-    }
-
-    private boolean isTaintMyBatisPlaceHolder(String placeHolder, Map<String, Integer> paramAlias) {
-        // check if @Param annotation is exists, if exist will map the parameter
-        if (paramAlias.containsKey(placeHolder)) {
-            return getTaintContainer().checkIdxParamIsTaint(paramAlias.get(placeHolder));
-        }
-
-        // check if is ${_parameter} pattern, will map the first parameter
-        if (placeHolder.equals("_parameter")) {
-            return getTaintContainer().checkIdxParamIsTaint(0);
-        }
-
-        // check if is ${0} pattern, will map the parameter index
-        try {
-            int idx = Integer.parseInt(placeHolder, 10);
-            return getTaintContainer().checkIdxParamIsTaint(idx);
-        } catch (NumberFormatException ignored) {
-        }
-
-        // single parameter handle
-        if (intraAnalyzedMethod.getParameterNodes().size() == 1) {
-            Parameter paramNode = intraAnalyzedMethod.getParameterNodes().get(0);
-            Type paramType = paramNode.getType();
-            // if param is prim type, won't be taint
-            if (paramType instanceof PrimType) {
-                return false;
-            } else if (paramType instanceof RefType) {
-                // if param is string type, will check taint container
-                if (((RefType) paramType).getSootClass().getName().equals("java.lang.String")) {
-                    return getTaintContainer().checkIdxParamIsTaint(0);
-                }
-
-                // if param is other type, possibly a POJO, will check field
-                Set<Obj> objs = getPointToContainer().getPointRefObj(paramNode);
-                for (Obj perObj : objs) {
-                    if (perObj instanceof NormalObj) {
-                        for (Obj fieldObj : ((NormalObj) perObj).getFieldObjByFieldName(placeHolder)) {
-                            if (getTaintContainer().containsTaint(fieldObj)) {
-                                return true;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return false;
+    public CallNode getCallNode() {
+        return callNode;
     }
 }

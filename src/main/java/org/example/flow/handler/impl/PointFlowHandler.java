@@ -18,6 +18,7 @@ import org.example.core.expr.EmptyExprNode;
 import org.example.core.expr.MultiExprNode;
 import org.example.core.expr.OpExprNode;
 import org.example.core.expr.SingleExprNode;
+import org.example.flow.Collector;
 import org.example.flow.FlowEngine;
 import org.example.flow.context.ContextMethod;
 import org.example.flow.context.InstanceContextMethod;
@@ -35,8 +36,8 @@ import java.util.*;
 public class PointFlowHandler extends AbstractFlowHandler<Set<Obj>> {
     private final Logger logger = LogManager.getLogger(PointFlowHandler.class);
 
-    public PointFlowHandler(FlowEngine flowEngine) {
-        super(flowEngine);
+    public PointFlowHandler(FlowEngine flowEngine, Collector... collectors) {
+        super(flowEngine, collectors);
     }
 
     @Override
@@ -125,7 +126,7 @@ public class PointFlowHandler extends AbstractFlowHandler<Set<Obj>> {
 
                 // build call graph, manual call pre and post handler
                 preProcessCallNode(callNode, tgtContextMethod);
-                flowEngine.doAnalysis(tgtContextMethod, this);
+                doAnalysis(tgtContextMethod);
                 postProcessCallNode(callNode, tgtContextMethod);
             }
         }
