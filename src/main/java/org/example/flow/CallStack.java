@@ -35,6 +35,14 @@ public class CallStack {
         return callStack.peek();
     }
 
+    public ContextMethod getFirst() {
+        return callStack.get(0);
+    }
+
+    public Stack<ContextMethod> getCallStack() {
+        return callStack;
+    }
+
     public boolean contains(ContextMethod call) {
         return callStack.contains(call);
     }

@@ -77,7 +77,7 @@ abstract public class AbstractFlowHandler<T> implements FlowHandler<T> {
         } else if (from instanceof SingleExprNode) {
             rightRes = handleSingleExprNode((SingleExprNode) from);
         }
-        if (preTransferLeft(to, rightRes)) {
+        if (preTransferLeft(to, from, rightRes)) {
             transferLeft(to, rightRes);
         }
         postHandle(to, from);
@@ -86,7 +86,7 @@ abstract public class AbstractFlowHandler<T> implements FlowHandler<T> {
     }
 
     @Override
-    public boolean preTransferLeft(Node to, T from) {
+    public boolean preTransferLeft(Node to, AbstractExprNode from, T result) {
         return true;
     }
 

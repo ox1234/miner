@@ -1,5 +1,7 @@
 package org.example.tags;
 
+import org.apache.logging.log4j.core.appender.routing.Route;
+import org.example.basic.Router;
 import soot.SootMethod;
 import soot.tagkit.AttributeValueException;
 import soot.tagkit.Tag;
@@ -8,23 +10,23 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class RouteTag implements Tag {
-    private Set<String> routes;
+    private Router router;
 
-    public RouteTag(Set<String> routePaths) {
-        this.routes = routePaths;
+    public RouteTag(Router router) {
+        this.router = router;
     }
 
     @Override
     public String getName() {
-        return "routes";
+        return "router";
     }
 
     @Override
     public byte[] getValue() throws AttributeValueException {
-        return String.join(",", routes).getBytes();
+        return String.join(",", router.getRoutes()).getBytes();
     }
 
-    public Set<String> getRoutes() {
-        return routes;
+    public Router getRoute() {
+        return router;
     }
 }

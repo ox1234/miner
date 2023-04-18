@@ -1,25 +1,18 @@
 package org.example.core;
 
+import org.example.basic.Router;
 import org.example.tags.RouteTag;
 import soot.SootMethod;
 
-import java.util.HashSet;
-import java.util.Set;
-
 public class RouteIntraAnalyzedMethod extends IntraAnalyzedMethod {
-    private Set<String> routes;
+    private Router router;
 
     protected RouteIntraAnalyzedMethod(SootMethod sootMethod) {
         super(sootMethod);
-        routes = new HashSet<>();
-
-        RouteTag routeTag = (RouteTag) sootMethod.getTag("routes");
-        for (String route : routeTag.getRoutes()) {
-            routes.add(String.format("%s:%s", sootMethod.getDeclaringClass(), route));
-        }
+        this.router = ((RouteTag) sootMethod.getTag("router")).getRoute();
     }
 
-    public Set<String> getRoutes() {
-        return routes;
+    public Router getRouter() {
+        return router;
     }
 }

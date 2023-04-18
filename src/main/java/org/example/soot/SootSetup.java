@@ -4,6 +4,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.example.basic.Router;
 import org.example.config.Global;
 import org.example.tags.RouteTag;
 import org.example.util.ClassUtil;
@@ -20,6 +21,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 // SootSetup 负责所有Soot的参数设置和Soot类的加载路径
 public class SootSetup {
@@ -98,13 +100,8 @@ public class SootSetup {
 
     private void setupEntryPoints() {
         List<SootMethod> entryMethods = new ArrayList<>();
-        getRouteMethods(Scene.v().getApplicationClasses()).forEach((sootMethod, routes) -> {
-            // TODO: test
-//            if (!sootMethod.getDeclaringClass().getShortName().equals("SSRF") || !sootMethod.getName().equals("httpURLConnectionVuln")) {
-//                return;
-//            }
-            sootMethod.addTag(new RouteTag(routes));
-            entryMethods.add(sootMethod);
+        getRouteMethods(Scene.v().getApplicationClasses()).forEach(router -> {
+            entryMethods.add(router.getDispatchMethod());
         });
         logger.info(String.format("collect %d route methods", entryMethods.size()));
         Scene.v().setEntryPoints(entryMethods);
@@ -150,19 +147,16 @@ public class SootSetup {
         return Scene.v().getActiveHierarchy();
     }
 
-    public Map<SootMethod, Set<String>> getRouteMethods(Collection<SootClass> classes) {
+    public Set<Router> getRouteMethods(Collection<SootClass> classes) {
         logger.info(String.format("start route collect in %d classes", classes.size()));
-        Map<SootMethod, Set<String>> routeMethods = new LinkedHashMap<>();
+        Set<Router> routeMethods = new LinkedHashSet<>();
         for (SootClass sootClass : classes) {
             for (AnnotationTag annotationTag : TagUtil.getClassAnnotation(sootClass)) {
                 if (TagUtil.isSpringControllerAnnotation(annotationTag)) {
                     for (SootMethod sootMethod : sootClass.getMethods()) {
                         if (MethodUtil.isRouteMethod(sootMethod)) {
                             logger.info(String.format("find %s method is route method with %s route path", sootMethod.getSignature(), String.join(",", TagUtil.getMethodRoutePath(sootMethod))));
-                            if (!routeMethods.containsKey(sootMethod)) {
-                                routeMethods.put(sootMethod, new HashSet<>());
-                            }
-                            routeMethods.get(sootMethod).addAll(TagUtil.getMethodRoutePath(sootMethod));
+                            routeMethods.add(new Router(sootClass, sootMethod, TagUtil.getMethodRoutePath(sootMethod)));
                         }
                     }
                 }
