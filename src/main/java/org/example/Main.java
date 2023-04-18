@@ -18,13 +18,6 @@ import soot.Scene;
 import java.io.File;
 import java.util.Map;
 
-/*
-
-func (){
-    this.xxx = xxx;
-}
- */
-
 public class Main {
     private static final Logger logger = LogManager.getLogger(Main.class);
 
@@ -32,6 +25,12 @@ public class Main {
         // delete previous scan tmp path and soot output path
         FileUtil.deleteDirectory(new File(Global.outputPath));
         FileUtils.deleteDirectory(new File(Global.sootOutputPath));
+
+        // if bytedance mode, will download source code from SCM
+        if(Global.bytedanceMode){
+            String repoName = "";
+            String branch = "";
+        }
 
 
         // setup soot environment

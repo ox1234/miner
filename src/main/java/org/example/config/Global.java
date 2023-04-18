@@ -17,7 +17,9 @@ public class Global {
     public static Root rule;
     public static Set<String> sinks;
     public static Map<String, Sink> sinkMap = new HashMap<>();
+
     public static boolean debug = false;
+    public static boolean bytedanceMode = true;
 
     public static String outputPath = "tmp";
     public static String neo4jDSN = "neo4j://localhost:7687";

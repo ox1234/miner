@@ -40,7 +40,7 @@ public class FlowEngine {
         this.flowHandlers = new HashMap<>();
 
         registerFlowHandler(FlowHandlerEnum.POINT_FLOW_HANDLER, new PointFlowHandler(this));
-        registerFlowHandler(FlowHandlerEnum.TAINT_FLOW_HANDLER, new SanitizedTaintFlowHandler(this, new VulnCollector()));
+        registerFlowHandler(FlowHandlerEnum.TAINT_FLOW_HANDLER, new SanitizedTaintFlowHandler(this, Collections.emptySet(), Collections.emptySet(), new VulnCollector()));
     }
 
     public void registerFlowHandler(FlowHandlerEnum flowType, FlowHandler<?> flowHandler) {

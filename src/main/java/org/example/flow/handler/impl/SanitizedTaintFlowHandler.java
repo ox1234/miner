@@ -1,7 +1,5 @@
 package org.example.flow.handler.impl;
 
-import jdk.vm.ci.code.site.Call;
-import org.example.core.basic.MethodLevelSite;
 import org.example.core.basic.Node;
 import org.example.core.basic.TypeNode;
 import org.example.core.basic.node.CallNode;
@@ -12,14 +10,16 @@ import org.example.flow.FlowEngine;
 import soot.PrimType;
 import soot.Type;
 
-import java.util.HashSet;
 import java.util.Set;
 
 public class SanitizedTaintFlowHandler extends TaintFlowHandler {
-    private Set<String> sourceSignature = new HashSet<>();
+    private Set<String> sourceSignature;
+    private Set<String> sanitizerSignature;
 
-    public SanitizedTaintFlowHandler(FlowEngine flowEngine, Collector... collectors) {
+    public SanitizedTaintFlowHandler(FlowEngine flowEngine, Set<String> sourceSignature, Set<String> sanitizerSignature, Collector... collectors) {
         super(flowEngine, collectors);
+        this.sourceSignature = sourceSignature;
+        this.sanitizerSignature = sanitizerSignature;
     }
 
     @Override
@@ -28,9 +28,17 @@ public class SanitizedTaintFlowHandler extends TaintFlowHandler {
         if (isPrimType(to)) {
             return false;
         }
-
         if (from instanceof SingleExprNode && from.getFirstNode() instanceof CallNode) {
-            return isSourceCall((CallNode) from.getFirstNode());
+            CallNode callNode = (CallNode) from.getFirstNode();
+            // if this call is source call, will taint left node
+            if (isSourceCall(callNode)) {
+                return true;
+            }
+
+            // if this call is sanitizer call, will not taint left node
+            if (isSanitizerCall(callNode)) {
+                return false;
+            }
         }
 
         return result;
@@ -47,5 +55,9 @@ public class SanitizedTaintFlowHandler extends TaintFlowHandler {
 
     private boolean isSourceCall(CallNode callNode) {
         return sourceSignature.contains(callNode.getCallee().getSignature());
+    }
+
+    private boolean isSanitizerCall(CallNode callNode) {
+        return sanitizerSignature.contains(callNode.getCallee().getSignature());
     }
 }
