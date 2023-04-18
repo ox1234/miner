@@ -2,11 +2,13 @@ package org.example.flow.collector.vuln;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.example.basic.Router;
+import org.example.basic.Vulnerability;
 import org.example.config.Global;
 import org.example.core.IntraAnalyzedMethod;
 import org.example.core.MyBatisIntraAnalyzedMethod;
+import org.example.core.RouteIntraAnalyzedMethod;
 import org.example.core.basic.identity.Parameter;
-import org.example.core.basic.node.CallNode;
 import org.example.core.basic.obj.NormalObj;
 import org.example.core.basic.obj.Obj;
 import org.example.flow.CallStack;
@@ -20,23 +22,33 @@ import soot.PrimType;
 import soot.RefType;
 import soot.Type;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class VulnCollector implements Collector {
     private final Logger logger = LogManager.getLogger(VulnCollector.class);
+    private static Set<Vulnerability> vulnerabilities = new HashSet<>();
 
     @Override
     public void collect(CallStack callStack) {
         ContextMethod reachedMethod = callStack.peek();
-        if (checkReachSink(reachedMethod, callStack)) {
+        if (checkReachSink(reachedMethod)) {
+            ContextMethod entryMethod = callStack.getFirst();
+            IntraAnalyzedMethod entryAnalyzedMethod = entryMethod.getIntraAnalyzedMethod();
+            Router router = null;
+            if (entryAnalyzedMethod instanceof RouteIntraAnalyzedMethod) {
+                RouteIntraAnalyzedMethod routeIntraAnalyzedMethod = (RouteIntraAnalyzedMethod) entryAnalyzedMethod;
+                router = routeIntraAnalyzedMethod.getRouter();
+            }
+            vulnerabilities.add(new Vulnerability(router, reachedMethod, callStack));
             logger.error(String.format("!!! find vulnerability reach sink to %s", reachedMethod.getSootMethod().getSignature()));
         }
     }
 
-    public boolean checkReachSink(ContextMethod reachedMethod, CallStack callStack) {
+    public static Set<Vulnerability> getVulnerabilities() {
+        return vulnerabilities;
+    }
+
+    public boolean checkReachSink(ContextMethod reachedMethod) {
         IntraAnalyzedMethod analyzedMethod = reachedMethod.getIntraAnalyzedMethod();
         TaintContainer taintContainer = reachedMethod.getTaintContainer();
 

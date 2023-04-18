@@ -26,7 +26,6 @@ public abstract class ContextMethod {
     private SootMethod sootMethod;
     private Loc callSite;
     private CallNode callNode;
-    private Set<Node> taintNodes;
     private boolean retTaint;
     private boolean baseTaint;
     private boolean paramTaint;
@@ -38,7 +37,6 @@ public abstract class ContextMethod {
         this.sootMethod = sootMethod;
         this.callSite = callSite;
         this.callNode = callNode;
-        this.taintNodes = new LinkedHashSet<>();
         this.taintContainer = new TaintContainer();
         this.pointToContainer = new PointToContainer();
 
@@ -112,5 +110,11 @@ public abstract class ContextMethod {
 
     public CallNode getCallNode() {
         return callNode;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s method's taint flow:%n", getSootMethod().getSignature()) +
+                String.join("\n", getTaintContainer().toTaintFlowUnitStr());
     }
 }

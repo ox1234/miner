@@ -29,23 +29,16 @@ public class FlowEngine {
     private Map<FlowHandlerEnum, FlowHandler<?>> flowHandlers;
     public static Map<String, IntraAnalyzedMethod> intraAnalyzedMethodMap;
 
-
     private CtxCG ctxCG;
     private CallStack callStack;
-    private Hierarchy hierarchy;
-    private static Map<Set<String>, Boolean> routeIsVuln = new HashMap<>();
-    private static Map<Set<String>, Boolean> routeIsNotVuln = new HashMap<>();
-
-    private Set<String> currentRoute;
 
     public FlowEngine(Map<String, IntraAnalyzedMethod> analyzedMethodMap) {
         intraAnalyzedMethodMap = analyzedMethodMap;
 
         this.ctxCG = new CtxCG();
         this.callStack = new CallStack();
-        this.hierarchy = Scene.v().getActiveHierarchy();
-
         this.flowHandlers = new HashMap<>();
+
         registerFlowHandler(FlowHandlerEnum.POINT_FLOW_HANDLER, new PointFlowHandler(this));
         registerFlowHandler(FlowHandlerEnum.TAINT_FLOW_HANDLER, new SanitizedTaintFlowHandler(this, new VulnCollector()));
     }
@@ -88,13 +81,6 @@ public class FlowEngine {
         // generate input param object
         entry.genFakeParamObj();
 
-        // inject the route
-        if (entry.getIntraAnalyzedMethod() instanceof RouteIntraAnalyzedMethod) {
-            RouteIntraAnalyzedMethod routeIntraAnalyzedMethod = (RouteIntraAnalyzedMethod) entry.getIntraAnalyzedMethod();
-            routeIsNotVuln.put(routeIntraAnalyzedMethod.getRoutes(), false);
-            currentRoute = routeIntraAnalyzedMethod.getRoutes();
-        }
-
         // do point analysis, and build call graph
         logger.info(String.format("do point analysis and build call graph from %s entry", entryPoint.getSignature()));
         getFlowHandler(FlowHandlerEnum.POINT_FLOW_HANDLER).doAnalysis(entry);
@@ -120,10 +106,6 @@ public class FlowEngine {
         return Scene.v().getActiveHierarchy();
     }
 
-    public void setRouteIsTaint() {
-        routeIsNotVuln.remove(currentRoute);
-        routeIsVuln.put(currentRoute, true);
-    }
 
     public static IntraAnalyzedMethod getAnalysedMethod(SootMethod sootMethod) {
         return getAnalysedMethod(sootMethod.getSignature());
@@ -138,9 +120,5 @@ public class FlowEngine {
             }
         }
         return intraAnalyzedMethod;
-    }
-
-    public static void printRouteTable() {
-        routeIsNotVuln.forEach((strings, aBoolean) -> System.out.printf("%s\t%b%n", String.join(",", strings), aBoolean));
     }
 }

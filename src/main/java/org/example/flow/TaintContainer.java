@@ -10,6 +10,7 @@ import soot.Unit;
 import soot.jimple.Stmt;
 
 import java.util.*;
+import java.util.function.BiConsumer;
 
 public class TaintContainer {
     private boolean isRetTaint;
@@ -62,5 +63,11 @@ public class TaintContainer {
             }
         }
         return false;
+    }
+
+    public List<String> toTaintFlowUnitStr() {
+        List<String> taintUnits = new ArrayList<>();
+        inorderedTaintUnit.forEach((unit, node) -> taintUnits.add(String.format("\t%s [%s]", unit, node)));
+        return taintUnits;
     }
 }

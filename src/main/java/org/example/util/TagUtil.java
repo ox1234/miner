@@ -19,8 +19,8 @@ public class TagUtil {
         return Global.rule.filter.requestMethodTags.contains(tag.getType());
     }
 
-    public static List<String> getMethodRoutePath(SootMethod sootMethod) {
-        List<String> routeList = new ArrayList<>();
+    public static Set<String> getMethodRoutePath(SootMethod sootMethod) {
+        Set<String> routeList = new HashSet<>();
         for (String routeAnnotation : Global.rule.filter.requestMethodTags) {
             AnnotationTag annotationTag = searchAnnotation(getMethodAnnotation(sootMethod), routeAnnotation);
             if (annotationTag == null) {
@@ -52,7 +52,7 @@ public class TagUtil {
     }
 
     public static boolean isRouteMethod(SootMethod sootMethod) {
-        return sootMethod.getTag("routes") != null;
+        return sootMethod.getTag("router") != null;
     }
 
     public static boolean isAutoWireField(SootField sootField) {

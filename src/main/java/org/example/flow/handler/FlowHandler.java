@@ -15,7 +15,7 @@ public interface FlowHandler<T> {
 
     void doAnalysis(ContextMethod entry);
 
-    boolean preTransferLeft(Node to, T from);
+    boolean preTransferLeft(Node to, AbstractExprNode from, T result);
 
     void transferLeft(Node to, T from);
 
