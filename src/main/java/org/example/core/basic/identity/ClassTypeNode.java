@@ -7,4 +7,5 @@ public class ClassTypeNode extends ClassLevelSite {
     protected ClassTypeNode(Type type) {
         super(type.toString(), type.toString());
     }
+
 }

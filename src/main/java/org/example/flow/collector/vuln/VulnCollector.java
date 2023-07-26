@@ -12,7 +12,7 @@ import org.example.core.basic.identity.Parameter;
 import org.example.core.basic.obj.NormalObj;
 import org.example.core.basic.obj.Obj;
 import org.example.flow.CallStack;
-import org.example.flow.Collector;
+import org.example.flow.collector.Collector;
 import org.example.flow.PointToContainer;
 import org.example.flow.TaintContainer;
 import org.example.flow.context.ContextMethod;

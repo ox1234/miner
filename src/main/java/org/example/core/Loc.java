@@ -13,4 +13,9 @@ public class Loc {
         this.expr = expr;
         this.order = order;
     }
+
+
+    public int getOrder() {
+        return order;
+    }
 }

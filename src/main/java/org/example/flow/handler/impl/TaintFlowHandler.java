@@ -2,28 +2,24 @@ package org.example.flow.handler.impl;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.example.constant.InvokeType;
 import org.example.core.IntraAnalyzedMethod;
 import org.example.core.basic.Node;
 import org.example.core.basic.field.ArrayLoad;
-import org.example.core.basic.field.InstanceField;
-import org.example.core.basic.field.StaticField;
 import org.example.core.basic.identity.*;
 import org.example.core.basic.node.CallNode;
 import org.example.core.basic.obj.Obj;
 import org.example.core.expr.*;
-import org.example.flow.CallStack;
-import org.example.flow.Collector;
+import org.example.flow.collector.Collector;
 import org.example.flow.FlowEngine;
 import org.example.flow.context.ContextMethod;
 import org.example.flow.context.SpecialContextMethod;
 import org.example.flow.handler.AbstractFlowHandler;
-import org.example.util.NodeUtil;
 
 import java.util.*;
 
 public class TaintFlowHandler extends AbstractFlowHandler<Boolean> {
     private final Logger logger = LogManager.getLogger(TaintFlowHandler.class);
+    private boolean taintEntry = false;
 
     public TaintFlowHandler(FlowEngine flowEngine, Collector... collectors) {
         super(flowEngine, collectors);
@@ -74,9 +70,19 @@ public class TaintFlowHandler extends AbstractFlowHandler<Boolean> {
         return false;
     }
 
+
     @Override
     public Boolean handleSingleExprNode(SingleExprNode from) {
         return isRightTaint(from.getFirstNode());
+    }
+
+    @Override
+    public void doAnalysis(ContextMethod entry) {
+        if (!taintEntry) {
+            entry.taintAllParams();
+            taintEntry = true;
+        }
+        super.doAnalysis(entry);
     }
 
 
@@ -89,7 +95,6 @@ public class TaintFlowHandler extends AbstractFlowHandler<Boolean> {
 
     @Override
     public void preProcessCallNode(CallNode callNode, ContextMethod tgtContextMethod) {
-        logger.debug(String.format("pre processing %s call target method: %s", callNode, tgtContextMethod.getSootMethod().getSignature()));
         Set<Obj> baseObjs = callStack.getRefObjs(callNode.getBase());
         // if base is taint, set context method base taint flag
         if (getTaintContainer().containsTaint(baseObjs)) {

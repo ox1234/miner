@@ -3,7 +3,7 @@ package org.example.core.basic.field;
 import org.example.core.basic.Node;
 import org.example.core.basic.SiteLevelSite;
 
-public class ArrayLoad extends SiteLevelSite {
+public class ArrayLoad extends SiteLevelSite{
     private Node baseNode;
     private Node idxNode;
 
@@ -21,8 +21,10 @@ public class ArrayLoad extends SiteLevelSite {
         return idxNode;
     }
 
+
     @Override
     public String toString() {
         return String.format("%s(%s)", baseNode.toString(), idxNode.toString());
     }
+
 }

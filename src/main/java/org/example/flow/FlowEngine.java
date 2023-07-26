@@ -3,13 +3,12 @@ package org.example.flow;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.example.core.IntraAnalyzedMethod;
-import org.example.core.Loc;
-import org.example.core.RouteIntraAnalyzedMethod;
 import org.example.core.basic.Node;
 import org.example.core.basic.Site;
 import org.example.core.basic.identity.ThisVariable;
 import org.example.core.basic.obj.Obj;
 import org.example.core.basic.obj.PhantomObj;
+import org.example.flow.collector.debug.TaintVarCollector;
 import org.example.flow.collector.vuln.VulnCollector;
 import org.example.flow.context.ContextMethod;
 import org.example.flow.context.InstanceContextMethod;
@@ -17,12 +16,14 @@ import org.example.flow.context.StaticContextMethod;
 import org.example.flow.handler.FlowHandler;
 import org.example.flow.handler.impl.PointFlowHandler;
 import org.example.flow.handler.impl.SanitizedTaintFlowHandler;
-import org.example.flow.handler.impl.TaintFlowHandler;
 import org.example.util.MethodUtil;
 import soot.*;
 
-import java.util.*;
-import java.util.function.BiConsumer;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public class FlowEngine {
     private final Logger logger = LogManager.getLogger(FlowEngine.class);
@@ -40,7 +41,7 @@ public class FlowEngine {
         this.flowHandlers = new HashMap<>();
 
         registerFlowHandler(FlowHandlerEnum.POINT_FLOW_HANDLER, new PointFlowHandler(this));
-        registerFlowHandler(FlowHandlerEnum.TAINT_FLOW_HANDLER, new SanitizedTaintFlowHandler(this, Collections.emptySet(), Collections.emptySet(), new VulnCollector()));
+        registerFlowHandler(FlowHandlerEnum.TAINT_FLOW_HANDLER, new SanitizedTaintFlowHandler(this, Collections.emptySet(), Collections.emptySet(), new VulnCollector(), new TaintVarCollector()));
     }
 
     public void registerFlowHandler(FlowHandlerEnum flowType, FlowHandler<?> flowHandler) {
@@ -81,17 +82,12 @@ public class FlowEngine {
         // generate input param object
         entry.genFakeParamObj();
 
-        // do point analysis, and build call graph
-        logger.info(String.format("do point analysis and build call graph from %s entry", entryPoint.getSignature()));
-        getFlowHandler(FlowHandlerEnum.POINT_FLOW_HANDLER).doAnalysis(entry);
-
-        // do taint analysis
-        logger.info(String.format("do taint analysis from %s entry", entryPoint.getSignature()));
-        TaintFlowHandler taintFlowHandler = (TaintFlowHandler) getFlowHandler(FlowHandlerEnum.TAINT_FLOW_HANDLER);
-
-        entry.taintAllParams();
-        taintFlowHandler.doAnalysis(entry);
-        logger.info(String.format("flow analysis is finished from %s entry", entryPoint.getSignature()));
+        for (FlowHandlerEnum value : FlowHandlerEnum.values()) {
+            logger.info(String.format("do %s analysis from %s entry", value, entryPoint.getSignature()));
+            Instant startTime = Instant.now();
+            getFlowHandler(value).doAnalysis(entry);
+            logger.info(String.format("%s analysis finished from %s entry cost %ds", value, entryPoint.getSignature(), Duration.between(startTime, Instant.now()).getSeconds()));
+        }
     }
 
     public CtxCG getCtxCG() {

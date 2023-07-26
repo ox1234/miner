@@ -5,12 +5,12 @@ import org.example.core.basic.TypeNode;
 import soot.SootMethod;
 import soot.Type;
 
-public class Parameter extends MethodLevelSite implements TypeNode {
+public class Parameter extends LocalVariable implements TypeNode {
     protected int idx;
     protected Type type;
 
     protected Parameter(int idx, SootMethod enclosingMethod, Type type) {
-        super(getParameterName(idx), enclosingMethod.getSignature());
+        super(getParameterName(idx), enclosingMethod, type);
         this.idx = idx;
         this.type = type;
     }

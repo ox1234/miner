@@ -13,12 +13,11 @@ import java.util.*;
 import java.util.function.BiConsumer;
 
 public class TaintContainer {
-    private boolean isRetTaint;
     private boolean isParamTaint;
     private Map<Integer, Boolean> paramTaintMap = new HashMap<>();
     private Set<Obj> taintObjs = new LinkedHashSet<>();
     private static Set<Obj> globalTaintObjs = new LinkedHashSet<>();
-    private Set<Node> taintNodes = new HashSet<>();
+    private Set<Node> taintNodes = new LinkedHashSet<>();
     private Map<Unit, Node> inorderedTaintUnit = new LinkedHashMap<>();
 
     public void addTaint(Node node, Set<Obj> objs, Unit stmt) {
@@ -31,10 +30,6 @@ public class TaintContainer {
         if (node instanceof Parameter) {
             paramTaintMap.put(((Parameter) node).getIdx(), true);
             isParamTaint = true;
-        }
-
-        if (node instanceof UnifyReturn) {
-            isRetTaint = true;
         }
 
         if (node instanceof Global) {
@@ -69,5 +64,9 @@ public class TaintContainer {
         List<String> taintUnits = new ArrayList<>();
         inorderedTaintUnit.forEach((unit, node) -> taintUnits.add(String.format("\t%s [%s]", unit, node)));
         return taintUnits;
+    }
+
+    public Set<Node> getTaintNodes() {
+        return taintNodes;
     }
 }

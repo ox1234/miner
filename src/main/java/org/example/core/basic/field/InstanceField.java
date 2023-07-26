@@ -1,12 +1,11 @@
 package org.example.core.basic.field;
 
 import org.example.core.basic.*;
-import org.example.core.basic.obj.Obj;
 import soot.SootField;
 import soot.SootMethod;
 import soot.Type;
 
-public class InstanceField extends MethodLevelSite implements TypeNode {
+public class InstanceField extends MethodLevelSite implements TypeNode{
     protected SootField field;
     protected MethodLevelSite base;
 

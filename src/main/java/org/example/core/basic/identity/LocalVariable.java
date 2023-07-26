@@ -20,4 +20,5 @@ public class LocalVariable extends MethodLevelSite implements TypeNode {
     public Type getType() {
         return type;
     }
+
 }

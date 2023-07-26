@@ -1,20 +1,16 @@
 package org.example.core;
 
-import org.example.config.NodeRepository;
-import org.example.config.PointRepository;
 import org.example.core.basic.Node;
 import org.example.core.basic.Site;
 import org.example.core.basic.identity.Parameter;
 import org.example.core.basic.identity.UnifyReturn;
 import org.example.core.expr.AbstractExprNode;
 import org.example.core.basic.node.CallNode;
-import org.example.core.basic.obj.Obj;
 import org.example.core.expr.MultiExprNode;
 import org.example.util.TagUtil;
 import soot.SootClass;
 import soot.SootMethod;
 import soot.Unit;
-import soot.jimple.Stmt;
 
 import java.util.*;
 
@@ -81,7 +77,7 @@ public class IntraAnalyzedMethod {
         public void addInorderFlowMap(Node to, AbstractExprNode from, Unit stmt) {
             if (to instanceof UnifyReturn) {
                 if (!inorderFlowMap.containsKey(to)) {
-                    inorderFlowMap.put(to, new AnalyzedUnit(to, new MultiExprNode(), stmt));
+                    inorderFlowMap.put(to, new AnalyzedUnit(to, new MultiExprNode(false), stmt));
                 }
                 inorderFlowMap.get(to).getFrom().addNodes(from.getAllNodes());
             } else {
@@ -131,6 +127,10 @@ public class IntraAnalyzedMethod {
 
     public Map<Node, AnalyzedUnit> getOrderedFlowMap() {
         return flow.inorderFlowMap;
+    }
+
+    public List<String> getParamTypes() {
+        return paramTypes;
     }
 
     public List<Parameter> getParameterNodes() {

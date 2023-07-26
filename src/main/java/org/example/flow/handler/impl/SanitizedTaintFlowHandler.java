@@ -5,7 +5,7 @@ import org.example.core.basic.TypeNode;
 import org.example.core.basic.node.CallNode;
 import org.example.core.expr.AbstractExprNode;
 import org.example.core.expr.SingleExprNode;
-import org.example.flow.Collector;
+import org.example.flow.collector.Collector;
 import org.example.flow.FlowEngine;
 import soot.PrimType;
 import soot.Type;
