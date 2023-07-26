@@ -10,6 +10,7 @@ import java.util.function.Consumer;
 
 abstract public class AbstractExprNode {
     private List<Node> nodes;
+    private Loc loc;
 
     public AbstractExprNode(List<Node> nodes) {
         this.nodes = nodes;
@@ -37,5 +38,13 @@ abstract public class AbstractExprNode {
 
     public void addNodes(List<Node> addNodes) {
         nodes.addAll(addNodes);
+    }
+
+    public Loc getLoc() {
+        return loc;
+    }
+
+    public void setLoc(Loc loc) {
+        this.loc = loc;
     }
 }

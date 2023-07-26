@@ -9,7 +9,7 @@ import soot.Type;
 import java.util.Collections;
 import java.util.Set;
 
-abstract public class Obj extends UnitLevelSite implements TypeNode {
+abstract public class Obj extends UnitLevelSite implements TypeNode{
     protected Type type;
 
     protected Obj(Type type, Loc loc) {

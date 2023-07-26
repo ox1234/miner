@@ -2,9 +2,6 @@ package org.example.core.basic;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.example.config.NodeRepository;
-import org.example.core.Loc;
-import soot.jimple.Stmt;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -37,8 +34,7 @@ public abstract class Site implements Node {
             assert constructors.length == 1;
             Constructor<?> constructor = constructors[0];
             constructor.setAccessible(true);
-            Node node = (Node) constructor.newInstance(args);
-            return NodeRepository.addNode(node);
+            return (Node) constructor.newInstance(args);
         } catch (InvocationTargetException | InstantiationException | IllegalArgumentException |
                  IllegalAccessException e) {
             logger.error(String.format("construct %s class instance fail with exception:\n%s", nodeClass.getName(), e));

@@ -5,7 +5,7 @@ import soot.VoidType;
 
 import java.util.UUID;
 
-public class VoidNode extends UnitLevelSite {
+public class VoidNode extends UnitLevelSite{
     protected VoidNode() {
         super(VoidType.v().toString(), UUID.randomUUID().toString());
     }

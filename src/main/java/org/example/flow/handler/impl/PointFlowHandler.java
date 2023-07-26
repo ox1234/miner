@@ -18,7 +18,7 @@ import org.example.core.expr.EmptyExprNode;
 import org.example.core.expr.MultiExprNode;
 import org.example.core.expr.OpExprNode;
 import org.example.core.expr.SingleExprNode;
-import org.example.flow.Collector;
+import org.example.flow.collector.Collector;
 import org.example.flow.FlowEngine;
 import org.example.flow.context.ContextMethod;
 import org.example.flow.context.InstanceContextMethod;

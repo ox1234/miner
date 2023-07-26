@@ -5,11 +5,11 @@ import org.example.core.basic.TypeNode;
 import soot.SootMethod;
 import soot.Type;
 
-public class UnifyReturn extends MethodLevelSite implements TypeNode {
+public class UnifyReturn extends LocalVariable implements TypeNode {
     protected Type type;
 
     protected UnifyReturn(SootMethod enclosingMethod, Type type) {
-        super("return", enclosingMethod.getSignature());
+        super("return", enclosingMethod, type);
         this.type = type;
     }
 

@@ -72,6 +72,7 @@ public class SootSetup {
         Options.v().setPhaseOption("jb", "use-original-names:true");
         Options.v().setPhaseOption("jb.cp-ule", "enabled:false");
         Options.v().setPhaseOption("jb.dae", "enabled:false");
+        Options.v().setPhaseOption("tag.ln", "enabled:true");
 
         // disable some phase
         Options.v().setPhaseOption("cg", "enabled:false");
@@ -115,6 +116,9 @@ public class SootSetup {
     // 初始化方法
     public void initialize(String target) throws Exception {
         StopWatch sw = new StopWatch();
+
+        // reset soot environment
+        G.reset();
 
         // set soot options
         setOptions();

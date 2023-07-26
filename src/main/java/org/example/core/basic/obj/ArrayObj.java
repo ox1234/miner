@@ -6,7 +6,7 @@ import soot.Type;
 
 import java.util.*;
 
-public class ArrayObj extends Obj {
+public class ArrayObj extends Obj{
     private Map<Integer, ArrayItem> itemMap;
 
     protected ArrayObj(Type type, Loc loc) {

@@ -1,6 +1,5 @@
 package org.example.core.visitor;
 
-import org.example.config.NodeRepository;
 import org.example.constant.InvokeType;
 import org.example.constant.Operation;
 import org.example.core.IntraAnalyzedMethod;
@@ -9,7 +8,6 @@ import org.example.core.basic.node.MapPutCallNode;
 import org.example.core.basic.obj.ArrayObj;
 import org.example.core.basic.obj.MapCollectionObj;
 import org.example.core.expr.*;
-import org.example.core.basic.MethodLevelSite;
 import org.example.core.basic.Node;
 import org.example.core.basic.Site;
 import org.example.core.basic.field.ArrayLoad;
@@ -48,13 +46,11 @@ public class ValueVisitor extends AbstractShimpleValueSwitch<AbstractExprNode> {
     // ----------------------------------------------- value visitor ----------------------------------------------------------------
     @Override
     public void caseLocal(soot.Local v) {
-        Node node = NodeRepository.getNode(MethodLevelSite.getLevelSiteID(v.getName(), currentMethod.getSignature()));
-        if (node == null) {
-            if (v.getName().equals("this")) {
-                node = Site.getNodeInstance(ThisVariable.class, currentMethod, v.getType());
-            } else {
-                node = Site.getNodeInstance(LocalVariable.class, v.getName(), currentMethod, v.getType());
-            }
+        Node node;
+        if (v.getName().equals("this")) {
+            node = Site.getNodeInstance(ThisVariable.class, currentMethod, v.getType());
+        } else {
+            node = Site.getNodeInstance(LocalVariable.class, v.getName(), currentMethod, v.getType());
         }
         this.setResult(new SingleExprNode(node));
     }
@@ -240,7 +236,7 @@ public class ValueVisitor extends AbstractShimpleValueSwitch<AbstractExprNode> {
 
     @Override
     public void casePhiExpr(PhiExpr e) {
-        MultiExprNode multiExprNode = new MultiExprNode();
+        MultiExprNode multiExprNode = new MultiExprNode(true);
         for (Value value : e.getValues()) {
             value.apply(this);
             multiExprNode.addNodes(getResult().getAllNodes());
@@ -377,8 +373,15 @@ public class ValueVisitor extends AbstractShimpleValueSwitch<AbstractExprNode> {
 
     // ------------------------------------------------------- result manipulate ------------------------------------------
 
+
+    @Override
+    public void setResult(AbstractExprNode result) {
+        result.setLoc(loc);
+        super.setResult(result);
+    }
+
     public void setNopResult() {
-        super.setResult(new EmptyExprNode());
+        setResult(new EmptyExprNode());
     }
 
     public AbstractExprNode getResult() {

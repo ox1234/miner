@@ -6,8 +6,10 @@ import org.example.constant.SpringAnnotation;
 import soot.SootClass;
 import soot.SootField;
 import soot.SootMethod;
+import soot.Unit;
 import soot.tagkit.*;
 
+import javax.swing.text.TabExpander;
 import java.util.*;
 
 public class TagUtil {
@@ -223,5 +225,13 @@ public class TagUtil {
             return Collections.emptyList();
         }
         return annotationTag.getAnnotations();
+    }
+
+    public static int getUnitLineNumber(Unit unit) {
+        Tag tag = unit.getTag("LineNumberTag");
+        if (tag != null) {
+            return Integer.parseInt(new String(tag.getValue()), 10);
+        }
+        return -1;
     }
 }
