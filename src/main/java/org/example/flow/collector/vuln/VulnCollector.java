@@ -4,7 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.example.basic.Router;
 import org.example.basic.Vulnerability;
-import org.example.config.Global;
+import org.example.config.Configuration;
 import org.example.core.IntraAnalyzedMethod;
 import org.example.core.MyBatisIntraAnalyzedMethod;
 import org.example.core.RouteIntraAnalyzedMethod;
@@ -69,8 +69,8 @@ public class VulnCollector implements Collector {
 
 
         for (String signature : MethodUtil.getOverrideMethodSignatureOfInclude(reachedMethod.getSootMethod())) {
-            if (Global.sinkMap.containsKey(signature)) {
-                Sink sink = Global.sinkMap.get(signature);
+            if (Configuration.getSinkMap().containsKey(signature)) {
+                Sink sink = Configuration.getSinkMap().get(signature);
 
                 // if base is taint and config defined such sink without no param, will report
                 if (reachedMethod.isBaseTaint() && sink.index.size() == 0) {

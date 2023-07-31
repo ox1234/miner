@@ -1,13 +1,10 @@
 package org.example.soot.impl;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.example.config.Global;
+import org.example.config.Configuration;
 import org.example.extra.MybatisXMLMapperHandler;
-import org.example.soot.TargetHandler;
-import org.example.util.JarUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -49,7 +46,7 @@ public class AchieveHandler extends AbstractTargetHandler {
         String targetName = path.toFile().getName();
         // check file is jar
         if (targetName.endsWith(".jar") || targetName.endsWith(".war")) {
-            outputPath = Paths.get(Global.outputPath).resolve(DigestUtils.sha1Hex(targetName));
+            outputPath = Paths.get(Configuration.getOutputPath()).resolve(DigestUtils.sha1Hex(targetName));
             logger.info(String.format("target is a packed file(jar/war), will extract inner class in %s", outputPath));
             if (!outputPath.toFile().exists()) {
                 outputPath.toFile().mkdirs();

@@ -1,16 +1,12 @@
 package org.example.flow;
 
-import org.example.config.Global;
+import org.example.core.basic.Global;
 import org.example.core.basic.Node;
 import org.example.core.basic.identity.Parameter;
-import org.example.core.basic.identity.UnifyReturn;
 import org.example.core.basic.obj.Obj;
-import org.example.util.PrintUtil;
 import soot.Unit;
-import soot.jimple.Stmt;
 
 import java.util.*;
-import java.util.function.BiConsumer;
 
 public class TaintContainer {
     private boolean isParamTaint;

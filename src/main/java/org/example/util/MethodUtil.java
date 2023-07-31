@@ -1,6 +1,5 @@
 package org.example.util;
 
-import org.example.config.Global;
 import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
@@ -9,9 +8,7 @@ import soot.tagkit.AnnotationTag;
 
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.function.Consumer;
 
 public class MethodUtil {
     private static final String INIT_METHOD_NAME = "<init>";
