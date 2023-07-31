@@ -1,23 +1,15 @@
 package org.example.flow.context;
 
-import org.example.config.Global;
 import org.example.core.IntraAnalyzedMethod;
 import org.example.core.Loc;
-import org.example.core.MyBatisIntraAnalyzedMethod;
-import org.example.core.basic.Node;
 import org.example.core.basic.Site;
-import org.example.core.basic.TypeNode;
 import org.example.core.basic.identity.Parameter;
 import org.example.core.basic.node.CallNode;
-import org.example.core.basic.obj.NormalObj;
 import org.example.core.basic.obj.Obj;
 import org.example.core.basic.obj.PhantomObj;
-import org.example.flow.CallStack;
 import org.example.flow.FlowEngine;
 import org.example.flow.PointToContainer;
 import org.example.flow.TaintContainer;
-import org.example.rule.Sink;
-import org.example.util.MethodUtil;
 import soot.*;
 
 import java.util.*;

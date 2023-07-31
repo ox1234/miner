@@ -1,34 +1,16 @@
 package org.example.util.bytedance;
 
 import com.google.gson.Gson;
-import org.apache.commons.compress.archivers.ArchiveEntry;
-import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
-import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.example.config.Global;
+import org.example.config.Configuration;
 import org.example.constant.BytedanceConstant;
 import org.example.util.ShaUtil;
 
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public class BytedanceUtil {
@@ -67,7 +49,7 @@ public class BytedanceUtil {
             for (String tempZip : compiledResult.getComplied()) {
                 logger.info(String.format("processing Compiled result:%s", tempZip));
                 // first download the zip file
-                Path tempPath = Paths.get(Global.outputPath, repoName.replace("/", ""));
+                Path tempPath = Paths.get(Configuration.getOutputPath(), repoName.replace("/", ""));
                 String downLoadUrl = BytedanceConstant.COMPILED_DOWNLOAD_URL.getConstant() + tempZip;
                 HttpUtil.downLoadFromUrl(downLoadUrl, tempZip, tempPath);
 

@@ -1,6 +1,6 @@
 package org.example.util;
 
-import org.example.config.Global;
+import org.example.config.Configuration;
 import org.example.constant.MyBatis;
 import org.example.constant.SpringAnnotation;
 import soot.SootClass;
@@ -9,21 +9,20 @@ import soot.SootMethod;
 import soot.Unit;
 import soot.tagkit.*;
 
-import javax.swing.text.TabExpander;
 import java.util.*;
 
 public class TagUtil {
     public static boolean isSpringControllerAnnotation(AnnotationTag tag) {
-        return Global.rule.filter.controllerClassTags.contains(tag.getType());
+        return Configuration.getRule().filter.controllerClassTags.contains(tag.getType());
     }
 
     public static boolean isRouteMethodAnnotation(AnnotationTag tag) {
-        return Global.rule.filter.requestMethodTags.contains(tag.getType());
+        return Configuration.getRule().filter.requestMethodTags.contains(tag.getType());
     }
 
     public static Set<String> getMethodRoutePath(SootMethod sootMethod) {
         Set<String> routeList = new HashSet<>();
-        for (String routeAnnotation : Global.rule.filter.requestMethodTags) {
+        for (String routeAnnotation : Configuration.getRule().filter.requestMethodTags) {
             AnnotationTag annotationTag = searchAnnotation(getMethodAnnotation(sootMethod), routeAnnotation);
             if (annotationTag == null) {
                 continue;

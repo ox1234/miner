@@ -14,7 +14,7 @@ public class SootLoaderTest {
     @Test
     public void TestFatJarLoader() throws Exception {
         Path cp = Paths.get("src", "test", "resources", "soot", "fatjar.jar");
-        SootSetup sootSetup = new SootSetup(new FatJarHandler());
+        SootSetup sootSetup = new SootSetup(null);
         sootSetup.initialize(cp.toFile().getAbsolutePath());
         assertTrue(Scene.v().getApplicationClasses().size() > 0);
     }
@@ -22,7 +22,7 @@ public class SootLoaderTest {
     @Test
     public void TestSingleClassLoader() throws Exception {
         Path cp = Paths.get("src", "test", "resources", "soot", "single", "Main.class");
-        SootSetup sootSetup = new SootSetup(new SingleClassHandler());
+        SootSetup sootSetup = new SootSetup(null);
         sootSetup.initialize(cp.toFile().getAbsolutePath());
         assertTrue(Scene.v().getApplicationClasses().size() > 0);
     }

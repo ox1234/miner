@@ -1,12 +1,14 @@
 package org.example.soot;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.example.basic.Router;
-import org.example.config.Global;
-import org.example.tags.RouteTag;
+import org.example.config.Configuration;
+import org.example.soot.impl.AchieveHandler;
+import org.example.soot.impl.DirectoryHandler;
+import org.example.soot.impl.FatJarHandler;
+import org.example.soot.impl.SingleClassHandler;
 import org.example.util.ClassUtil;
 import org.example.util.MethodUtil;
 import org.example.util.TagUtil;
@@ -14,44 +16,49 @@ import soot.*;
 import soot.options.Options;
 import soot.tagkit.AnnotationTag;
 
-import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.Duration;
-import java.time.Instant;
 import java.util.*;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 // SootSetup 负责所有Soot的参数设置和Soot类的加载路径
 public class SootSetup {
     private final Logger logger = LogManager.getLogger(SootSetup.class);
     // sourceTypeSpecifier 用来设置哪些类是application class以及library class
-    private final SourceTypeSpecifier sourceTypeSpecifier;
-    private final TargetHandler targetHandler;
+    private SourceTypeSpecifier sourceTypeSpecifier;
+    private final List<TargetHandler> registeredHandlers;
     private Hierarchy hierarchy;
 
-    public SootSetup(TargetHandler targetHandler) {
+    public SootSetup() {
         sourceTypeSpecifier = new DefaultSourceTypeSpecifier();
-        this.targetHandler = targetHandler;
+        this.registeredHandlers = new ArrayList<>();
+
+        // register built in target handler
+        this.registerTargetHandler(new SingleClassHandler());
+        this.registerTargetHandler(new DirectoryHandler());
+        this.registerTargetHandler(new FatJarHandler());
+        this.registerTargetHandler(new AchieveHandler());
     }
 
-    public SootSetup(TargetHandler targetHandler, SourceTypeSpecifier specifier) {
+    public void setSourceTypeSpecifier(SourceTypeSpecifier specifier) {
         this.sourceTypeSpecifier = specifier;
-        this.targetHandler = targetHandler;
+    }
+
+    public void registerTargetHandler(TargetHandler targetHandler) {
+        registeredHandlers.add(targetHandler);
     }
 
     // setScanTarget 该函数负责Soot分析的路径，支持war，jar包（会自解压压缩包）
     private void setScanTarget(String target) throws Exception {
         logger.info(String.format("will initialize soot environment with %s path", target));
         Path targetPath = Paths.get(target);
-        if (!targetHandler.canHandle(targetPath)) {
-            throw new Exception(String.format("%s target handler not support this target", targetHandler.getClass().getName()));
+        for (TargetHandler registeredHandler : registeredHandlers) {
+            if (registeredHandler.canHandle(targetPath)) {
+                logger.info(String.format("%s target handler will collect class information", registeredHandler.getClass()));
+                Options.v().set_process_dir(registeredHandler.getTargetClassDir(targetPath));
+                Options.v().set_soot_classpath(String.join(":", registeredHandler.getLibraryClassDir(targetPath)));
+            }
         }
-
-        logger.info(String.format("%s target handler will collect class information", targetHandler.getClass()));
-        Options.v().set_process_dir(targetHandler.getTargetClassDir(targetPath));
-        Options.v().set_soot_classpath(String.join(":", targetHandler.getLibraryClassDir(targetPath)));
+        throw new Exception(String.format("no registered target handler can handle %s target", target));
     }
 
     // setOptions Soot的phase配置
@@ -65,7 +72,7 @@ public class SootSetup {
         Options.v().set_output_format(Options.output_format_shimp);
         Options.v().set_keep_line_number(true);
         Options.v().set_keep_offset(true);
-        Options.v().set_output_dir(Global.sootOutputPath);
+        Options.v().set_output_dir(Configuration.getOutputPath());
         Options.v().set_no_writeout_body_releasing(true);
 
         // speed up soot
