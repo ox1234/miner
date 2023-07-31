@@ -1,27 +1,25 @@
 package org.example.config;
 
 import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.ParseException;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
-import org.example.core.Engine;
 import org.example.rule.Root;
 import org.example.rule.Rule;
 import org.example.rule.RuleUtil;
 import org.example.rule.Sink;
 
 import java.io.FileInputStream;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class Configuration {
     private static final Logger logger = LogManager.getLogger(Configuration.class);
 
-    private static String target;
+    private static Set<String> targets;
     private static String outputPath;
+    private static Set<String> entryPoints;
 
     private static Root rule;
     private static Set<String> sinks;
@@ -30,15 +28,25 @@ public class Configuration {
     private static boolean debugMode;
     private static boolean codeGraphMode;
 
-    public static void initialize(CommandLine commandLine) {
-        target = commandLine.getOptionValue("target");
+    public static void initialize(CommandLine commandLine) throws Exception {
         sinkMap = new HashMap<>();
-        debugMode = commandLine.hasOption("debug");
-        codeGraphMode = commandLine.hasOption("codegraph");
-        outputPath = commandLine.getOptionValue("output");
+        entryPoints = new LinkedHashSet<>();
 
+        targets = getAllTarget(commandLine.getOptionValue("target"));
+        debugMode = commandLine.hasOption("debug");
         if (debugMode) {
             Configurator.setRootLevel(Level.DEBUG);
+        }
+
+        codeGraphMode = commandLine.hasOption("codegraph");
+        outputPath = commandLine.getOptionValue("output");
+        if (outputPath == null || outputPath.equals("")) {
+            outputPath = "tmp";
+        }
+
+        entryPoints = getAllEntryPoints(commandLine.getOptionValue("entry"));
+        if (entryPoints.size() == 0 && !codeGraphMode) {
+            throw new ParseException("no entry point method set, please set at least one entry point");
         }
 
         try (FileInputStream fileInputStream = new FileInputStream("config.json")) {
@@ -50,6 +58,23 @@ public class Configuration {
         } catch (Exception e) {
             logger.info(String.format("read source sink rules fail: %s", e.getMessage()));
         }
+    }
+
+    private static Set<String> getAllTarget(String target) {
+        return splitWithComa(target);
+    }
+
+    private static Set<String> splitWithComa(String target) {
+        Set<String> targets = new LinkedHashSet<>();
+        if (target == null || target.equals("")) {
+            return targets;
+        }
+        Arrays.stream(target.split(",")).forEach(s -> targets.add(s.trim()));
+        return targets;
+    }
+
+    private static Set<String> getAllEntryPoints(String entry) {
+        return splitWithComa(entry);
     }
 
     private static Set<String> getAllSinkSignature() {
@@ -65,8 +90,9 @@ public class Configuration {
         return sinks;
     }
 
-    public static String getTarget() {
-        return target;
+
+    public static Set<String> getTargets() {
+        return targets;
     }
 
     public static String getOutputPath() {
@@ -91,5 +117,9 @@ public class Configuration {
 
     public static boolean isCodeGraphMode() {
         return codeGraphMode;
+    }
+
+    public static Set<String> getEntryPoints() {
+        return entryPoints;
     }
 }

@@ -10,8 +10,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 public class FatJarHandler extends AchieveHandler {
-    private Path outputPath;
-
     @Override
     public boolean canHandle(Path path) throws Exception {
         String pathToJar = path.toFile().getAbsolutePath();
@@ -34,20 +32,14 @@ public class FatJarHandler extends AchieveHandler {
 
     @Override
     public List<String> getTargetClassDir(Path path) throws Exception {
-        if (outputPath == null) {
-            outputPath = extractAchieve(path);
-        }
-
+        outputPath = extractAchieve(path);
         Path appClassPath = outputPath.resolve("BOOT-INF/classes");
         return Collections.singletonList(appClassPath.toFile().getAbsolutePath());
     }
 
     @Override
     public List<String> getLibraryClassDir(Path path) throws Exception {
-        if (outputPath == null) {
-            outputPath = extractAchieve(path);
-        }
-
+        outputPath = extractAchieve(path);
         Path libClassPath = outputPath.resolve("BOOT-INF/lib");
         Collection<File> libJars = FileUtils.listFiles(libClassPath.toFile(), new String[]{"jar"}, true);
         return getLibClassPathList(libJars);

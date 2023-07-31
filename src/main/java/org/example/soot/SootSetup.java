@@ -16,9 +16,11 @@ import soot.*;
 import soot.options.Options;
 import soot.tagkit.AnnotationTag;
 
+import javax.swing.text.html.Option;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.function.Consumer;
 
 // SootSetup 负责所有Soot的参数设置和Soot类的加载路径
 public class SootSetup {
@@ -27,10 +29,14 @@ public class SootSetup {
     private SourceTypeSpecifier sourceTypeSpecifier;
     private final List<TargetHandler> registeredHandlers;
     private Hierarchy hierarchy;
+    private List<String> applicationDirs;
+    private List<String> libraryDirs;
 
     public SootSetup() {
         sourceTypeSpecifier = new DefaultSourceTypeSpecifier();
         this.registeredHandlers = new ArrayList<>();
+        this.applicationDirs = new ArrayList<>();
+        this.libraryDirs = new ArrayList<>();
 
         // register built in target handler
         this.registerTargetHandler(new SingleClassHandler());
@@ -54,8 +60,9 @@ public class SootSetup {
         for (TargetHandler registeredHandler : registeredHandlers) {
             if (registeredHandler.canHandle(targetPath)) {
                 logger.info(String.format("%s target handler will collect class information", registeredHandler.getClass()));
-                Options.v().set_process_dir(registeredHandler.getTargetClassDir(targetPath));
-                Options.v().set_soot_classpath(String.join(":", registeredHandler.getLibraryClassDir(targetPath)));
+                applicationDirs.addAll(registeredHandler.getTargetClassDir(targetPath));
+                libraryDirs.addAll(registeredHandler.getLibraryClassDir(targetPath));
+                return;
             }
         }
         throw new Exception(String.format("no registered target handler can handle %s target", target));
@@ -72,7 +79,7 @@ public class SootSetup {
         Options.v().set_output_format(Options.output_format_shimp);
         Options.v().set_keep_line_number(true);
         Options.v().set_keep_offset(true);
-        Options.v().set_output_dir(Configuration.getOutputPath());
+        Options.v().set_output_dir(Paths.get(Configuration.getOutputPath()).resolve("soot_output").toString());
         Options.v().set_no_writeout_body_releasing(true);
 
         // speed up soot
@@ -108,10 +115,20 @@ public class SootSetup {
 
     private void setupEntryPoints() {
         List<SootMethod> entryMethods = new ArrayList<>();
-        getRouteMethods(Scene.v().getApplicationClasses()).forEach(router -> {
-            entryMethods.add(router.getDispatchMethod());
-        });
-        logger.info(String.format("collect %d route methods", entryMethods.size()));
+        Set<String> entryPoints = Configuration.getEntryPoints();
+        if (entryPoints.isEmpty()) {
+            getRouteMethods(Scene.v().getApplicationClasses()).forEach(router -> {
+                entryMethods.add(router.getDispatchMethod());
+            });
+        } else {
+            entryPoints.forEach(sig -> {
+                SootMethod entryMethod = Scene.v().grabMethod(sig);
+                if (entryMethod != null) {
+                    entryMethods.add(entryMethod);
+                }
+            });
+        }
+        logger.info(String.format("collect %d entry point methods", entryMethods.size()));
         Scene.v().setEntryPoints(entryMethods);
     }
 
@@ -121,7 +138,7 @@ public class SootSetup {
     }
 
     // 初始化方法
-    public void initialize(String target) throws Exception {
+    public void initialize(Set<String> targets) throws Exception {
         StopWatch sw = new StopWatch();
 
         // reset soot environment
@@ -129,7 +146,16 @@ public class SootSetup {
 
         // set soot options
         setOptions();
-        setScanTarget(target);
+
+        for (String target : targets) {
+            setScanTarget(target);
+        }
+
+        // set application and classpath
+        Options.v().set_process_dir(applicationDirs);
+        logger.info(String.format("set soot process dir with: %s", String.join(",", applicationDirs)));
+        Options.v().set_soot_classpath(String.join(":", libraryDirs));
+        logger.info(String.format("set soot class path with: %s", String.join(":", libraryDirs)));
 
         // load all classes
         sw.reset();

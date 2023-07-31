@@ -12,6 +12,7 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.jar.JarEntry;
@@ -20,6 +21,7 @@ import java.util.jar.JarFile;
 
 public class AchieveHandler extends AbstractTargetHandler {
     private final Logger logger = LogManager.getLogger(AchieveHandler.class);
+    protected Path outputPath;
 
     public AchieveHandler() {
         registerHandler(new MybatisXMLMapperHandler());
@@ -33,12 +35,13 @@ public class AchieveHandler extends AbstractTargetHandler {
 
     @Override
     public List<String> getTargetClassDir(Path path) throws Exception {
-        return null;
+        outputPath = extractAchieve(path);
+        return Collections.singletonList(outputPath.toFile().getAbsolutePath());
     }
 
     @Override
     public List<String> getLibraryClassDir(Path path) throws Exception {
-        return null;
+        return Collections.emptyList();
     }
 
     protected Path extractAchieve(Path path) throws Exception {
@@ -50,11 +53,8 @@ public class AchieveHandler extends AbstractTargetHandler {
             logger.info(String.format("target is a packed file(jar/war), will extract inner class in %s", outputPath));
             if (!outputPath.toFile().exists()) {
                 outputPath.toFile().mkdirs();
-            } else {
-                outputPath.toFile().delete();
-                outputPath.toFile().mkdirs();
+                extractJar(path, outputPath);
             }
-            extractJar(path, outputPath);
         }
 
         assert outputPath != null;
