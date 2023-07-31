@@ -1,5 +1,8 @@
 package org.example.flow.handler;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.example.core.Engine;
 import org.example.core.IntraAnalyzedMethod;
 import org.example.core.basic.Node;
 import org.example.core.basic.node.CallNode;
@@ -11,6 +14,8 @@ import org.example.flow.context.ContextMethod;
 import java.util.*;
 
 abstract public class AbstractFlowHandler<T> implements FlowHandler<T> {
+    private final Logger logger = LogManager.getLogger(AbstractFlowHandler.class);
+
     protected FlowEngine flowEngine;
     protected CallStack callStack;
     protected List<Collector> collectors;

@@ -2,8 +2,10 @@ package org.example.core;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.example.core.processor.bytedance.CodeGraphHook;
-import org.example.core.processor.bytedance.EngineHook;
+import org.example.config.Configuration;
+import org.example.core.hook.builtin.OutputHook;
+import org.example.core.hook.bytedance.CodeGraphHook;
+import org.example.core.hook.bytedance.EngineHook;
 import org.example.core.visitor.StmtVisitor;
 import soot.*;
 import soot.Unit;
@@ -21,6 +23,9 @@ public class Engine {
         this.hierarchy = hierarchy;
         this.patchedClasses = new HashSet<>();
         this.engineHooks = new ArrayList<>();
+
+        addEngineHook(new OutputHook());
+        addEngineHook(new CodeGraphHook());
     }
 
     public void addEngineHook(EngineHook hook) {
@@ -59,7 +64,11 @@ public class Engine {
         Scene.v().getApplicationClasses().snapshotIterator().forEachRemaining(new Consumer<SootClass>() {
             @Override
             public void accept(SootClass sootClass) {
-                engineHooks.forEach(processor -> processor.hookClass(sootClass));
+                engineHooks.forEach(engineHook -> {
+                    if (engineHook.enabled()) {
+                        engineHook.hookClass(sootClass);
+                    }
+                });
                 for (SootMethod method : sootClass.getMethods()) {
                     if (visitedMethods.contains(method)) {
                         continue;
@@ -68,7 +77,11 @@ public class Engine {
                     IntraAnalyzedMethod analyzedMethod = analysis(method);
                     if (analyzedMethod != null) {
                         intraAnalyzedMethods.put(analyzedMethod.getSignature(), analyzedMethod);
-                        engineHooks.forEach(processor -> processor.hookMethod(analyzedMethod));
+                        engineHooks.forEach(engineHook -> {
+                            if (engineHook.enabled()) {
+                                engineHook.hookMethod(analyzedMethod);
+                            }
+                        });
                     }
                 }
             }
@@ -77,7 +90,11 @@ public class Engine {
                 return doIntraProcedureAnalysis(sootMethod);
             }
         });
-        engineHooks.forEach(EngineHook::engineFinish);
+        engineHooks.forEach(engineHook -> {
+            if (engineHook.enabled()) {
+                engineHook.engineFinish();
+            }
+        });
         return intraAnalyzedMethods;
     }
 }

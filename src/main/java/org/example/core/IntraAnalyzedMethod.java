@@ -8,6 +8,7 @@ import org.example.core.expr.AbstractExprNode;
 import org.example.core.basic.node.CallNode;
 import org.example.core.expr.MultiExprNode;
 import org.example.util.TagUtil;
+import soot.Body;
 import soot.SootClass;
 import soot.SootMethod;
 import soot.Unit;
@@ -17,6 +18,7 @@ import java.util.*;
 public class IntraAnalyzedMethod {
     // method base information
     private String name;
+    private Body body;
     private String signature;
     private String subSignature;
     private int numberOfParams;
@@ -107,6 +109,17 @@ public class IntraAnalyzedMethod {
             assert paramNode != null;
             flow.addParamNode((Parameter) paramNode);
         }
+
+        if (sootMethod.isConcrete()) {
+            body = sootMethod.retrieveActiveBody();
+        }
+    }
+
+    public String getBodyStr() {
+        if (body == null) {
+            return "";
+        }
+        return body.toString();
     }
 
     public String getName() {

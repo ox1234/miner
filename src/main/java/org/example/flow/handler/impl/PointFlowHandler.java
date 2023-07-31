@@ -87,10 +87,6 @@ public class PointFlowHandler extends AbstractFlowHandler<Set<Obj>> {
             InstanceField field = (InstanceField) to;
             Set<Obj> baseObjs = callStack.getRefObjs(field.getBase());
             handleFieldStore(baseObjs, Collections.singleton(field), from);
-        } else if (to instanceof Parameter) {
-            getPointContainer().addPointRelation(to, from);
-        } else if (to instanceof UnifyReturn) {
-            getPointContainer().addPointRelation(to, from);
         } else if (to instanceof StaticField) {
             getPointContainer().addPointRelation(to, from);
         } else if (to instanceof ArrayLoad) {

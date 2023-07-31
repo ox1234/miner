@@ -7,10 +7,8 @@ import org.apache.logging.log4j.Logger;
 import org.example.config.Configuration;
 import org.example.core.Engine;
 import org.example.core.IntraAnalyzedMethod;
-import org.example.core.processor.bytedance.CodeGraphHook;
 import org.example.flow.FlowEngine;
 import org.example.soot.SootSetup;
-import org.example.util.FileUtil;
 import soot.Hierarchy;
 import soot.PackManager;
 import soot.Scene;
@@ -26,6 +24,7 @@ public class Main {
         // string args
         options.addRequiredOption("t", "target", true, "target to scan");
         options.addOption(Option.builder("output").argName("path").hasArg().desc("tool write to output").build());
+        options.addOption(Option.builder("entry").argName("method").hasArg().desc("entry point method to start flow").build());
         // bool args
         options.addOption(Option.builder("debug").desc("enable debug mode to log more info").build());
         options.addOption(Option.builder("codegraph").desc("run as code graph client").build());
@@ -42,32 +41,21 @@ public class Main {
         }
 
         // delete previous scan tmp path and soot output path
-        FileUtil.deleteDirectory(new File(Configuration.getOutputPath()));
         FileUtils.deleteDirectory(new File(Configuration.getOutputPath()));
 
         // setup soot environment
         SootSetup setup = new SootSetup();
-        setup.initialize(Configuration.getTarget());
+        setup.initialize(Configuration.getTargets());
 
         // initialize analyze engine and do analysis
         Hierarchy hierarchy = setup.getHierarchy();
         Engine engine = new Engine(hierarchy);
-
-        engine.addEngineHook(new CodeGraphHook(Configuration.getTarget()));
-
         Map<String, IntraAnalyzedMethod> analyzedMethodSet = engine.extractPointRelation();
-
-        // write jimple
-        if (Configuration.isDebugMode()) {
-            PackManager.v().writeOutput();
-            logger.info("intra analysis finish, writing jimple file to soot output directory");
-        }
 
         // do inter analysis based on intra analysis result
         FlowEngine flowEngine = new FlowEngine(analyzedMethodSet);
         Scene.v().getEntryPoints().forEach(flowEngine::doAnalysis);
 
-//        FlowEngine.printRouteTable();
         logger.info("java code graph construct successfully");
     }
 }
