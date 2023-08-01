@@ -35,6 +35,7 @@ import java.util.*;
 
 public class PointFlowHandler extends AbstractFlowHandler<Set<Obj>> {
     private final Logger logger = LogManager.getLogger(PointFlowHandler.class);
+    private Map<SootMethod, Set<SootMethod>> dispathMap = new HashMap<>();
 
     public PointFlowHandler(FlowEngine flowEngine, Collector... collectors) {
         super(flowEngine, collectors);
@@ -108,7 +109,11 @@ public class PointFlowHandler extends AbstractFlowHandler<Set<Obj>> {
     @Override
     protected Set<ContextMethod> handleCallNode(CallNode callNode) {
         Set<ContextMethod> calleeContextMethods = new LinkedHashSet<>();
-        for (SootMethod tgtMethod : dispatch(callNode)) {
+        Set<SootMethod> targetMethods = dispatch(callNode);
+        if (targetMethods.size() > 1) {
+            dispathMap.put(callNode.getCallee(), targetMethods);
+        }
+        for (SootMethod tgtMethod : targetMethods) {
             for (ContextMethod tgtContextMethod : getTargetContextMethod(callNode, tgtMethod)) {
                 if (callStack.contains(tgtContextMethod)) {
                     continue;
@@ -168,6 +173,11 @@ public class PointFlowHandler extends AbstractFlowHandler<Set<Obj>> {
 
     protected Set<SootMethod> dispatch(CallNode callNode) {
         Set<SootMethod> sootMethodSet = new HashSet<>();
+        if (callNode.getCallee().getDeclaringClass().getName().equals("java.lang.Object")) {
+            sootMethodSet.add(callNode.getCallee());
+            return sootMethodSet;
+        }
+
         String methodSubSig = callNode.getSubSignature();
         if (callNode.getInvokeType() == InvokeType.INSTANCE_INVOKE) {
             LocalVariable base = (LocalVariable) callNode.getBase();
@@ -198,6 +208,12 @@ public class PointFlowHandler extends AbstractFlowHandler<Set<Obj>> {
         } else {
             sootMethodSet.add(callNode.getCallee());
         }
+
+        sootMethodSet.removeIf(SootMethod::isJavaLibraryMethod);
+        if (sootMethodSet.isEmpty()) {
+            sootMethodSet.add(callNode.getCallee());
+        }
+
         return sootMethodSet;
     }
 
