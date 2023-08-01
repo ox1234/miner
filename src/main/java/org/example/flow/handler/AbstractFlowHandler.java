@@ -10,6 +10,10 @@ import org.example.core.expr.*;
 import org.example.flow.*;
 import org.example.flow.collector.Collector;
 import org.example.flow.context.ContextMethod;
+import org.example.flow.context.StaticContextMethod;
+import org.example.util.MethodUtil;
+import soot.SootClass;
+import soot.SootMethod;
 
 import java.util.*;
 
@@ -20,12 +24,14 @@ abstract public class AbstractFlowHandler<T> implements FlowHandler<T> {
     protected CallStack callStack;
     protected List<Collector> collectors;
     protected IntraAnalyzedMethod.AnalyzedUnit currentUnit;
+    protected Set<SootClass> staticInitializedClasses;
 
 
     protected AbstractFlowHandler(FlowEngine flowEngine, Collector... collectors) {
         this.flowEngine = flowEngine;
         this.callStack = flowEngine.getCallStack();
         this.collectors = Arrays.asList(collectors);
+        this.staticInitializedClasses = new LinkedHashSet<>();
     }
 
     public TaintContainer getTaintContainer() {
@@ -38,8 +44,8 @@ abstract public class AbstractFlowHandler<T> implements FlowHandler<T> {
 
     @Override
     public void doAnalysis(ContextMethod entry) {
-        callStack.push(entry);
         preProcessMethod(entry);
+        callStack.push(entry);
         IntraAnalyzedMethod analyzedMethod = entry.getIntraAnalyzedMethod();
         if (analyzedMethod != null) {
             analyzedMethod.getOrderedFlowMap().forEach((node, analyzedUnit) -> handle(analyzedUnit));
@@ -126,7 +132,18 @@ abstract public class AbstractFlowHandler<T> implements FlowHandler<T> {
 
     @Override
     public void preProcessMethod(ContextMethod currentMethod) {
-
+        SootClass declClass = currentMethod.getSootMethod().getDeclaringClass();
+        // no matter what, clinit method will always be called
+        SootMethod clinit = MethodUtil.getRefInitMethod(declClass, true);
+        if (staticInitializedClasses.contains(declClass) || currentMethod.getSootMethod() == clinit) {
+            return;
+        }
+        if (clinit != null) {
+            staticInitializedClasses.add(declClass);
+            ContextMethod ctxClinit = new StaticContextMethod(declClass, clinit, null, null);
+            logger.info(String.format("do %s class clinit method's point analysis", declClass.getName()));
+            doAnalysis(ctxClinit);
+        }
     }
 
     @Override

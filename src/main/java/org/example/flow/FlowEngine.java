@@ -55,14 +55,6 @@ public class FlowEngine {
     public void doAnalysis(SootMethod entryPoint) {
         SootClass entryClass = entryPoint.getDeclaringClass();
 
-        // no matter what, clinit method will always be called
-        SootMethod clinit = MethodUtil.getRefInitMethod(entryClass, true);
-        if (clinit != null) {
-            ContextMethod ctxClinit = new StaticContextMethod(entryClass, clinit, null, null);
-            logger.info(String.format("do %s class clinit method's point analysis", entryPoint.getSignature()));
-            getFlowHandler(FlowHandlerEnum.POINT_FLOW_HANDLER).doAnalysis(ctxClinit);
-        }
-
         ContextMethod entry;
         if (entryPoint.isStatic()) {
             entry = new StaticContextMethod(entryClass, entryPoint, null, null);

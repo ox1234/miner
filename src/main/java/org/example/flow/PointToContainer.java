@@ -18,9 +18,9 @@ import java.util.*;
 public class PointToContainer {
     private final Logger logger = LogManager.getLogger(PointToContainer.class);
 
-    private Map<Node, Set<Obj>> pointoNodes = new HashMap<>();
+    private Map<Node, Set<Obj>> pointoNodes = new LinkedHashMap<>();
     private Set<Obj> retObjs = new LinkedHashSet<>();
-    private static Map<Node, Set<Obj>> globalPointoNodes = new HashMap<>();
+    private static Map<Node, Set<Obj>> globalPointoNodes = new LinkedHashMap<>();
 
     public Set<Obj> getNodeRefObj(Node rightNode) {
         Set<Obj> objs = new LinkedHashSet<>();
