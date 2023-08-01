@@ -1,5 +1,6 @@
 package org.example.core;
 
+import org.example.core.basic.Global;
 import org.example.core.basic.Node;
 import org.example.core.basic.Site;
 import org.example.core.basic.identity.Parameter;
@@ -8,10 +9,7 @@ import org.example.core.expr.AbstractExprNode;
 import org.example.core.basic.node.CallNode;
 import org.example.core.expr.MultiExprNode;
 import org.example.util.TagUtil;
-import soot.Body;
-import soot.SootClass;
-import soot.SootMethod;
-import soot.Unit;
+import soot.*;
 
 import java.util.*;
 
@@ -24,6 +22,8 @@ public class IntraAnalyzedMethod {
     private int numberOfParams;
     private List<String> paramTypes = new ArrayList<>();
     private SootMethod methodRef;
+    private boolean influenceGlobal;
+    private boolean hasReturn;
     private SootClass declaredClassRef;
 
     // method intra org.example.flow analysis
@@ -63,6 +63,10 @@ public class IntraAnalyzedMethod {
                 return;
             }
 
+            if ((to instanceof Global) && !influenceGlobal) {
+                influenceGlobal = true;
+            }
+
             for (Node node : from.getAllNodes()) {
                 if (node instanceof Parameter) {
                     addParamNode((Parameter) node);
@@ -97,6 +101,7 @@ public class IntraAnalyzedMethod {
         this.signature = sootMethod.getSignature();
         this.subSignature = sootMethod.getSubSignature();
         this.numberOfParams = sootMethod.getParameterCount();
+        this.hasReturn = !(sootMethod.getReturnType() instanceof VoidType);
         for (int i = 0; i < sootMethod.getParameterCount(); i++) {
             this.paramTypes.add(sootMethod.getParameterType(i).toString());
         }
