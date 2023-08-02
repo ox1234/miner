@@ -341,7 +341,7 @@ public class ValueVisitor extends AbstractShimpleValueSwitch<AbstractExprNode> {
 
     @Override
     public void caseCastExpr(CastExpr v) {
-        setNopResult();
+        v.getOp().apply(this);
     }
 
     @Override

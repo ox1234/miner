@@ -6,11 +6,14 @@ import org.example.core.Engine;
 import org.example.core.IntraAnalyzedMethod;
 import org.example.core.basic.Node;
 import org.example.core.basic.node.CallNode;
+import org.example.core.basic.obj.CollectionObj;
+import org.example.core.basic.obj.Obj;
 import org.example.core.expr.*;
 import org.example.flow.*;
 import org.example.flow.collector.Collector;
 import org.example.flow.context.ContextMethod;
 import org.example.flow.context.StaticContextMethod;
+import org.example.util.ClassUtil;
 import org.example.util.MethodUtil;
 import soot.SootClass;
 import soot.SootMethod;
@@ -44,8 +47,12 @@ abstract public class AbstractFlowHandler<T> implements FlowHandler<T> {
 
     @Override
     public void doAnalysis(ContextMethod entry) {
-        preProcessMethod(entry);
+        // handle class init method
+        handleClassFirstInit(entry);
+
+        // start trace entry point
         callStack.push(entry);
+        preProcessMethod(entry);
         IntraAnalyzedMethod analyzedMethod = entry.getIntraAnalyzedMethod();
         if (analyzedMethod != null) {
             analyzedMethod.getOrderedFlowMap().forEach((node, analyzedUnit) -> handle(analyzedUnit));
@@ -132,6 +139,9 @@ abstract public class AbstractFlowHandler<T> implements FlowHandler<T> {
 
     @Override
     public void preProcessMethod(ContextMethod currentMethod) {
+    }
+
+    public void handleClassFirstInit(ContextMethod currentMethod) {
         SootClass declClass = currentMethod.getSootMethod().getDeclaringClass();
         // no matter what, clinit method will always be called
         SootMethod clinit = MethodUtil.getRefInitMethod(declClass, true);
@@ -141,7 +151,7 @@ abstract public class AbstractFlowHandler<T> implements FlowHandler<T> {
         if (clinit != null) {
             staticInitializedClasses.add(declClass);
             ContextMethod ctxClinit = new StaticContextMethod(declClass, clinit, null, null);
-            logger.info(String.format("do %s class clinit method's point analysis", declClass.getName()));
+            logger.info(String.format("do %s class clinit method's analysis", declClass.getName()));
             doAnalysis(ctxClinit);
         }
     }
@@ -152,5 +162,14 @@ abstract public class AbstractFlowHandler<T> implements FlowHandler<T> {
     }
 
     // ---------------------------------------------- helper methods -----------------------------------------------------------
-
+    protected boolean isCollectionMethod(SootMethod sootMethod) {
+        SootClass declClass = sootMethod.getDeclaringClass();
+        if (!sootMethod.isJavaLibraryMethod()) {
+            return false;
+        }
+        if (sootMethod.getName().equals("<init>") || sootMethod.getName().equals("<clinit>")) {
+            return false;
+        }
+        return ClassUtil.isCollectionClass(declClass) || ClassUtil.isMapClass(declClass);
+    }
 }
