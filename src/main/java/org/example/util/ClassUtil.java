@@ -39,6 +39,10 @@ public class ClassUtil {
         return isTargetClassSubClass(testClass, "java.util.Map");
     }
 
+    public static boolean isCollectionClass(SootClass testClass) {
+        return isTargetClassSubClass(testClass, "java.util.Collection");
+    }
+
 
     public static boolean isTargetClassSubClass(SootClass testClass, SootClass superClass) {
         Hierarchy hierarchy = Scene.v().getActiveHierarchy();
@@ -47,6 +51,9 @@ public class ClassUtil {
         }
 
         if (superClass.isInterface()) {
+            if (hierarchy.isInterfaceSubinterfaceOf(testClass, superClass)) {
+                return true;
+            }
             return hierarchy.getImplementersOf(superClass).contains(testClass);
         } else {
             return hierarchy.getSubclassesOfIncluding(superClass).contains(testClass);

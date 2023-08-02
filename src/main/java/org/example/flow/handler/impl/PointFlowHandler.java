@@ -9,15 +9,15 @@ import org.example.core.basic.field.ArrayLoad;
 import org.example.core.basic.field.InstanceField;
 import org.example.core.basic.field.StaticField;
 import org.example.core.basic.identity.LocalVariable;
-import org.example.core.basic.identity.Parameter;
-import org.example.core.basic.identity.UnifyReturn;
 import org.example.core.basic.node.CallNode;
+import org.example.core.basic.obj.MapCollectionObj;
 import org.example.core.basic.obj.Obj;
 import org.example.core.basic.obj.PhantomObj;
 import org.example.core.expr.EmptyExprNode;
 import org.example.core.expr.MultiExprNode;
 import org.example.core.expr.OpExprNode;
 import org.example.core.expr.SingleExprNode;
+import org.example.core.hook.bytedance.proto.Call;
 import org.example.flow.collector.Collector;
 import org.example.flow.FlowEngine;
 import org.example.flow.context.ContextMethod;
@@ -32,6 +32,7 @@ import soot.SootMethod;
 import soot.VoidType;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 public class PointFlowHandler extends AbstractFlowHandler<Set<Obj>> {
     private final Logger logger = LogManager.getLogger(PointFlowHandler.class);
@@ -67,11 +68,17 @@ public class PointFlowHandler extends AbstractFlowHandler<Set<Obj>> {
         if (node instanceof CallNode) {
             Set<ContextMethod> tgtContextMethods = handleCallNode((CallNode) node);
             for (ContextMethod contextMethod : tgtContextMethods) {
-                if (contextMethod.getSootMethod().getDeclaringClass().isApplicationClass()) {
-                    resObj.addAll(contextMethod.getPointToContainer().getReturnObjs());
-                } else if (!(contextMethod instanceof SpecialContextMethod) && !contextMethod.getSootMethod().getReturnType().equals(VoidType.v())) {
-                    Node objNode = Site.getNodeInstance(PhantomObj.class, contextMethod.getSootMethod().getReturnType(), ((CallNode) node).getRetVar());
-                    resObj.add((Obj) objNode);
+                // handle collection method
+                if (isCollectionMethod(contextMethod.getSootMethod())) {
+                    resObj.addAll(handleCollectionCall(contextMethod));
+                } else {
+                    // handle normal method
+                    if (contextMethod.getSootMethod().getDeclaringClass().isApplicationClass()) {
+                        resObj.addAll(contextMethod.getPointToContainer().getReturnObjs());
+                    } else if (!(contextMethod instanceof SpecialContextMethod) && !contextMethod.getSootMethod().getReturnType().equals(VoidType.v())) {
+                        Node objNode = Site.getNodeInstance(PhantomObj.class, contextMethod.getSootMethod().getReturnType(), ((CallNode) node).getRetVar());
+                        resObj.add((Obj) objNode);
+                    }
                 }
             }
         } else {
@@ -104,6 +111,47 @@ public class PointFlowHandler extends AbstractFlowHandler<Set<Obj>> {
                 baseObj.putField(fieldNode, storeObjs);
             }
         }
+    }
+
+    protected Set<Obj> handleCollectionCall(ContextMethod contextMethod) {
+        Set<Obj> retObjs = new LinkedHashSet<>();
+        CallNode callNode = contextMethod.getCallNode();
+        if (callNode.getCallee().isJavaLibraryMethod()) {
+            Set<Obj> baseNodes = getPointContainer().getPointRefObj(callNode.getBase());
+            baseNodes.forEach(obj -> {
+                if (obj instanceof MapCollectionObj) {
+                    Set<Obj> baseObjs = getPointContainer().getPointRefObj(callNode.getBase());
+                    baseObjs.forEach(baseObj -> retObjs.addAll(handleMapCall(callNode.getCallee().getName(), baseObj, callNode.getArgs())));
+                }
+            });
+        }
+        return retObjs;
+    }
+
+    protected Set<Obj> handleMapCall(String callName, Obj collectionObj, List<Node> args) {
+        Set<Obj> retObjs = new LinkedHashSet<>();
+        switch (callName) {
+            case "put":
+            case "putIfAbsent":
+                Set<Obj> putKeyObjs = getPointContainer().getNodeRefObj(args.get(0));
+                Set<Obj> putValObjs = getPointContainer().getNodeRefObj(args.get(1));
+                putKeyObjs.forEach(keyObj -> retObjs.addAll(handleMapPut(collectionObj, keyObj, putValObjs)));
+                break;
+            case "get":
+                Set<Obj> getKeyObjs = getPointContainer().getNodeRefObj(args.get(0));
+                getKeyObjs.forEach(keyObj -> retObjs.addAll(handleMapGet(collectionObj, keyObj)));
+                break;
+        }
+        return retObjs;
+    }
+
+    protected Set<Obj> handleMapPut(Obj mapObj, Obj key, Set<Obj> val) {
+        mapObj.putField(key, val);
+        return Collections.emptySet();
+    }
+
+    protected Set<Obj> handleMapGet(Obj mapObj, Obj key) {
+        return mapObj.getField(key);
     }
 
     @Override
