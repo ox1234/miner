@@ -35,9 +35,6 @@ public class PointToContainer {
             InstanceField field = (InstanceField) rightNode;
             Set<Obj> baseObjs = getNodeRefObj(field.getBase());
             objs.addAll(handleFieldLoad(baseObjs, Collections.singleton(field)));
-        } else if (rightNode instanceof Parameter) {
-            // if right node is parameter, same as variable will check point container
-            objs.addAll(getPointRefObj(rightNode));
         } else if (rightNode instanceof StaticField) {
             // if right node is static field, also check point container
             objs.addAll(getPointRefObj(rightNode));

@@ -1,6 +1,6 @@
 package org.example.core;
 
-import org.example.basic.Router;
+import org.example.config.router.Router;
 import org.example.tags.RouteTag;
 import soot.SootMethod;
 

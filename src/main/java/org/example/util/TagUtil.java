@@ -12,34 +12,6 @@ import soot.tagkit.*;
 import java.util.*;
 
 public class TagUtil {
-    public static boolean isSpringControllerAnnotation(AnnotationTag tag) {
-        return Configuration.getRule().filter.controllerClassTags.contains(tag.getType());
-    }
-
-    public static boolean isRouteMethodAnnotation(AnnotationTag tag) {
-        return Configuration.getRule().filter.requestMethodTags.contains(tag.getType());
-    }
-
-    public static Set<String> getMethodRoutePath(SootMethod sootMethod) {
-        Set<String> routeList = new HashSet<>();
-        for (String routeAnnotation : Configuration.getRule().filter.requestMethodTags) {
-            AnnotationTag annotationTag = searchAnnotation(getMethodAnnotation(sootMethod), routeAnnotation);
-            if (annotationTag == null) {
-                continue;
-            }
-            AnnotationElem annotationElem = getAnnotationElem(annotationTag, "value");
-            if (annotationElem instanceof AnnotationArrayElem) {
-                ((AnnotationArrayElem) annotationElem).getValues().forEach(annotationElem1 -> {
-                    if (annotationElem1 instanceof AnnotationStringElem) {
-                        routeList.add(((AnnotationStringElem) annotationElem1).getValue());
-                    }
-                });
-            }
-            return routeList;
-        }
-        return routeList;
-    }
-
     public static boolean isServiceClass(SootClass sootClass) {
         return checkAnnotation(getClassAnnotation(sootClass), SpringAnnotation.serviceAnnotation);
     }
@@ -185,7 +157,7 @@ public class TagUtil {
         return searchAnnotation(annotationTags, annotationType) != null;
     }
 
-    private static AnnotationTag searchAnnotation(List<AnnotationTag> annotationTags, String annotationType) {
+    public static AnnotationTag searchAnnotation(List<AnnotationTag> annotationTags, String annotationType) {
         for (AnnotationTag annotationTag : annotationTags) {
             if (annotationTag.getType().equals(annotationType)) {
                 return annotationTag;

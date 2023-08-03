@@ -2,9 +2,11 @@ package org.example.flow.collector.vuln;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.example.basic.Router;
+import org.example.config.router.Router;
 import org.example.basic.Vulnerability;
 import org.example.config.Configuration;
+import org.example.config.sourcesink.Sink;
+import org.example.config.sourcesink.SourceSinkManager;
 import org.example.core.IntraAnalyzedMethod;
 import org.example.core.MyBatisIntraAnalyzedMethod;
 import org.example.core.RouteIntraAnalyzedMethod;
@@ -16,7 +18,6 @@ import org.example.flow.collector.Collector;
 import org.example.flow.PointToContainer;
 import org.example.flow.TaintContainer;
 import org.example.flow.context.ContextMethod;
-import org.example.rule.Sink;
 import org.example.util.MethodUtil;
 import soot.PrimType;
 import soot.RefType;
@@ -27,6 +28,7 @@ import java.util.*;
 public class VulnCollector implements Collector {
     private final Logger logger = LogManager.getLogger(VulnCollector.class);
     private static Set<Vulnerability> vulnerabilities = new HashSet<>();
+    private SourceSinkManager sourceSinkManager = Configuration.getSourceSinkManager();
 
     @Override
     public void collect(CallStack callStack) {
@@ -69,16 +71,16 @@ public class VulnCollector implements Collector {
 
 
         for (String signature : MethodUtil.getOverrideMethodSignatureOfInclude(reachedMethod.getSootMethod())) {
-            if (Configuration.getSinkMap().containsKey(signature)) {
-                Sink sink = Configuration.getSinkMap().get(signature);
+            if (sourceSinkManager.isSinkSig(signature)) {
+                Sink sink = sourceSinkManager.getSink(signature);
 
                 // if base is taint and config defined such sink without no param, will report
-                if (reachedMethod.isBaseTaint() && sink.index.size() == 0) {
+                if (reachedMethod.isBaseTaint() && sink.getSinkIdx().size() == 0) {
                     return true;
                 }
 
                 // check index sink is taint
-                for (int idx : sink.index) {
+                for (int idx : sink.getSinkIdx()) {
                     if (taintContainer.checkIdxParamIsTaint(idx)) {
                         return true;
                     }

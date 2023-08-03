@@ -3,7 +3,8 @@ package org.example.soot;
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.example.basic.Router;
+import org.example.config.router.RouteManager;
+import org.example.config.router.Router;
 import org.example.config.Configuration;
 import org.example.soot.impl.AchieveHandler;
 import org.example.soot.impl.DirectoryHandler;
@@ -16,7 +17,6 @@ import soot.*;
 import soot.options.Options;
 import soot.tagkit.AnnotationTag;
 
-import javax.swing.text.html.Option;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
@@ -186,19 +186,17 @@ public class SootSetup {
 
     public Set<Router> getRouteMethods(Collection<SootClass> classes) {
         logger.info(String.format("start route collect in %d classes", classes.size()));
+        List<RouteManager> routeManagers = Configuration.getRegisteredRouteManager();
         Set<Router> routeMethods = new LinkedHashSet<>();
-        for (SootClass sootClass : classes) {
-            for (AnnotationTag annotationTag : TagUtil.getClassAnnotation(sootClass)) {
-                if (TagUtil.isSpringControllerAnnotation(annotationTag)) {
-                    for (SootMethod sootMethod : sootClass.getMethods()) {
-                        if (MethodUtil.isRouteMethod(sootMethod)) {
-                            logger.info(String.format("find %s method is route method with %s route path", sootMethod.getSignature(), String.join(",", TagUtil.getMethodRoutePath(sootMethod))));
-                            routeMethods.add(new Router(sootClass, sootMethod, TagUtil.getMethodRoutePath(sootMethod)));
-                        }
+        routeManagers.forEach(routeManager -> classes.forEach(sootClass -> {
+            if (routeManager.isController(sootClass)) {
+                sootClass.getMethods().forEach(sootMethod -> {
+                    if (routeManager.isRouteMethod(sootMethod)) {
+                        routeMethods.add(routeManager.parseToRouteMethod(sootMethod));
                     }
-                }
+                });
             }
-        }
+        }));
         logger.info(String.format("get %d route methods in project", routeMethods.size()));
         return routeMethods;
     }

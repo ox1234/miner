@@ -1,13 +1,8 @@
 package org.example.tags;
 
-import org.apache.logging.log4j.core.appender.routing.Route;
-import org.example.basic.Router;
-import soot.SootMethod;
+import org.example.config.router.Router;
 import soot.tagkit.AttributeValueException;
 import soot.tagkit.Tag;
-
-import java.util.HashSet;
-import java.util.Set;
 
 public class RouteTag implements Tag {
     private Router router;

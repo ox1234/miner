@@ -25,6 +25,7 @@ public class Main {
         options.addRequiredOption("t", "target", true, "target to scan");
         options.addOption(Option.builder("output").argName("path").hasArg().desc("tool write to output").build());
         options.addOption(Option.builder("entry").argName("method").hasArg().desc("entry point method to start flow").build());
+        options.addOption(Option.builder("conf").argName("path").hasArg().desc("runtime config directory").build());
         // bool args
         options.addOption(Option.builder("debug").desc("enable debug mode to log more info").build());
         options.addOption(Option.builder("codegraph").desc("run as code graph client").build());

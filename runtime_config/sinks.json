@@ -1,0 +1,2354 @@
+[
+  {
+    "name": "rce",
+    "sinks": [
+      {
+        "expression": "<groovy.lang.GroovyShell: java.lang.Object evaluate(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<javax.script.ScriptEngine: java.lang.Object eval(java.lang.String,javax.script.Bindings)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.yaml.snakeyaml.Yaml: java.lang.Object load(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<java.lang.Runtime: java.lang.Process exec(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<java.lang.Runtime: java.lang.Process exec(java.lang.String[])>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<java.lang.ProcessBuilder: void <init>(java.lang.String[])>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<java.lang.ProcessBuilder: void <init>(java.util.List)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<java.lang.ProcessImpl: java.lang.Process start(java.lang.String[],java.util.Map,java.lang.String,java.lang.ProcessBuilder$Redirect[],boolean)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<java.lang.Runtime: java.lang.Process exec(java.lang.String[],java.lang.String[],java.io.File)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<java.lang.Runtime: java.lang.Process exec(java.lang.String,java.lang.String[])>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<java.lang.Runtime: java.lang.Process exec(java.lang.String[],java.lang.String[],java.io.File)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<java.lang.Runtime: java.lang.Process exec(java.lang.String,java.lang.String[],java.io.File)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<java.lang.Runtime: java.lang.Process exec(java.lang.String[],java.lang.String[])>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.springframework.expression.ExpressionParser: org.springframework.expression.Expression parseExpression(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.springframework.expression.ExpressionParser: org.springframework.expression.Expression parseExpression(java.lang.String,org.springframework.expression.ParserContext)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<java.sql.DriverManager: java.sql.Connection getConnection(java.lang.String,java.lang.String,java.lang.String)>",
+        "index": [
+          0
+        ]
+      }
+    ],
+    "repairs": [
+      "<org.security.filter.CommandParameterCheck: boolean checkParameter(java.lang.String,java.lang.String)>",
+      "<java.lang.ProcessBuilder: java.lang.ProcessBuilder command(java.util.List)>"
+    ]
+  },
+  {
+    "name": "sql_injection",
+    "sinks": [
+      {
+        "expression": "<java.sql.PreparedStatement: java.sql.ResultSet executeQuery()>",
+        "index": []
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper: java.lang.Object orderByDesc(java.lang.Object[])>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<tk.mybatis.mapper.entity.Example$Criteria: tk.mybatis.mapper.entity.Example$Criteria orCondition(java.lang.String,java.lang.Object)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<tk.mybatis.mapper.entity.Example$Criteria: tk.mybatis.mapper.entity.Example$Criteria orCondition(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<tk.mybatis.mapper.entity.Example$Criteria: tk.mybatis.mapper.entity.Example$Criteria andCondition(java.lang.String,java.lang.Object)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<tk.mybatis.mapper.entity.Example$Criteria: tk.mybatis.mapper.entity.Example$Criteria andCondition(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<tk.mybatis.mapper.entity.Example: void setTableName(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<tk.mybatis.mapper.entity.Example: void setOrderByClause(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<tk.mybatis.mapper.entity.Condition: void setTableName(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<tk.mybatis.mapper.entity.Condition: void setOrderByClause(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<java.lang.Object: com.baomidou.mybatisplus.core.metadata.IPage pageMaps(com.baomidou.mybatisplus.core.metadata.IPage)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<java.lang.Object: com.baomidou.mybatisplus.core.metadata.IPage pageMaps(com.baomidou.mybatisplus.core.metadata.IPage,com.baomidou.mybatisplus.core.conditions.Wrapper)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<java.lang.Object: com.baomidou.mybatisplus.core.metadata.IPage page(com.baomidou.mybatisplus.core.metadata.IPage,com.baomidou.mybatisplus.core.conditions.Wrapper)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<java.lang.Object: com.baomidou.mybatisplus.core.metadata.IPage page(com.baomidou.mybatisplus.core.metadata.IPage)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.extension.service.additional.query.impl.QueryChainWrapper: java.lang.Object inSql(java.lang.Object,java.lang.String)>",
+        "index": [
+          1
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.extension.service.additional.query.impl.QueryChainWrapper: com.baomidou.mybatisplus.extension.service.additional.AbstractChainWrapper inSql(boolean,java.lang.Object,java.lang.String)>",
+        "index": [
+          2
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.extension.service.additional.query.impl.QueryChainWrapper: com.baomidou.mybatisplus.extension.service.additional.AbstractChainWrapper inSql(boolean,java.lang.Object,java.lang.String)>",
+        "index": [
+          2
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.extension.service.additional.query.impl.LambdaQueryChainWrapper: java.lang.Object inSql(java.lang.Object,java.lang.String)>",
+        "index": [
+          1
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.extension.service.additional.query.impl.QueryChainWrapper: java.lang.Object notInSql(java.lang.Object,java.lang.String)>",
+        "index": [
+          1
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.extension.service.additional.query.impl.QueryChainWrapper: com.baomidou.mybatisplus.extension.service.additional.AbstractChainWrapper notInSql(boolean,java.lang.Object,java.lang.String)>",
+        "index": [
+          2
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.extension.service.additional.query.impl.LambdaQueryChainWrapper: java.lang.Object notInSql(java.lang.Object,java.lang.String)>",
+        "index": [
+          1
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.extension.service.additional.query.impl.LambdaQueryChainWrapper: com.baomidou.mybatisplus.extension.service.additional.AbstractChainWrapper notInSql(boolean,java.lang.Object,java.lang.String)>",
+        "index": [
+          2
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.extension.service.additional.query.impl.QueryChainWrapper: java.lang.Object groupBy(java.lang.Object)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.extension.service.additional.query.impl.QueryChainWrapper: com.baomidou.mybatisplus.extension.service.additional.AbstractChainWrapper groupBy(boolean,java.lang.Object[])>",
+        "index": [
+          1
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.extension.service.additional.query.impl.QueryChainWrapper: com.baomidou.mybatisplus.extension.service.additional.AbstractChainWrapper orderBy(boolean,boolean,java.lang.Object[])>",
+        "index": [
+          2
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.extension.service.additional.query.impl.QueryChainWrapper: java.lang.Object orderByAsc(java.lang.Object)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.extension.service.additional.query.impl.QueryChainWrapper: java.lang.Object orderByAsc(boolean,java.lang.Object[])>",
+        "index": [
+          1
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.extension.service.additional.query.impl.QueryChainWrapper: java.lang.Object orderByDesc(java.lang.Object)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.extension.service.additional.query.impl.QueryChainWrapper: java.lang.Object orderByDesc(boolean,java.lang.Object[])>",
+        "index": [
+          1
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.extension.service.additional.query.impl.LambdaQueryChainWrapper: java.lang.Object having(java.lang.String,java.lang.Object[])>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.extension.service.additional.query.impl.LambdaQueryChainWrapper: com.baomidou.mybatisplus.extension.service.additional.AbstractChainWrapper having(boolean,java.lang.String,java.lang.Object[])>",
+        "index": [
+          1
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.extension.service.additional.query.impl.QueryChainWrapper: com.baomidou.mybatisplus.extension.service.additional.AbstractChainWrapper having(boolean,java.lang.String,java.lang.Object[])>",
+        "index": [
+          1
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.extension.service.additional.query.impl.QueryChainWrapper: java.lang.Object having(java.lang.String,java.lang.Object[])>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.extension.service.additional.query.impl.LambdaQueryChainWrapper: java.lang.Object notExists(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.extension.service.additional.query.impl.LambdaQueryChainWrapper: com.baomidou.mybatisplus.extension.service.additional.AbstractChainWrapper notExists(boolean,java.lang.String)>",
+        "index": [
+          1
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.extension.service.additional.query.impl.QueryChainWrapper: com.baomidou.mybatisplus.extension.service.additional.AbstractChainWrapper notExists(boolean,java.lang.String)>",
+        "index": [
+          1
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.extension.service.additional.query.impl.QueryChainWrapper: java.lang.Object notExists(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.extension.service.additional.query.impl.LambdaQueryChainWrapper: java.lang.Object exists(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.extension.service.additional.query.impl.LambdaQueryChainWrapper: com.baomidou.mybatisplus.extension.service.additional.AbstractChainWrapper exists(boolean,java.lang.String)>",
+        "index": [
+          1
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.extension.service.additional.query.impl.LambdaQueryChainWrapper: com.baomidou.mybatisplus.extension.service.additional.AbstractChainWrapper exists(boolean,java.lang.String)>",
+        "index": [
+          1
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.extension.service.additional.query.impl.QueryChainWrapper: java.lang.Object exists(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.extension.service.additional.query.impl.LambdaQueryChainWrapper: java.lang.Object last(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.extension.service.additional.query.impl.LambdaQueryChainWrapper: com.baomidou.mybatisplus.extension.service.additional.AbstractChainWrapper last(boolean,java.lang.String)>",
+        "index": [
+          1
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.extension.service.additional.query.impl.QueryChainWrapper: java.lang.Object last(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.extension.service.additional.query.impl.QueryChainWrapper: com.baomidou.mybatisplus.extension.service.additional.AbstractChainWrapper last(boolean,java.lang.String)>",
+        "index": [
+          1
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.extension.service.additional.query.impl.QueryChainWrapper: java.lang.Object apply(java.lang.String,java.lang.Object[])>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.extension.service.additional.query.impl.QueryChainWrapper: com.baomidou.mybatisplus.extension.service.additional.AbstractChainWrapper apply(boolean,java.lang.String,java.lang.Object[])>",
+        "index": [
+          1
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.extension.service.additional.query.impl.LambdaQueryChainWrapper: java.lang.Object apply(java.lang.String,java.lang.Object[])>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.extension.service.additional.query.impl.LambdaQueryChainWrapper: com.baomidou.mybatisplus.extension.service.additional.AbstractChainWrapper apply(boolean,java.lang.String,java.lang.Object[])>",
+        "index": [
+          1
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper: java.lang.Object setSql(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper: com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper setSql(boolean,java.lang.String)>",
+        "index": [
+          1
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.extension.service.additional.update.impl.UpdateChainWrapper: com.baomidou.mybatisplus.extension.service.additional.update.impl.UpdateChainWrapper setSql(boolean,java.lang.String)>",
+        "index": [
+          1
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.extension.service.additional.update.impl.UpdateChainWrapper: java.lang.Object setSql(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper: java.lang.Object setSql(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper: com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper setSql(boolean,java.lang.String)>",
+        "index": [
+          1
+        ]
+      },
+      {
+        "expression": "<javax.persistence.EntityManager: javax.persistence.Query createNativeQuery(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.springframework.data.jpa.domain.JpaSort: org.springframework.data.jpa.domain.JpaSort unsafe(java.lang.String[])>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.springframework.data.jpa.domain.JpaSort: org.springframework.data.jpa.domain.JpaSort unsafe(org.springframework.data.domain.Sort$Direction,java.lang.String[])>",
+        "index": [
+          1
+        ]
+      },
+      {
+        "expression": "<java.lang.Object: com.baomidou.mybatisplus.core.metadata.IPage selectMapsPage(com.baomidou.mybatisplus.core.metadata.IPage,com.baomidou.mybatisplus.core.conditions.Wrapper)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<java.lang.Object: com.baomidou.mybatisplus.core.metadata.IPage selectPage(com.baomidou.mybatisplus.core.metadata.IPage,com.baomidou.mybatisplus.core.conditions.Wrapper)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.extension.plugins.pagination.Page: com.baomidou.mybatisplus.extension.plugins.pagination.Page setAsc(java.lang.String[])>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.extension.plugins.pagination.Page: com.baomidou.mybatisplus.extension.plugins.pagination.Page addOrder(com.baomidou.mybatisplus.core.metadata.OrderItem[])>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.extension.plugins.pagination.Page: void setOrders(java.util.List)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.extension.plugins.pagination.Page: com.baomidou.mybatisplus.extension.plugins.pagination.Page setDescs(java.util.List)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.extension.plugins.pagination.Page: com.baomidou.mybatisplus.extension.plugins.pagination.Page setAscs(java.util.List)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.extension.plugins.pagination.Page: com.baomidou.mybatisplus.extension.plugins.pagination.Page setDesc(java.lang.String[])>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.core.conditions.query.QueryWrapper: java.lang.Object apply(java.lang.String,java.lang.Object[])>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.core.conditions.query.QueryWrapper: com.baomidou.mybatisplus.core.conditions.AbstractWrapper apply(boolean,java.lang.String,java.lang.Object[])>",
+        "index": [
+          1
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper: java.lang.Object apply(java.lang.String,java.lang.Object[])>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper: com.baomidou.mybatisplus.core.conditions.AbstractWrapper apply(boolean,java.lang.String,java.lang.Object[])>",
+        "index": [
+          1
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.core.conditions.query.QueryWrapper: java.lang.Object having(java.lang.String,java.lang.Object[])>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.core.conditions.query.QueryWrapper: com.baomidou.mybatisplus.core.conditions.AbstractWrapper having(boolean,java.lang.String,java.lang.Object[])>",
+        "index": [
+          1
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper: java.lang.Object having(java.lang.String,java.lang.Object[])>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper: com.baomidou.mybatisplus.core.conditions.AbstractWrapper having(boolean,java.lang.String,java.lang.Object[])>",
+        "index": [
+          1
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper: java.lang.Object inSql(java.lang.Object,java.lang.String)>",
+        "index": [
+          1
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper: java.lang.Object notInSql(java.lang.Object,java.lang.String)>",
+        "index": [
+          1
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper: com.baomidou.mybatisplus.core.conditions.AbstractWrapper inSql(boolean,java.lang.Object,java.lang.String)>",
+        "index": [
+          2
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper: com.baomidou.mybatisplus.core.conditions.AbstractWrapper notInSql(boolean,java.lang.Object,java.lang.String)>",
+        "index": [
+          2
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.core.conditions.query.QueryWrapper: java.lang.Object inSql(java.lang.Object,java.lang.String)>",
+        "index": [
+          1
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.core.conditions.query.QueryWrapper: java.lang.Object notInSql(java.lang.Object,java.lang.String)>",
+        "index": [
+          1
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.core.conditions.query.QueryWrapper: com.baomidou.mybatisplus.core.conditions.AbstractWrapper notInSql(boolean,java.lang.Object,java.lang.String)>",
+        "index": [
+          2
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.core.conditions.query.QueryWrapper: com.baomidou.mybatisplus.core.conditions.AbstractWrapper inSql(boolean,java.lang.Object,java.lang.String)>",
+        "index": [
+          2
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.core.conditions.query.QueryWrapper: java.lang.Object last(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.core.conditions.query.QueryWrapper: com.baomidou.mybatisplus.core.conditions.AbstractWrapper last(boolean,java.lang.String)>",
+        "index": [
+          1
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper: java.lang.Object last(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper: com.baomidou.mybatisplus.core.conditions.AbstractWrapper last(boolean,java.lang.String)>",
+        "index": [
+          1
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.core.conditions.query.QueryWrapper: com.baomidou.mybatisplus.core.conditions.AbstractWrapper groupBy(boolean,java.lang.Object[])>",
+        "index": [
+          1
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.core.conditions.query.QueryWrapper: java.lang.Object groupBy(java.lang.Object)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.core.conditions.query.QueryWrapper: java.lang.Object exists(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.core.conditions.query.QueryWrapper: java.lang.Object notExists(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.core.conditions.query.QueryWrapper: com.baomidou.mybatisplus.core.conditions.AbstractWrapper exists(boolean,java.lang.String)>",
+        "index": [
+          1
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.core.conditions.query.QueryWrapper: com.baomidou.mybatisplus.core.conditions.AbstractWrapper notExists(boolean,java.lang.String)>",
+        "index": [
+          1
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper: java.lang.Object exists(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper: java.lang.Object notExists(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper: com.baomidou.mybatisplus.core.conditions.AbstractWrapper notExists(boolean,java.lang.String)>",
+        "index": [
+          1
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper: com.baomidou.mybatisplus.core.conditions.AbstractWrapper exists(boolean,java.lang.String)>",
+        "index": [
+          1
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.core.conditions.query.QueryWrapper: java.lang.Object orderByAsc(boolean,java.lang.Object[])>",
+        "index": [
+          1
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.core.conditions.query.QueryWrapper: java.lang.Object orderByAsc(java.lang.Object[])>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.core.conditions.query.QueryWrapper: com.baomidou.mybatisplus.core.conditions.AbstractWrapper orderBy(boolean,boolean,java.lang.Object[])>",
+        "index": [
+          2
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.core.conditions.query.QueryWrapper: java.lang.Object orderByDesc(java.lang.Object[])>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<com.baomidou.mybatisplus.core.conditions.query.QueryWrapper: java.lang.Object orderByDesc(boolean,java.lang.Object[])>",
+        "index": [
+          1
+        ]
+      },
+      {
+        "expression": "<java.sql.Statement: java.sql.ResultSet executeQuery(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<java.sql.Statement: int executeUpdate(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<java.sql.Statement: boolean execute(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<java.sql.Statement: boolean execute(java.lang.String,int)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<java.sql.Statement: boolean execute(java.lang.String,int[])>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<java.sql.Statement: boolean execute(java.lang.String,java.lang.String[])>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<java.sql.Statement: int executeUpdate(java.lang.String,int)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<java.sql.Statement: int executeUpdate(java.lang.String,int[])>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<java.sql.Statement: int executeUpdate(java.lang.String,java.lang.String[])>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<java.sql.Statement: long executeLargeUpdate(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<java.sql.Statement: long executeLargeUpdate(java.lang.String,int)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<java.sql.Statement: long executeLargeUpdate(java.lang.String,int[])>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<java.sql.Statement: long executeLargeUpdate(java.lang.String,java.lang.String[])>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<com.github.pagehelper.Page: com.github.pagehelper.Page setOrderBy(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<com.github.pagehelper.page.PageMethod: com.github.pagehelper.Page startPage(int,int,java.lang.String)>",
+        "index": [
+          2
+        ]
+      },
+      {
+        "expression": "<com.github.pagehelper.PageHelper: com.github.pagehelper.Page startPage(int,int,java.lang.String)>",
+        "index": [
+          2
+        ]
+      },
+      {
+        "expression": "<java.sql.Connection: java.sql.PreparedStatement prepareStatement(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<java.sql.Connection: java.sql.PreparedStatement prepareStatement(java.lang.String,int)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<java.sql.Connection: java.sql.PreparedStatement prepareStatement(java.lang.String,int,int)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<java.sql.Connection: java.sql.PreparedStatement prepareStatement(java.lang.String,int,int,int)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<java.sql.Connection: java.sql.PreparedStatement prepareStatement(java.lang.String,java.lang.String[])>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<java.sql.Connection: java.sql.PreparedStatement prepareStatement(java.lang.String,int[])>",
+        "index": [
+          0
+        ]
+      }
+    ],
+    "repairs": [
+      "<java.sql.PreparedStatement: void setBoolean(int,boolean)>",
+      "<java.sql.PreparedStatement: void setByte(int,byte)>",
+      "<java.sql.PreparedStatement: void setShort(int,short)>",
+      "<java.sql.PreparedStatement: void setInt(int,int)>",
+      "<java.sql.PreparedStatement: void setLong(int,long)>",
+      "<java.sql.PreparedStatement: void setFloat(int,float)>",
+      "<java.sql.PreparedStatement: void setDouble(int,double)>",
+      "<java.sql.PreparedStatement: void setBigDecimal(int,java.math.BigDecimal)>",
+      "<java.sql.PreparedStatement: void setString(int,java.lang.String)>",
+      "<java.sql.PreparedStatement: void setBytes(int,byte[])>",
+      "<java.sql.PreparedStatement: void setDate(int,java.sql.Date)>",
+      "<java.sql.PreparedStatement: void setTime(int,java.sql.Time)>",
+      "<org.security.filter.SqlParameterCheck: boolean checkParameter(java.lang.String,java.lang.String)>",
+      "<com.bytedance.ea.amortize.amortization.eunms.CommonOrderFiled: com.bytedance.ea.amortize.amortization.eunms.CommonOrderFiled findByCode(java.lang.String)>",
+      "<com.bytedance.ea.tax.common.utils.SqlParameterCheckUtil: boolean checkOrderBy(java.lang.String,java.lang.String)>",
+      "<com.bytedance.ea.tax.inputinvoice.service.impl.InputInvoiceServiceImpl: void addSort(com.bytedance.ea.tax.inputinvoice.dto.ParamDto)>"
+    ]
+  },
+  {
+    "name": "file_oper",
+    "sinks": [
+      {
+        "expression": "<cn.hutool.core.io.FileUtil: java.io.File file(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<java.io.File: void <init>(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<java.io.File: void <init>(java.io.File,java.lang.String)>",
+        "index": [
+          1
+        ]
+      },
+      {
+        "expression": "<java.io.File: void <init>(java.lang.String,java.lang.String)>",
+        "index": [
+          1
+        ]
+      },
+      {
+        "expression": "<java.io.File: boolean createNewFile()>",
+        "index": []
+      },
+      {
+        "expression": "<java.io.File: boolean delete()>",
+        "index": []
+      },
+      {
+        "expression": "<java.io.File: void deleteOnExit()>",
+        "index": []
+      },
+      {
+        "expression": "<java.nio.file.Files: java.nio.file.Path createFile(java.nio.file.Path,java.nio.file.attribute.FileAttribute[])>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<java.nio.file.Files: void delete(java.nio.file.Path)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<java.nio.file.Files: boolean deleteIfExists(java.nio.file.Path)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<java.nio.file.Files: java.io.BufferedReader newBufferedReader(java.nio.file.Path,java.nio.charset.Charset)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<java.nio.file.Files: java.io.BufferedReader newBufferedReader(java.nio.file.Path)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<java.nio.file.Files: java.io.BufferedReader newBufferedReader(java.nio.file.Path,java.nio.charset.Charset,java.nio.file.OpenOption[])>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<java.nio.file.Files: java.io.BufferedReader newBufferedReader(java.nio.file.Path,java.nio.file.OpenOption[])>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<java.nio.file.Files: byte[] read(java.io.InputStream,int)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<java.nio.file.Files: byte[] readAllBytes(java.nio.file.Path)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<java.nio.file.Files: java.lang.String readString(java.nio.file.Path)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<java.nio.file.Files: java.lang.String readString(java.nio.file.Path,java.nio.charset.Charset)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<java.nio.file.Files: java.util.List readAllLines(java.nio.file.Path,java.nio.charset.Charset)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<java.nio.file.Files: java.util.List readAllLines(java.nio.file.Path)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<java.nio.file.Files: java.util.stream.Stream lines(java.nio.file.Path,java.nio.charset.Charset)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<java.nio.file.Files: java.util.stream.Stream lines(java.nio.file.Path)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<java.nio.file.Files: java.nio.file.Path write(java.nio.file.Path,byte[],java.nio.file.OpenOption[])>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<java.nio.file.Files: java.nio.file.Path write(java.nio.file.Path,java.lang.Iterable,java.nio.charset.Charset,java.nio.file.OpenOption[])>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<java.nio.file.Files: java.nio.file.Path write(java.nio.file.Path,java.lang.Iterable,java.nio.file.OpenOption[])>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<java.nio.file.Files: java.nio.file.Path writeString(java.nio.file.Path,java.lang.CharSequence,java.nio.file.OpenOption[])>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<java.nio.file.Files: java.nio.file.Path writeString(java.nio.file.Path,java.lang.CharSequence,java.nio.charset.Charset,java.nio.file.OpenOption[])>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.springframework.util.FileSystemUtils: boolean deleteRecursively(java.io.File)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.springframework.util.FileSystemUtils: boolean deleteRecursively(java.nio.file.Path)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.springframework.web.multipart.MultipartFile: void transferTo(java.io.File)>",
+        "index": [
+          0
+        ]
+      }
+    ],
+    "repairs": [
+      "<org.security.filter.FilePathCheck: boolean v(java.lang.String)>"
+    ]
+  },
+  {
+    "name": "ssti",
+    "sinks": [
+      {
+        "expression": "<org.apache.velocity.app.Velocity: boolean evaluate(org.apache.velocity.context.Context,java.io.Writer,java.lang.String,java.lang.String)>",
+        "index": [
+          3
+        ]
+      }
+    ],
+    "repairs": [
+    ]
+  },
+  {
+    "name": "upload",
+    "sinks": [
+      {
+        "expression": "<com.bytedance.storage.tos.TosClient: com.bytedance.storage.tos.model.PutObjectResult putObject(java.lang.String,java.io.InputStream)>",
+        "index": [
+          1
+        ]
+      },
+      {
+        "expression": "<com.bytedance.storage.tos.TosClient: com.bytedance.storage.tos.model.PutObjectResult putObject(java.lang.String,byte[])>",
+        "index": [
+          1
+        ]
+      }
+    ],
+    "repairs": [
+      "<org.security.file.DetectFileType: org.security.file.FileTypeDetectResult detect(java.io.InputStream,java.lang.String,java.util.List,java.util.List)>",
+      "<org.apache.tika.config.TikaConfig: org.apache.tika.detect.Detector getDetector()>",
+      "<com.bytedance.ea.common.util.TikaUtil: void isXlsxFile(org.springframework.web.multipart.MultipartFile)>"
+    ]
+  },
+  {
+    "name": "redirect",
+    "sinks": [
+      {
+        "expression": "<javax.servlet.http.HttpServletResponse: void sendRedirect(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<javax.servlet.RequestDispatcher: void forward(javax.servlet.ServletRequest,javax.servlet.ServletResponse)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<javax.servlet.http.HttpServletRequest: javax.servlet.RequestDispatcher getRequestDispatcher(java.lang.String)>",
+        "index": [
+          0
+        ]
+      }
+    ],
+    "repairs": [
+      "<org.security.filter.RedirectUrlCheck: boolean checkSafeRedirect(java.lang.String)>"
+    ]
+  },
+  {
+    "name": "xxe",
+    "sinks": [
+      {
+        "expression": "<org.xml.sax.XMLReader: void parse(org.xml.sax.InputSource)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.xml.sax.XMLReader: void parse(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.jdom2.input.SAXBuilder: org.jdom2.Document build(org.xml.sax.InputSource)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.jdom2.input.SAXBuilder: org.jdom2.Document build(java.io.InputStream)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.jdom2.input.SAXBuilder: org.jdom2.Document build(java.io.InputStream,java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.jdom2.input.SAXBuilder: org.jdom2.Document build(java.io.File)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.jdom2.input.SAXBuilder: org.jdom2.Document build(java.net.URL)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.jdom2.input.SAXBuilder: org.jdom2.Document build(java.io.Reader)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.jdom2.input.SAXBuilder: org.jdom2.Document build(java.io.File,java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.jdom2.input.SAXBuilder: org.jdom2.Document build(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.dom4j.io.SAXReader: org.dom4j.Document read(java.io.File)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.dom4j.io.SAXReader: org.dom4j.Document read(java.net.URL)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.dom4j.io.SAXReader: org.dom4j.Document read(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.dom4j.io.SAXReader: org.dom4j.Document read(java.io.InputStream)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.dom4j.io.SAXReader: org.dom4j.Document read(java.io.InputStream,java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.dom4j.io.SAXReader: org.dom4j.Document read(java.io.Reader)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.dom4j.io.SAXReader: org.dom4j.Document read(java.io.Reader,java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.dom4j.io.SAXReader: org.dom4j.Document read(org.xml.sax.InputSource)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<javax.xml.parsers.SAXParser: void parse(java.io.InputStream,org.xml.sax.HandlerBase)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<javax.xml.parsers.SAXParser: void parse(java.io.InputStream,org.xml.sax.HandlerBase,java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<javax.xml.parsers.SAXParser: void parse(java.io.InputStream,org.xml.sax.helpers.DefaultHandler)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<javax.xml.parsers.SAXParser: void parse(java.io.InputStream,org.xml.sax.helpers.DefaultHandler,java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<javax.xml.parsers.SAXParser: void parse(org.xml.sax.InputSource,org.xml.sax.helpers.DefaultHandler)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<javax.xml.parsers.SAXParser: void parse(java.lang.String,org.xml.sax.HandlerBase)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<javax.xml.parsers.SAXParser: void parse(java.lang.String,org.xml.sax.helpers.DefaultHandler)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<javax.xml.parsers.SAXParser: void parse(java.io.File,org.xml.sax.HandlerBase)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<javax.xml.parsers.SAXParser: void parse(java.io.File,org.xml.sax.helpers.DefaultHandler)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<javax.xml.parsers.SAXParser: void parse(org.xml.sax.InputSource,org.xml.sax.HandlerBase)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<javax.xml.parsers.SAXParser: void parse(org.xml.sax.InputSource,org.xml.sax.helpers.DefaultHandler)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.commons.digester3.Digester: java.lang.Object parse(java.io.File)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.commons.digester3.Digester: java.lang.Object parse(org.xml.sax.InputSource)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.commons.digester3.Digester: java.lang.Object parse(java.io.InputStream)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.commons.digester3.Digester: java.lang.Object parse(java.io.Reader)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.commons.digester3.Digester: java.lang.Object parse(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.commons.digester3.Digester: java.lang.Object parse(java.net.URL)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<javax.xml.parsers.DocumentBuilder: org.w3c.dom.Document parse(java.io.InputStream)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<javax.xml.parsers.DocumentBuilder: org.w3c.dom.Document parse(java.io.InputStream,java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<javax.xml.parsers.DocumentBuilder: org.w3c.dom.Document parse(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<javax.xml.parsers.DocumentBuilder: org.w3c.dom.Document parse(java.io.File)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<javax.xml.parsers.DocumentBuilder: org.w3c.dom.Document parse(org.xml.sax.InputSource)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.dom4j.DocumentHelper: org.dom4j.Document parseText(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.poi.xssf.usermodel.XSSFWorkbook: void <init>(java.io.InputStream)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.poi.xssf.usermodel.XSSFWorkbook: void <init>(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<com.monitorjbl.xlsx.StreamingReader$Builder: org.apache.poi.ss.usermodel.Workbook open(java.io.InputStream)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<com.monitorjbl.xlsx.StreamingReader$Builder: org.apache.poi.ss.usermodel.Workbook open(java.io.File)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<javax.xml.stream.XMLInputFactory: javax.xml.stream.XMLStreamReader createXMLStreamReader(java.io.Reader)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<javax.xml.stream.XMLInputFactory: javax.xml.stream.XMLStreamReader createXMLStreamReader(java.io.StringReader)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<javax.xml.stream.XMLInputFactory: javax.xml.stream.XMLStreamReader createXMLStreamReader(javax.xml.transform.Source)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<javax.xml.stream.XMLInputFactory: javax.xml.stream.XMLStreamReader createXMLStreamReader(java.io.InputStream)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<javax.xml.stream.XMLInputFactory: javax.xml.stream.XMLStreamReader createXMLStreamReader(java.io.InputStream,java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<javax.xml.stream.XMLInputFactory: javax.xml.stream.XMLStreamReader createXMLStreamReader(java.lang.String,java.io.InputStream)>",
+        "index": [
+          1
+        ]
+      },
+      {
+        "expression": "<javax.xml.stream.XMLInputFactory: javax.xml.stream.XMLStreamReader createXMLStreamReader(java.lang.String,java.io.Reader)>",
+        "index": [
+          1
+        ]
+      }
+    ],
+    "repairs": [
+      "<org.xml.sax.XMLReader: void setFeature(java.lang.String,boolean)>",
+      "<org.jdom2.input.SAXBuilder: void setFeature(java.lang.String,boolean)>",
+      "<org.dom4j.io.SAXReader: void setFeature(java.lang.String,boolean)>",
+      "<javax.xml.parsers.SAXParserFactory: void setFeature(java.lang.String,boolean)>",
+      "<org.apache.commons.digester3.Digester: void setFeature(java.lang.String,boolean)>",
+      "<javax.xml.parsers.DocumentBuilderFactory: void setFeature(java.lang.String,boolean)>",
+      "<javax.xml.stream.XMLInputFactory: void setProperty(java.lang.String,java.lang.Object)>"
+    ]
+  },
+  {
+    "name": "ssrf",
+    "sinks": [
+      {
+        "expression": "<io.webfolder.cdp.session.Session: io.webfolder.cdp.session.Session navigate(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.springframework.web.client.RestTemplate: org.springframework.http.ResponseEntity exchange(java.lang.String,org.springframework.http.HttpMethod,org.springframework.http.HttpEntity,java.lang.Class,java.lang.Object[])>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.openqa.selenium.WebDriver: void get(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.commons.httpclient.HttpClient: int executeMethod(org.apache.commons.httpclient.HttpMethod)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.commons.httpclient.HttpClient: int executeMethod(org.apache.commons.httpclient.HostConfiguration,org.apache.commons.httpclient.HttpMethod)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.commons.httpclient.HttpClient: int executeMethod(org.apache.commons.httpclient.HostConfiguration,org.apache.commons.httpclient.HttpMethod,org.apache.commons.httpclient.HttpState)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.commons.httpclient.HttpClient: int executeMethod(org.apache.commons.httpclient.methods.GetMethod)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.commons.httpclient.HttpClient: int executeMethod(org.apache.commons.httpclient.HostConfiguration,org.apache.commons.httpclient.methods.GetMethod)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.commons.httpclient.HttpClient: int executeMethod(org.apache.commons.httpclient.HostConfiguration,org.apache.commons.httpclient.methods.GetMethod,org.apache.commons.httpclient.HttpState)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.commons.httpclient.HttpClient: int executeMethod(org.apache.commons.httpclient.methods.PostMethod)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.commons.httpclient.HttpClient: int executeMethod(org.apache.commons.httpclient.HostConfiguration,org.apache.commons.httpclient.methods.PostMethod)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.commons.httpclient.HttpClient: int executeMethod(org.apache.commons.httpclient.HostConfiguration,org.apache.commons.httpclient.methods.PostMethod,org.apache.commons.httpclient.HttpState)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.http.client.fluent.Request: org.apache.http.client.fluent.Request Get(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.http.client.fluent.Request: org.apache.http.client.fluent.Request Get(java.net.URI)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.http.client.fluent.Request: org.apache.http.client.fluent.Request Post(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.http.client.fluent.Request: org.apache.http.client.fluent.Request Post(java.net.URI)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.http.client.fluent.Request: org.apache.http.client.fluent.Request Head(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.http.client.fluent.Request: org.apache.http.client.fluent.Request Head(java.net.URI)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.http.client.fluent.Request: org.apache.http.client.fluent.Request Put(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.http.client.fluent.Request: org.apache.http.client.fluent.Request Put(java.net.URI)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.http.client.fluent.Request: org.apache.http.client.fluent.Request Trace(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.http.client.fluent.Request: org.apache.http.client.fluent.Request Trace(java.net.URI)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.http.client.fluent.Request: org.apache.http.client.fluent.Request Delete(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.http.client.fluent.Request: org.apache.http.client.fluent.Request Delete(java.net.URI)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.http.client.fluent.Request: org.apache.http.client.fluent.Request Options(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.http.client.fluent.Request: org.apache.http.client.fluent.Request Options(java.net.URI)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.http.impl.client.CloseableHttpClient: org.apache.http.client.methods.CloseableHttpResponse execute(org.apache.http.HttpHost,org.apache.http.client.methods.HttpUriRequest,org.apache.http.protocol.HttpContext)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.http.impl.client.CloseableHttpClient: org.apache.http.client.methods.CloseableHttpResponse execute(org.apache.http.client.methods.HttpUriRequest,org.apache.http.protocol.HttpContext)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.http.impl.client.CloseableHttpClient: org.apache.http.client.methods.CloseableHttpResponse execute(org.apache.http.client.methods.HttpUriRequest)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.http.impl.client.CloseableHttpClient: org.apache.http.client.methods.CloseableHttpResponse execute(org.apache.http.HttpHost,org.apache.http.client.methods.HttpUriRequest)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.http.impl.client.CloseableHttpClient: org.apache.http.client.methods.CloseableHttpResponse execute(org.apache.http.client.methods.HttpUriRequest,org.apache.http.client.ResponseHandler)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.http.impl.client.CloseableHttpClient: org.apache.http.client.methods.CloseableHttpResponse execute(org.apache.http.client.methods.HttpUriRequest,org.apache.http.client.ResponseHandler,org.apache.http.protocol.HttpContext)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.http.impl.client.CloseableHttpClient: org.apache.http.client.methods.CloseableHttpResponse execute(org.apache.http.HttpHost,org.apache.http.client.methods.HttpUriRequest,org.apache.http.client.ResponseHandler)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.http.impl.client.CloseableHttpClient: org.apache.http.client.methods.CloseableHttpResponse execute(org.apache.http.HttpHost,org.apache.http.client.methods.HttpGet,org.apache.http.protocol.HttpContext)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.http.impl.client.CloseableHttpClient: org.apache.http.client.methods.CloseableHttpResponse execute(org.apache.http.client.methods.HttpGet,org.apache.http.protocol.HttpContext)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.http.impl.client.CloseableHttpClient: org.apache.http.client.methods.CloseableHttpResponse execute(org.apache.http.client.methods.HttpGet)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.http.impl.client.CloseableHttpClient: org.apache.http.client.methods.CloseableHttpResponse execute(org.apache.http.HttpHost,org.apache.http.client.methods.HttpGet)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.http.impl.client.CloseableHttpClient: org.apache.http.client.methods.CloseableHttpResponse execute(org.apache.http.client.methods.HttpGet,org.apache.http.client.ResponseHandler)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.http.impl.client.CloseableHttpClient: org.apache.http.client.methods.CloseableHttpResponse execute(org.apache.http.client.methods.HttpGet,org.apache.http.client.ResponseHandler,org.apache.http.protocol.HttpContext)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.http.impl.client.CloseableHttpClient: org.apache.http.client.methods.CloseableHttpResponse execute(org.apache.http.HttpHost,org.apache.http.client.methods.HttpGet,org.apache.http.client.ResponseHandler)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.http.impl.client.CloseableHttpClient: org.apache.http.client.methods.CloseableHttpResponse execute(org.apache.http.HttpHost,org.apache.http.client.methods.HttpPost,org.apache.http.protocol.HttpContext)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.http.impl.client.CloseableHttpClient: org.apache.http.client.methods.CloseableHttpResponse execute(org.apache.http.client.methods.HttpPost,org.apache.http.protocol.HttpContext)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.http.impl.client.CloseableHttpClient: org.apache.http.client.methods.CloseableHttpResponse execute(org.apache.http.client.methods.HttpPost)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.http.impl.client.CloseableHttpClient: org.apache.http.client.methods.CloseableHttpResponse execute(org.apache.http.HttpHost,org.apache.http.client.methods.HttpPost)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.http.impl.client.CloseableHttpClient: org.apache.http.client.methods.CloseableHttpResponse execute(org.apache.http.client.methods.HttpPost,org.apache.http.client.ResponseHandler)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.http.impl.client.CloseableHttpClient: org.apache.http.client.methods.CloseableHttpResponse execute(org.apache.http.client.methods.HttpPost,org.apache.http.client.ResponseHandler,org.apache.http.protocol.HttpContext)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.http.impl.client.CloseableHttpClient: org.apache.http.client.methods.CloseableHttpResponse execute(org.apache.http.HttpHost,org.apache.http.client.methods.HttpPost,org.apache.http.client.ResponseHandler)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<java.net.URL: java.net.URLConnection openConnection()>",
+        "index": []
+      },
+      {
+        "expression": "<java.net.URL: java.io.InputStream openStream()>",
+        "index": []
+      },
+      {
+        "expression": "<org.jsoup.Jsoup: org.jsoup.Connection connect(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<com.squareup.okhttp.Request: com.squareup.okhttp.Request$Builder url(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<com.squareup.okhttp.Request: com.squareup.okhttp.Request$Builder url(java.net.URL)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<com.squareup.okhttp.Request: com.squareup.okhttp.Request$Builder url(com.squareup.okhttp.HttpUrl)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<javax.imageio.ImageIO: java.awt.image.BufferedImage read(java.net.URL)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.commons.io.IOUtils: byte[] toByteArray(java.net.URI)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.commons.io.IOUtils: byte[] toByteArray(java.net.URL)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.commons.io.IOUtils: byte[] toByteArray(java.net.URLConnection)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.http.impl.nio.client.CloseableHttpAsyncClient: java.util.concurrent.Future execute(org.apache.http.HttpHost,org.apache.http.HttpRequest,org.apache.http.protocol.HttpContext,org.apache.http.concurrent.FutureCallback)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.http.impl.nio.client.CloseableHttpAsyncClient: java.util.concurrent.Future execute(org.apache.http.HttpHost,org.apache.http.HttpRequest,org.apache.http.concurrent.FutureCallback)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.http.impl.nio.client.CloseableHttpAsyncClient: java.util.concurrent.Future execute(org.apache.http.client.methods.HttpUriRequest,org.apache.http.concurrent.FutureCallback)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.http.impl.nio.client.CloseableHttpAsyncClient: java.util.concurrent.Future execute(org.apache.http.client.methods.HttpUriRequest,org.apache.http.protocol.HttpContext,org.apache.http.concurrent.FutureCallback)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.http.impl.nio.client.CloseableHttpAsyncClient: java.util.concurrent.Future execute(org.apache.http.HttpHost,org.apache.http.client.methods.HttpGet,org.apache.http.protocol.HttpContext,org.apache.http.concurrent.FutureCallback)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.http.impl.nio.client.CloseableHttpAsyncClient: java.util.concurrent.Future execute(org.apache.http.HttpHost,org.apache.http.client.methods.HttpGet,org.apache.http.concurrent.FutureCallback)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.http.impl.nio.client.CloseableHttpAsyncClient: java.util.concurrent.Future execute(org.apache.http.client.methods.HttpGet,org.apache.http.concurrent.FutureCallback)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.http.impl.nio.client.CloseableHttpAsyncClient: java.util.concurrent.Future execute(org.apache.http.client.methods.HttpGet,org.apache.http.protocol.HttpContext,org.apache.http.concurrent.FutureCallback)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.http.impl.nio.client.CloseableHttpAsyncClient: java.util.concurrent.Future execute(org.apache.http.HttpHost,org.apache.http.client.methods.HttpPost,org.apache.http.protocol.HttpContext,org.apache.http.concurrent.FutureCallback)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.http.impl.nio.client.CloseableHttpAsyncClient: java.util.concurrent.Future execute(org.apache.http.HttpHost,org.apache.http.client.methods.HttpPost,org.apache.http.concurrent.FutureCallback)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.http.impl.nio.client.CloseableHttpAsyncClient: java.util.concurrent.Future execute(org.apache.http.client.methods.HttpPost,org.apache.http.concurrent.FutureCallback)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.http.impl.nio.client.CloseableHttpAsyncClient: java.util.concurrent.Future execute(org.apache.http.client.methods.HttpPost,org.apache.http.protocol.HttpContext,org.apache.http.concurrent.FutureCallback)>",
+        "index": [
+          0
+        ]
+      }
+    ],
+    "repairs": [
+    ]
+  },
+  {
+    "name": "QLExpressionInject",
+    "sinks": [
+      {
+        "expression": "<com.ql.util.express.ExpressRunner: java.lang.Object execute(java.lang.String,com.ql.util.express.IExpressContext,java.util.List,boolean,boolean,long)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<com.ql.util.express.ExpressRunner: java.lang.Object execute(java.lang.String,com.ql.util.express.IExpressContext,java.util.List,boolean,boolean)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<com.ql.util.express.ExpressRunner: java.lang.Object execute(java.lang.String,com.ql.util.express.IExpressContext,java.util.List,boolean,boolean,org.apache.commons.logging.Log)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<com.ql.util.express.ExpressRunner: java.lang.Object execute(com.ql.util.express.InstructionSet,com.ql.util.express.IExpressContext,java.util.List,boolean,boolean,org.apache.commons.logging.Log)>",
+        "index": [
+          0
+        ]
+      }
+    ],
+    "repairs": [
+    ]
+  },
+  {
+    "name": "log4jRce",
+    "sinks": [
+      {
+        "expression": "<org.apache.logging.log4j.Logger: void error(java.lang.String,java.lang.Object)>",
+        "index": [
+          1
+        ]
+      },
+      {
+        "expression": "<org.apache.logging.log4j.Logger: void info(java.lang.String,java.lang.Object)>",
+        "index": [
+          1
+        ]
+      },
+      {
+        "expression": "<org.apache.logging.log4j.Logger: void warn(java.lang.String,java.lang.Object)>",
+        "index": [
+          1
+        ]
+      },
+      {
+        "expression": "<org.apache.logging.log4j.Logger: void debug(java.lang.String,java.lang.Object)>",
+        "index": [
+          1
+        ]
+      },
+      {
+        "expression": "<org.apache.logging.log4j.Logger: void fatal(java.lang.String,java.lang.Object)>",
+        "index": [
+          1
+        ]
+      },
+      {
+        "expression": "<org.apache.logging.log4j.Logger: void trace(java.lang.String,java.lang.Object)>",
+        "index": [
+          1
+        ]
+      },
+      {
+        "expression": "<org.apache.logging.log4j.Logger: void error(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.logging.log4j.Logger: void info(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.logging.log4j.Logger: void warn(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.logging.log4j.Logger: void debug(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.logging.log4j.Logger: void fatal(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.logging.log4j.Logger: void trace(java.lang.String)>",
+        "index": [
+          0
+        ]
+      }
+    ],
+    "repairs": [
+    ]
+  },
+  {
+    "name": "deserialization",
+    "sinks": [
+      {
+        "expression": "<com.alibaba.fastjson.JSON: com.alibaba.fastjson.JSONObject parseObject(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<com.alibaba.fastjson.JSONObject: java.lang.Object parse(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<com.alibaba.fastjson.JSONObject: com.alibaba.fastjson.JSONObject parseObject(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<java.io.ObjectInputStream: java.lang.Object readObject()>",
+        "index": []
+      },
+      {
+        "expression": "<com.thoughtworks.xstream.XStream: java.lang.Object fromXML(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<com.thoughtworks.xstream.XStream: java.lang.Object fromXML(java.io.Reader)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<com.thoughtworks.xstream.XStream: java.lang.Object fromXML(java.io.InputStream)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<com.thoughtworks.xstream.XStream: java.lang.Object fromXML(java.net.URL)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<com.thoughtworks.xstream.XStream: java.lang.Object fromXML(java.io.File)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<com.thoughtworks.xstream.XStream: java.lang.Object fromXML(java.lang.String,java.lang.Object)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<com.thoughtworks.xstream.XStream: java.lang.Object fromXML(java.io.Reader,java.lang.Object)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<com.thoughtworks.xstream.XStream: java.lang.Object fromXML(java.io.InputStream,java.lang.Object)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<com.thoughtworks.xstream.XStream: java.lang.Object fromXML(java.net.URL,java.lang.Object)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<com.thoughtworks.xstream.XStream: java.lang.Object fromXML(java.io.File,java.lang.Object)>",
+        "index": [
+          0
+        ]
+      }
+    ],
+    "repairs": [
+      "<com.alibaba.fastjson.parser.ParserConfig: void setSafeMode(boolean)>"
+    ]
+  },
+  {
+    "name": "xxe",
+    "sinks": [
+      {
+        "expression": "<org.xml.sax.XMLReader: void parse(org.xml.sax.InputSource)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.xml.sax.XMLReader: void parse(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.jdom2.input.SAXBuilder: org.jdom2.Document build(org.xml.sax.InputSource)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.jdom2.input.SAXBuilder: org.jdom2.Document build(java.io.InputStream)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.jdom2.input.SAXBuilder: org.jdom2.Document build(java.io.InputStream,java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.jdom2.input.SAXBuilder: org.jdom2.Document build(java.io.File)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.jdom2.input.SAXBuilder: org.jdom2.Document build(java.net.URL)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.jdom2.input.SAXBuilder: org.jdom2.Document build(java.io.Reader)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.jdom2.input.SAXBuilder: org.jdom2.Document build(java.io.File,java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.jdom2.input.SAXBuilder: org.jdom2.Document build(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.dom4j.io.SAXReader: org.dom4j.Document read(java.io.File)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.dom4j.io.SAXReader: org.dom4j.Document read(java.net.URL)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.dom4j.io.SAXReader: org.dom4j.Document read(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.dom4j.io.SAXReader: org.dom4j.Document read(java.io.InputStream)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.dom4j.io.SAXReader: org.dom4j.Document read(java.io.InputStream,java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.dom4j.io.SAXReader: org.dom4j.Document read(java.io.Reader)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.dom4j.io.SAXReader: org.dom4j.Document read(java.io.Reader,java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.dom4j.io.SAXReader: org.dom4j.Document read(org.xml.sax.InputSource)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<javax.xml.parsers.SAXParser: void parse(java.io.InputStream,org.xml.sax.HandlerBase)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<javax.xml.parsers.SAXParser: void parse(java.io.InputStream,org.xml.sax.HandlerBase,java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<javax.xml.parsers.SAXParser: void parse(java.io.InputStream,org.xml.sax.helpers.DefaultHandler)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<javax.xml.parsers.SAXParser: void parse(java.io.InputStream,org.xml.sax.helpers.DefaultHandler,java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<javax.xml.parsers.SAXParser: void parse(org.xml.sax.InputSource,org.xml.sax.helpers.DefaultHandler)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<javax.xml.parsers.SAXParser: void parse(java.lang.String,org.xml.sax.HandlerBase)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<javax.xml.parsers.SAXParser: void parse(java.lang.String,org.xml.sax.helpers.DefaultHandler)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<javax.xml.parsers.SAXParser: void parse(java.io.File,org.xml.sax.HandlerBase)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<javax.xml.parsers.SAXParser: void parse(java.io.File,org.xml.sax.helpers.DefaultHandler)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<javax.xml.parsers.SAXParser: void parse(org.xml.sax.InputSource,org.xml.sax.HandlerBase)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<javax.xml.parsers.SAXParser: void parse(org.xml.sax.InputSource,org.xml.sax.helpers.DefaultHandler)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.commons.digester3.Digester: java.lang.Object parse(java.io.File)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.commons.digester3.Digester: java.lang.Object parse(org.xml.sax.InputSource)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.commons.digester3.Digester: java.lang.Object parse(java.io.InputStream)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.commons.digester3.Digester: java.lang.Object parse(java.io.Reader)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.commons.digester3.Digester: java.lang.Object parse(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.apache.commons.digester3.Digester: java.lang.Object parse(java.net.URL)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<javax.xml.parsers.DocumentBuilder: org.w3c.dom.Document parse(java.io.InputStream)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<javax.xml.parsers.DocumentBuilder: org.w3c.dom.Document parse(java.io.InputStream,java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<javax.xml.parsers.DocumentBuilder: org.w3c.dom.Document parse(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<javax.xml.parsers.DocumentBuilder: org.w3c.dom.Document parse(java.io.File)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<javax.xml.parsers.DocumentBuilder: org.w3c.dom.Document parse(org.xml.sax.InputSource)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<org.dom4j.DocumentHelper: org.dom4j.Document parseText(java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<javax.xml.stream.XMLInputFactory: javax.xml.stream.XMLStreamReader createXMLStreamReader(java.io.Reader)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<javax.xml.stream.XMLInputFactory: javax.xml.stream.XMLStreamReader createXMLStreamReader(java.io.StringReader)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<javax.xml.stream.XMLInputFactory: javax.xml.stream.XMLStreamReader createXMLStreamReader(javax.xml.transform.Source)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<javax.xml.stream.XMLInputFactory: javax.xml.stream.XMLStreamReader createXMLStreamReader(java.io.InputStream)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<javax.xml.stream.XMLInputFactory: javax.xml.stream.XMLStreamReader createXMLStreamReader(java.io.InputStream,java.lang.String)>",
+        "index": [
+          0
+        ]
+      },
+      {
+        "expression": "<javax.xml.stream.XMLInputFactory: javax.xml.stream.XMLStreamReader createXMLStreamReader(java.lang.String,java.io.InputStream)>",
+        "index": [
+          1
+        ]
+      },
+      {
+        "expression": "<javax.xml.stream.XMLInputFactory: javax.xml.stream.XMLStreamReader createXMLStreamReader(java.lang.String,java.io.Reader)>",
+        "index": [
+          1
+        ]
+      }
+    ],
+    "repairs": [
+      "<org.xml.sax.XMLReader: void setFeature(java.lang.String,boolean)>",
+      "<org.jdom2.input.SAXBuilder: void setFeature(java.lang.String,boolean)>",
+      "<org.dom4j.io.SAXReader: void setFeature(java.lang.String,boolean)>",
+      "<javax.xml.parsers.SAXParserFactory: void setFeature(java.lang.String,boolean)>",
+      "<org.apache.commons.digester3.Digester: void setFeature(java.lang.String,boolean)>",
+      "<javax.xml.parsers.DocumentBuilderFactory: void setFeature(java.lang.String,boolean)>",
+      "<javax.xml.stream.XMLInputFactory: void setProperty(java.lang.String,java.lang.Object)>"
+    ]
+  }
+]

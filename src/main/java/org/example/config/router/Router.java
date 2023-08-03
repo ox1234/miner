@@ -1,4 +1,4 @@
-package org.example.basic;
+package org.example.config.router;
 
 import org.example.tags.RouteTag;
 import soot.SootClass;

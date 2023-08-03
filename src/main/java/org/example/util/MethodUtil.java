@@ -14,15 +14,6 @@ public class MethodUtil {
     private static final String INIT_METHOD_NAME = "<init>";
     private static final String CLINIT_METHOD_NAME = "<clinit>";
 
-    public static boolean isRouteMethod(SootMethod sootMethod) {
-        for (AnnotationTag methodTag : TagUtil.getMethodAnnotation(sootMethod)) {
-            if (TagUtil.isRouteMethodAnnotation(methodTag)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public static SootMethod getSootMethod(String signature) {
         return Scene.v().getMethod(signature);
     }
