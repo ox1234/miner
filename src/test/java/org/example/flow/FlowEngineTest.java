@@ -1,2 +1,4 @@
-package org.example.flow;public class FlowEngineTest {
+package org.example.flow;
+
+public class FlowEngineTest {
 }
