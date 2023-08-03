@@ -9,6 +9,7 @@ import org.example.core.basic.field.ArrayLoad;
 import org.example.core.basic.field.InstanceField;
 import org.example.core.basic.field.StaticField;
 import org.example.core.basic.identity.LocalVariable;
+import org.example.core.basic.identity.Parameter;
 import org.example.core.basic.identity.ThisVariable;
 import org.example.core.basic.identity.VoidNode;
 import org.example.core.basic.node.CallNode;
@@ -20,6 +21,7 @@ import org.example.core.hook.bytedance.proto.*;
 
 import java.util.*;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 public class CodeGraphFlowConsumer implements BiConsumer<Node, IntraAnalyzedMethod.AnalyzedUnit> {
     private final Logger logger = LogManager.getLogger(CodeGraphFlowConsumer.class);
@@ -27,12 +29,19 @@ public class CodeGraphFlowConsumer implements BiConsumer<Node, IntraAnalyzedMeth
     private int cursor;
     private final List<Statement> statementList;
     private IntraAnalyzedMethod analyzedMethod;
+    private Function.Builder funcBuilder;
 
-    public CodeGraphFlowConsumer(IntraAnalyzedMethod analyzedMethod) {
+    public CodeGraphFlowConsumer(Function.Builder funcBuilder, IntraAnalyzedMethod analyzedMethod) {
+        this.funcBuilder = funcBuilder;
         this.statementList = new ArrayList<>();
         this.variables = new LinkedHashMap<>();
         this.analyzedMethod = analyzedMethod;
         this.cursor = 0;
+
+        analyzedMethod.getParameterNodes().forEach(parameter -> {
+            addNodeID(parameter);
+            funcBuilder.addArgIds(getNodeID(parameter));
+        });
     }
 
     @Override
@@ -94,9 +103,9 @@ public class CodeGraphFlowConsumer implements BiConsumer<Node, IntraAnalyzedMeth
         Call.Builder builder = Call.newBuilder();
         if (callNode.getInvokeType() == InvokeType.INSTANCE_INVOKE || callNode.getInvokeType() == InvokeType.SPECIAL_INVOKE) {
             builder.addArgIds(getNodeID(callNode.getBase()));
-            builder.setInvokeMethodName(callNode.getCallee().getName());
+            builder.setInvokeMethodName(callNode.getCallee().getSignature());
         } else {
-            builder.setStaticFuncName(callNode.getCallee().getName());
+            builder.setStaticFuncName(callNode.getCallee().getSignature());
         }
         callNode.getArgs().forEach(node -> builder.addArgIds(getNodeID(node)));
         if (to != null && !(to instanceof VoidNode)) {

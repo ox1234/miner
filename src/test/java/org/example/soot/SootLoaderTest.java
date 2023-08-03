@@ -1,9 +1,10 @@
-package soot;
+package org.example.soot;
 
 import org.example.soot.SootSetup;
 import org.example.soot.impl.FatJarHandler;
 import org.example.soot.impl.SingleClassHandler;
 import org.junit.jupiter.api.Test;
+import soot.Scene;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;

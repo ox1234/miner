@@ -1,4 +1,4 @@
-package bytedance;
+package org.example.util.bytedance;
 
 import org.example.util.bytedance.BytedanceUtil;
 import org.junit.jupiter.api.Test;

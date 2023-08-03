@@ -94,6 +94,10 @@ public class IntraAnalyzedMethod {
         private void addParamNode(Parameter parameter) {
             paramNodes.add(parameter);
         }
+
+        public Set<Parameter> getParamNodes() {
+            return paramNodes;
+        }
     }
 
     protected IntraAnalyzedMethod(SootMethod sootMethod) {
@@ -164,4 +168,5 @@ public class IntraAnalyzedMethod {
             return new IntraAnalyzedMethod(sootMethod);
         }
     }
+
 }
