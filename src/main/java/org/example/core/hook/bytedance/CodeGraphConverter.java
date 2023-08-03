@@ -8,9 +8,7 @@ import org.example.core.basic.field.StaticField;
 import org.example.core.basic.identity.LocalVariable;
 import org.example.core.hook.bytedance.proto.*;
 import org.example.util.TagUtil;
-import soot.SootClass;
-import soot.SootField;
-import soot.Unit;
+import soot.*;
 
 import java.util.Map;
 
@@ -58,11 +56,16 @@ public class CodeGraphConverter {
 
     public static FuncSignature convertToFunctionSignature(IntraAnalyzedMethod analyzedMethod) {
         FuncSignature.Builder builder = FuncSignature.newBuilder();
-        builder.setClassType(analyzedMethod.getMethodRef().getDeclaringClass().getName());
+        SootMethod methodRef = analyzedMethod.getMethodRef();
+        if (!methodRef.isStatic()) {
+            builder.setClassType(methodRef.getDeclaringClass().getName());
+        }
         for (int i = 0; i < analyzedMethod.getParamTypes().size(); i++) {
             builder.addArgTypes(analyzedMethod.getParamTypes().get(i));
         }
-        builder.addRetTypes(analyzedMethod.getMethodRef().getReturnType().toString());
+        if (!(methodRef.getReturnType() instanceof VoidType)) {
+            builder.addRetTypes(methodRef.getReturnType().toString());
+        }
         return builder.build();
     }
 
@@ -86,7 +89,8 @@ public class CodeGraphConverter {
         builder.setIsIgnore(analyzedMethod.getMethodRef().isAbstract());
         if (!builder.getIsIgnore()) {
             Map<Node, IntraAnalyzedMethod.AnalyzedUnit> flow = analyzedMethod.getOrderedFlowMap();
-            CodeGraphFlowConsumer consumer = new CodeGraphFlowConsumer(analyzedMethod);
+
+            CodeGraphFlowConsumer consumer = new CodeGraphFlowConsumer(builder, analyzedMethod);
             flow.forEach(consumer);
 
             // set variables

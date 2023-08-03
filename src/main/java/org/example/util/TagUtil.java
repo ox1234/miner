@@ -229,7 +229,8 @@ public class TagUtil {
     public static int getUnitLineNumber(Unit unit) {
         Tag tag = unit.getTag("LineNumberTag");
         if (tag != null) {
-            return Integer.parseInt(new String(tag.getValue()), 10);
+            LineNumberTag lineTag = (LineNumberTag) tag;
+            return lineTag.getLineNumber();
         }
         return -1;
     }
