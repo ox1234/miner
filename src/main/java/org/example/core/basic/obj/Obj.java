@@ -7,10 +7,13 @@ import org.example.core.basic.UnitLevelSite;
 import soot.Type;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
-abstract public class Obj extends UnitLevelSite implements TypeNode{
+abstract public class Obj extends UnitLevelSite implements TypeNode {
     protected Type type;
+    protected Map<String, Set<Obj>> fields = new HashMap<>();
 
     protected Obj(Type type, Loc loc) {
         super(type.toString(), loc.toString());
@@ -28,10 +31,15 @@ abstract public class Obj extends UnitLevelSite implements TypeNode{
         return type;
     }
 
-    public void putField(Node fieldNode, Set<Obj> objNode) {
+    public void putField(String fieldID, Set<Obj> objNode) {
+        fields.put(fieldID, objNode);
     }
 
-    public Set<Obj> getField(Node fieldNode) {
-        return Collections.emptySet();
+    public Set<Obj> getField(String fieldID) {
+        Set<Obj> refObjs = fields.get(fieldID);
+        if (refObjs == null) {
+            return Collections.emptySet();
+        }
+        return refObjs;
     }
 }

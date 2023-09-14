@@ -16,4 +16,9 @@ public class PhantomObj extends Obj {
     public String toString() {
         return String.format("%s(%s)", super.getType(), "phantom");
     }
+
+    @Override
+    public void resetType(Type type) {
+        super.type = type;
+    }
 }

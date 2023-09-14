@@ -5,16 +5,17 @@ import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.example.config.Configuration;
+import org.example.config.entry.IEntry;
 import org.example.core.Engine;
 import org.example.core.IntraAnalyzedMethod;
 import org.example.flow.FlowEngine;
 import org.example.soot.SootSetup;
 import soot.Hierarchy;
-import soot.PackManager;
 import soot.Scene;
 
 import java.io.File;
 import java.util.Map;
+import java.util.function.Consumer;
 
 public class Main {
     private static final Logger logger = LogManager.getLogger(Main.class);
@@ -33,7 +34,7 @@ public class Main {
         CommandLineParser parser = new DefaultParser();
         try {
             CommandLine commandLine = parser.parse(options, args);
-            Configuration.initialize(commandLine);
+            Configuration.parseCommandLine(commandLine);
         } catch (ParseException e) {
             System.err.println("Parsing command line failed.  Reason: " + e.getMessage());
             HelpFormatter formatter = new HelpFormatter();
@@ -48,14 +49,16 @@ public class Main {
         SootSetup setup = new SootSetup();
         setup.initialize(Configuration.getTargets());
 
-        // initialize analyze engine and do analysis
+        // parseCommandLine analyze engine and do analysis
         Hierarchy hierarchy = setup.getHierarchy();
         Engine engine = new Engine(hierarchy);
         Map<String, IntraAnalyzedMethod> analyzedMethodSet = engine.extractPointRelation();
 
         // do inter analysis based on intra analysis result
-        FlowEngine flowEngine = new FlowEngine(analyzedMethodSet);
-        Scene.v().getEntryPoints().forEach(flowEngine::doAnalysis);
+        setup.getEntries().forEach(iEntry -> {
+            FlowEngine flowEngine = new FlowEngine(analyzedMethodSet);
+            flowEngine.doAnalysis(iEntry);
+        });
 
         logger.info("java code graph construct successfully");
     }

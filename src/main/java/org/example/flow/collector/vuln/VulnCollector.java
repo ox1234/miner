@@ -2,7 +2,7 @@ package org.example.flow.collector.vuln;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.example.config.router.Router;
+import org.example.config.entry.RouterEntry;
 import org.example.basic.Vulnerability;
 import org.example.config.Configuration;
 import org.example.config.sourcesink.Sink;
@@ -27,7 +27,7 @@ import java.util.*;
 
 public class VulnCollector implements Collector {
     private final Logger logger = LogManager.getLogger(VulnCollector.class);
-    private static Set<Vulnerability> vulnerabilities = new HashSet<>();
+    private Set<Vulnerability> vulnerabilities = new HashSet<>();
     private SourceSinkManager sourceSinkManager = Configuration.getSourceSinkManager();
 
     @Override
@@ -36,17 +36,17 @@ public class VulnCollector implements Collector {
         if (checkReachSink(reachedMethod)) {
             ContextMethod entryMethod = callStack.getFirst();
             IntraAnalyzedMethod entryAnalyzedMethod = entryMethod.getIntraAnalyzedMethod();
-            Router router = null;
+            RouterEntry routerEntry = null;
             if (entryAnalyzedMethod instanceof RouteIntraAnalyzedMethod) {
                 RouteIntraAnalyzedMethod routeIntraAnalyzedMethod = (RouteIntraAnalyzedMethod) entryAnalyzedMethod;
-                router = routeIntraAnalyzedMethod.getRouter();
+                routerEntry = routeIntraAnalyzedMethod.getRouter();
             }
-            vulnerabilities.add(new Vulnerability(router, reachedMethod, callStack));
+            vulnerabilities.add(new Vulnerability(routerEntry, reachedMethod, callStack));
             logger.error(String.format("!!! find vulnerability reach sink to %s", reachedMethod.getSootMethod().getSignature()));
         }
     }
 
-    public static Set<Vulnerability> getVulnerabilities() {
+    public Set<Vulnerability> getVulnerabilities() {
         return vulnerabilities;
     }
 
@@ -69,13 +69,17 @@ public class VulnCollector implements Collector {
             }
         }
 
+        // test case sink match
+        if (reachedMethod.getSootMethod().getName().equals("sink") && taintContainer.checkIdxParamIsTaint(0)) {
+            return true;
+        }
 
         for (String signature : MethodUtil.getOverrideMethodSignatureOfInclude(reachedMethod.getSootMethod())) {
             if (sourceSinkManager.isSinkSig(signature)) {
                 Sink sink = sourceSinkManager.getSink(signature);
 
                 // if base is taint and config defined such sink without no param, will report
-                if (reachedMethod.isBaseTaint() && sink.getSinkIdx().size() == 0) {
+                if (reachedMethod.isBaseTaint() && sink.getSinkIdx().isEmpty()) {
                     return true;
                 }
 
@@ -130,7 +134,7 @@ public class VulnCollector implements Collector {
                 Set<Obj> objs = pointToContainer.getPointRefObj(paramNode);
                 for (Obj perObj : objs) {
                     if (perObj instanceof NormalObj) {
-                        for (Obj fieldObj : ((NormalObj) perObj).getFieldObjByFieldName(placeHolder)) {
+                        for (Obj fieldObj : perObj.getField(placeHolder)) {
                             if (taintContainer.containsTaint(fieldObj)) {
                                 return true;
                             }

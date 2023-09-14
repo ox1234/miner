@@ -1,14 +1,14 @@
 package org.example.tags;
 
-import org.example.config.router.Router;
+import org.example.config.entry.RouterEntry;
 import soot.tagkit.AttributeValueException;
 import soot.tagkit.Tag;
 
 public class RouteTag implements Tag {
-    private Router router;
+    private RouterEntry routerEntry;
 
-    public RouteTag(Router router) {
-        this.router = router;
+    public RouteTag(RouterEntry routerEntry) {
+        this.routerEntry = routerEntry;
     }
 
     @Override
@@ -18,10 +18,10 @@ public class RouteTag implements Tag {
 
     @Override
     public byte[] getValue() throws AttributeValueException {
-        return String.join(",", router.getRoutes()).getBytes();
+        return String.join(",", routerEntry.getRoutes()).getBytes();
     }
 
-    public Router getRoute() {
-        return router;
+    public RouterEntry getRoute() {
+        return routerEntry;
     }
 }

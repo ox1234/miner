@@ -48,15 +48,18 @@ public class CallStack {
     }
 
     public Set<Obj> getRefObjs(Node node) {
-        Set<Obj> obj;
+        Set<Obj> obj = null;
         // rebase this variable
         if (node instanceof ThisVariable) {
             obj = Collections.singleton(getLastStackObj());
         }
 
         // get node from point to container
-        PointToContainer pointToContainer = callStack.peek().getPointToContainer();
-        obj = pointToContainer.getNodeRefObj(node);
+        if (obj == null) {
+            PointToContainer pointToContainer = callStack.peek().getPointToContainer();
+            obj = pointToContainer.getNodeRefObj(node);
+        }
+
 
         // can't find an obj, will make a phantom obj
         if (obj.isEmpty()) {

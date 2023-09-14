@@ -21,4 +21,8 @@ public class LocalVariable extends MethodLevelSite implements TypeNode {
         return type;
     }
 
+    @Override
+    public void resetType(Type type) {
+        this.type = type;
+    }
 }

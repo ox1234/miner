@@ -1,32 +1,28 @@
-package org.example.config.router;
+package org.example.config.entry;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.example.config.Configuration;
 import org.example.config.sourcesink.SourceSinkManager;
 import org.example.util.TagUtil;
 import soot.SootClass;
 import soot.SootMethod;
-import soot.tagkit.AnnotationArrayElem;
-import soot.tagkit.AnnotationElem;
-import soot.tagkit.AnnotationStringElem;
-import soot.tagkit.AnnotationTag;
+import soot.tagkit.*;
 
 import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class SprintBootRouteManager implements RouteManager {
+public class SpringBootEntryManager implements EntryManager {
     private final Logger logger = LogManager.getLogger(SourceSinkManager.class);
 
     private Path configPath;
     private Set<String> controllerTag;
     private Set<String> routeMethodTag;
 
-    public SprintBootRouteManager(Path runtimeConfPath) {
+    public SpringBootEntryManager(Path runtimeConfPath) {
         this.controllerTag = new HashSet<>();
         this.routeMethodTag = new HashSet<>();
         this.configPath = runtimeConfPath.resolve("spring_route.json");
@@ -35,6 +31,18 @@ public class SprintBootRouteManager implements RouteManager {
     }
 
     @Override
+    public Set<IEntry> getEntry(SootClass sootClass) {
+        Set<IEntry> entries = new HashSet<>();
+        if (isController(sootClass)) {
+            sootClass.getMethods().forEach(sootMethod -> {
+                if (isRouteMethod(sootMethod)) {
+                    entries.add(parseToRouteMethod(sootMethod));
+                }
+            });
+        }
+        return entries;
+    }
+
     public boolean isRouteMethod(SootMethod sootMethod) {
         for (AnnotationTag methodTag : TagUtil.getMethodAnnotation(sootMethod)) {
             if (routeMethodTag.contains(methodTag.getType())) {
@@ -44,7 +52,6 @@ public class SprintBootRouteManager implements RouteManager {
         return false;
     }
 
-    @Override
     public boolean isController(SootClass sootClass) {
         for (AnnotationTag annotationTag : TagUtil.getClassAnnotation(sootClass)) {
             if (controllerTag.contains(annotationTag.getType())) {
@@ -54,9 +61,8 @@ public class SprintBootRouteManager implements RouteManager {
         return false;
     }
 
-    @Override
-    public Router parseToRouteMethod(SootMethod sootMethod) {
-        return new Router(sootMethod.getDeclaringClass(), sootMethod, getMethodRoutePath(sootMethod));
+    public RouterEntry parseToRouteMethod(SootMethod sootMethod) {
+        return new RouterEntry(sootMethod, getMethodRoutePath(sootMethod));
     }
 
     private void loadSpringRouteConfigFromFile(Path file) {
@@ -66,9 +72,7 @@ public class SprintBootRouteManager implements RouteManager {
 
             controllerTag.addAll(springRouteConfig.getControllerClassTags());
             routeMethodTag.addAll(springRouteConfig.getRequestMethodTags());
-            logger.info(String.format("load %d spring controller tag, %d spring request method tag",
-                    springRouteConfig.getControllerClassTags().size(),
-                    springRouteConfig.getControllerClassTags().size()));
+            logger.info(String.format("load %d spring controller tag, %d spring request method tag", springRouteConfig.getControllerClassTags().size(), springRouteConfig.getControllerClassTags().size()));
         } catch (Exception e) {
             logger.warn(String.format("load spring route config from %s file fail: %s", file, e.getMessage()));
         }

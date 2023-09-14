@@ -6,8 +6,8 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
-import org.example.config.router.RouteManager;
-import org.example.config.router.SprintBootRouteManager;
+import org.example.config.entry.EntryManager;
+import org.example.config.entry.SpringBootEntryManager;
 import org.example.config.sourcesink.SourceSinkManager;
 
 import java.nio.file.Path;
@@ -21,53 +21,62 @@ public class Configuration {
 
     private static Set<String> targets;
     private static String outputPath;
-    private static Set<String> entryPoints;
+    private static Set<String> entryPoints = new LinkedHashSet<>();
 
     private static boolean debugMode;
     private static boolean codeGraphMode;
 
     private static SourceSinkManager sourceSinkManager;
-    private static List<RouteManager> registeredRouteManager;
+    private static List<EntryManager> registeredEntryManager;
 
-    public static void initialize(CommandLine commandLine) throws Exception {
-        entryPoints = new LinkedHashSet<>();
+    static {
+        runtimeConfigPath = Paths.get("runtime_config");
 
+        // register spring route manager
+        registeredEntryManager = new ArrayList<>();
+        registerRouteManager(new SpringBootEntryManager(runtimeConfigPath));
+
+        // register source sink manager
+        sourceSinkManager = new SourceSinkManager();
+        sourceSinkManager.loadSinkRuleFromFile(runtimeConfigPath.resolve("sinks.json"));
+
+        outputPath = "tmp";
+    }
+
+    public static void parseCommandLine(CommandLine commandLine) throws Exception {
+        // set target
         targets = getAllTarget(commandLine.getOptionValue("target"));
+
+        // set debug mode
         debugMode = commandLine.hasOption("debug");
         if (debugMode) {
             Configurator.setRootLevel(Level.DEBUG);
         }
 
+        // set codegraph mode
         codeGraphMode = commandLine.hasOption("codegraph");
 
-        outputPath = commandLine.getOptionValue("output");
-        if (outputPath == null || outputPath.equals("")) {
-            outputPath = "tmp";
+        // set output path
+        String outputPathArg = commandLine.getOptionValue("output");
+        if (outputPathArg != null && !outputPathArg.isEmpty()) {
+            outputPath = outputPathArg;
         }
 
+        // set entry point
         entryPoints = getAllEntryPoints(commandLine.getOptionValue("entry"));
-        if (entryPoints.size() == 0 && !codeGraphMode) {
+        if (entryPoints.isEmpty() && !codeGraphMode) {
             throw new ParseException("no entry point method set, please set at least one entry point");
         }
 
+        // set runtime config
         String runtimeConfPath = commandLine.getOptionValue("conf");
-        if (runtimeConfPath == null || runtimeConfPath.equals("")) {
-            runtimeConfPath = "runtime_config";
+        if (runtimeConfPath != null && !runtimeConfPath.isEmpty()) {
+            runtimeConfigPath = Paths.get(runtimeConfPath);
         }
-        runtimeConfigPath = Paths.get(runtimeConfPath);
-
-
-        // register spring route manager
-        registeredRouteManager = new ArrayList<>();
-        registerRouteManager(new SprintBootRouteManager(runtimeConfigPath));
-
-        // register source sink manager
-        sourceSinkManager = new SourceSinkManager();
-        sourceSinkManager.loadSinkRuleFromFile(runtimeConfigPath.resolve("sinks.json"));
     }
 
-    public static void registerRouteManager(RouteManager routeManager) {
-        registeredRouteManager.add(routeManager);
+    public static void registerRouteManager(EntryManager entryManager) {
+        registeredEntryManager.add(entryManager);
     }
 
     private static Set<String> getAllTarget(String target) {
@@ -76,7 +85,7 @@ public class Configuration {
 
     private static Set<String> splitWithComa(String target) {
         Set<String> targets = new LinkedHashSet<>();
-        if (target == null || target.equals("")) {
+        if (target == null || target.isEmpty()) {
             return targets;
         }
         Arrays.stream(target.split(",")).forEach(s -> targets.add(s.trim()));
@@ -89,6 +98,10 @@ public class Configuration {
 
     public static Set<String> getTargets() {
         return targets;
+    }
+
+    public static void setOutputPath(String outputPath) {
+        Configuration.outputPath = outputPath;
     }
 
     public static String getOutputPath() {
@@ -111,7 +124,7 @@ public class Configuration {
         return sourceSinkManager;
     }
 
-    public static List<RouteManager> getRegisteredRouteManager() {
-        return registeredRouteManager;
+    public static List<EntryManager> getRegisteredEntryManager() {
+        return registeredEntryManager;
     }
 }

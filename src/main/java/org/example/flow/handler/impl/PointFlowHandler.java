@@ -10,6 +10,7 @@ import org.example.core.basic.field.InstanceField;
 import org.example.core.basic.field.StaticField;
 import org.example.core.basic.identity.LocalVariable;
 import org.example.core.basic.node.CallNode;
+import org.example.core.basic.obj.ConstantObj;
 import org.example.core.basic.obj.MapCollectionObj;
 import org.example.core.basic.obj.Obj;
 import org.example.core.basic.obj.PhantomObj;
@@ -81,6 +82,10 @@ public class PointFlowHandler extends AbstractFlowHandler<Set<Obj>> {
                     }
                 }
             }
+        } else if (node instanceof InstanceField) {
+            InstanceField instanceField = (InstanceField) node;
+            Set<Obj> baseObjs = callStack.getRefObjs(instanceField.getBase());
+            baseObjs.forEach(obj -> resObj.addAll(obj.getField(instanceField.getField().getName())));
         } else {
             resObj.addAll(callStack.getRefObjs(node));
         }
@@ -94,21 +99,27 @@ public class PointFlowHandler extends AbstractFlowHandler<Set<Obj>> {
         } else if (to instanceof InstanceField) {
             InstanceField field = (InstanceField) to;
             Set<Obj> baseObjs = callStack.getRefObjs(field.getBase());
-            handleFieldStore(baseObjs, Collections.singleton(field), from);
+            handleFieldStore(baseObjs, Collections.singleton(field.getField().getName()), from);
         } else if (to instanceof StaticField) {
             getPointContainer().addPointRelation(to, from);
         } else if (to instanceof ArrayLoad) {
             ArrayLoad arrLoad = (ArrayLoad) to;
             Set<Obj> baseObjs = callStack.getRefObjs(arrLoad.getBaseNode());
             Set<Obj> idxObjs = callStack.getRefObjs(arrLoad.getIdxNode());
-            handleFieldStore(baseObjs, NodeUtil.convertToNodeSet(idxObjs), from);
+            Set<String> fieldIDs = new HashSet<>();
+            idxObjs.forEach(obj -> {
+                if (obj instanceof ConstantObj) {
+                    fieldIDs.add(((ConstantObj) obj).getValue());
+                }
+            });
+            handleFieldStore(baseObjs, fieldIDs, from);
         }
     }
 
-    public void handleFieldStore(Set<Obj> baseOBjs, Set<Node> fieldNodes, Set<Obj> storeObjs) {
+    public void handleFieldStore(Set<Obj> baseOBjs, Set<String> fieldIDs, Set<Obj> storeObjs) {
         for (Obj baseObj : baseOBjs) {
-            for (Node fieldNode : fieldNodes) {
-                baseObj.putField(fieldNode, storeObjs);
+            for (String fieldID : fieldIDs) {
+                baseObj.putField(fieldID, storeObjs);
             }
         }
     }
@@ -146,12 +157,14 @@ public class PointFlowHandler extends AbstractFlowHandler<Set<Obj>> {
     }
 
     protected Set<Obj> handleMapPut(Obj mapObj, Obj key, Set<Obj> val) {
-        mapObj.putField(key, val);
+        MapCollectionObj mapCollectionObj = (MapCollectionObj) mapObj;
+        mapCollectionObj.putKV(key, val);
         return Collections.emptySet();
     }
 
     protected Set<Obj> handleMapGet(Obj mapObj, Obj key) {
-        return mapObj.getField(key);
+        MapCollectionObj mapCollectionObj = (MapCollectionObj) mapObj;
+        return mapCollectionObj.getKV(key);
     }
 
     @Override

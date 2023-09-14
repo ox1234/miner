@@ -3,24 +3,21 @@ package org.example.soot;
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.example.config.router.RouteManager;
-import org.example.config.router.Router;
+import org.example.config.entry.EntryManager;
+import org.example.config.entry.IEntry;
+import org.example.config.entry.RouterEntry;
 import org.example.config.Configuration;
 import org.example.soot.impl.AchieveHandler;
 import org.example.soot.impl.DirectoryHandler;
 import org.example.soot.impl.FatJarHandler;
 import org.example.soot.impl.SingleClassHandler;
 import org.example.util.ClassUtil;
-import org.example.util.MethodUtil;
-import org.example.util.TagUtil;
 import soot.*;
 import soot.options.Options;
-import soot.tagkit.AnnotationTag;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.function.Consumer;
 
 // SootSetup 负责所有Soot的参数设置和Soot类的加载路径
 public class SootSetup {
@@ -31,6 +28,7 @@ public class SootSetup {
     private Hierarchy hierarchy;
     private List<String> applicationDirs;
     private List<String> libraryDirs;
+    private Set<IEntry> entries;
 
     public SootSetup() {
         sourceTypeSpecifier = new DefaultSourceTypeSpecifier();
@@ -55,7 +53,7 @@ public class SootSetup {
 
     // setScanTarget 该函数负责Soot分析的路径，支持war，jar包（会自解压压缩包）
     private void setScanTarget(String target) throws Exception {
-        logger.info(String.format("will initialize soot environment with %s path", target));
+        logger.info(String.format("will parseCommandLine soot environment with %s path", target));
         Path targetPath = Paths.get(target);
         for (TargetHandler registeredHandler : registeredHandlers) {
             if (registeredHandler.canHandle(targetPath)) {
@@ -107,18 +105,16 @@ public class SootSetup {
             SourceType sourceType = sourceTypeSpecifier.getClassSourceType(sootClass);
             ClassUtil.setClassType(sootClass, sourceType);
         }
-        logger.info(String.format("load %d app classes, %d library classes, %d phantom classes",
-                Scene.v().getApplicationClasses().size(),
-                Scene.v().getLibraryClasses().size(),
-                Scene.v().getPhantomClasses().size()));
+        logger.info(String.format("load %d app classes, %d library classes, %d phantom classes", Scene.v().getApplicationClasses().size(), Scene.v().getLibraryClasses().size(), Scene.v().getPhantomClasses().size()));
     }
 
     private void setupEntryPoints() {
         List<SootMethod> entryMethods = new ArrayList<>();
         Set<String> entryPoints = Configuration.getEntryPoints();
         if (entryPoints.isEmpty()) {
-            getRouteMethods(Scene.v().getApplicationClasses()).forEach(router -> {
-                entryMethods.add(router.getDispatchMethod());
+            entries = getEntries(Scene.v().getApplicationClasses());
+            entries.forEach(perEntry -> {
+                entryMethods.add(perEntry.entryMethod());
             });
         } else {
             entryPoints.forEach(sig -> {
@@ -184,21 +180,19 @@ public class SootSetup {
         return Scene.v().getActiveHierarchy();
     }
 
-    public Set<Router> getRouteMethods(Collection<SootClass> classes) {
+    private Set<IEntry> getEntries(Collection<SootClass> classes) {
         logger.info(String.format("start route collect in %d classes", classes.size()));
-        List<RouteManager> routeManagers = Configuration.getRegisteredRouteManager();
-        Set<Router> routeMethods = new LinkedHashSet<>();
-        routeManagers.forEach(routeManager -> classes.forEach(sootClass -> {
-            if (routeManager.isController(sootClass)) {
-                sootClass.getMethods().forEach(sootMethod -> {
-                    if (routeManager.isRouteMethod(sootMethod)) {
-                        routeMethods.add(routeManager.parseToRouteMethod(sootMethod));
-                    }
-                });
-            }
+        List<EntryManager> entryManagers = Configuration.getRegisteredEntryManager();
+        Set<IEntry> entries = new LinkedHashSet<>();
+        entryManagers.forEach(entryManager -> classes.forEach(sootClass -> {
+            entries.addAll(entryManager.getEntry(sootClass));
         }));
-        logger.info(String.format("get %d route methods in project", routeMethods.size()));
-        return routeMethods;
+        logger.info(String.format("get %d route methods in project", entries.size()));
+        return entries;
+    }
+
+    public Set<IEntry> getEntries() {
+        return entries;
     }
 
     public Hierarchy getHierarchy() {

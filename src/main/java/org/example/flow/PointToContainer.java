@@ -4,16 +4,21 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.example.core.basic.Global;
 import org.example.core.basic.Node;
+import org.example.core.basic.TypeNode;
 import org.example.core.basic.field.ArrayLoad;
 import org.example.core.basic.field.InstanceField;
 import org.example.core.basic.field.StaticField;
 import org.example.core.basic.identity.LocalVariable;
 import org.example.core.basic.identity.Parameter;
 import org.example.core.basic.identity.UnifyReturn;
+import org.example.core.basic.obj.ConstantObj;
 import org.example.core.basic.obj.Obj;
+import org.example.core.basic.obj.PhantomObj;
 import org.example.util.NodeUtil;
+import soot.SootField;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 public class PointToContainer {
     private final Logger logger = LogManager.getLogger(PointToContainer.class);
@@ -34,7 +39,7 @@ public class PointToContainer {
             // if right node is instance field(xxx = a.b), will get it own base object and get what object is b referenced
             InstanceField field = (InstanceField) rightNode;
             Set<Obj> baseObjs = getNodeRefObj(field.getBase());
-            objs.addAll(handleFieldLoad(baseObjs, Collections.singleton(field)));
+            objs.addAll(handleFieldLoad(baseObjs, Collections.singleton(field.getField().getName())));
         } else if (rightNode instanceof StaticField) {
             // if right node is static field, also check point container
             objs.addAll(getPointRefObj(rightNode));
@@ -43,20 +48,26 @@ public class PointToContainer {
             ArrayLoad arrLoad = (ArrayLoad) rightNode;
             Set<Obj> baseObjs = getNodeRefObj(arrLoad.getBaseNode());
             Set<Obj> idxObjs = getNodeRefObj(arrLoad.getIdxNode());
-            objs.addAll(handleFieldLoad(baseObjs, NodeUtil.convertToNodeSet(idxObjs)));
+            Set<String> fieldIDs = new HashSet<>();
+            idxObjs.forEach(obj -> {
+                if (obj instanceof ConstantObj) {
+                    fieldIDs.add(((ConstantObj) obj).getValue());
+                }
+            });
+            objs.addAll(handleFieldLoad(baseObjs, fieldIDs));
         }
         return objs;
     }
 
-    private Set<Obj> handleFieldLoad(Set<Obj> baseObjs, Set<Node> fieldNodes) {
+    private Set<Obj> handleFieldLoad(Set<Obj> baseObjs, Set<String> fieldIDs) {
         Set<Obj> objs = new LinkedHashSet<>();
         for (Obj baseObj : baseObjs) {
-            for (Node fieldNode : fieldNodes) {
-                Set<Obj> refObjs = baseObj.getField(fieldNode);
+            for (String fieldID : fieldIDs) {
+                Set<Obj> refObjs = baseObj.getField(fieldID);
                 if (refObjs != null) {
                     objs.addAll(refObjs);
                 } else {
-                    logger.debug(String.format("%s object %s field is point to any object, will skip tracing", baseObj, fieldNode));
+                    logger.warn(String.format("%s object %s field is point to any object, will skip tracing", baseObj, fieldID));
                 }
             }
         }
@@ -67,6 +78,15 @@ public class PointToContainer {
         if (objSet.isEmpty()) {
             return;
         }
+
+        // handle node type cast
+        objSet.forEach(obj -> {
+            if (obj instanceof PhantomObj && node instanceof TypeNode) {
+                if (((TypeNode) node).getType() != obj.getType()) {
+                    obj.resetType(((TypeNode) node).getType());
+                }
+            }
+        });
 
         // if is unify return, will set method return objs
         if (node instanceof UnifyReturn) {
