@@ -1,19 +1,14 @@
 package org.example.tags;
 
-import org.apache.logging.log4j.core.appender.routing.Route;
-import org.example.basic.Router;
-import soot.SootMethod;
+import org.example.config.entry.RouterEntry;
 import soot.tagkit.AttributeValueException;
 import soot.tagkit.Tag;
 
-import java.util.HashSet;
-import java.util.Set;
-
 public class RouteTag implements Tag {
-    private Router router;
+    private RouterEntry routerEntry;
 
-    public RouteTag(Router router) {
-        this.router = router;
+    public RouteTag(RouterEntry routerEntry) {
+        this.routerEntry = routerEntry;
     }
 
     @Override
@@ -23,10 +18,10 @@ public class RouteTag implements Tag {
 
     @Override
     public byte[] getValue() throws AttributeValueException {
-        return String.join(",", router.getRoutes()).getBytes();
+        return String.join(",", routerEntry.getRoutes()).getBytes();
     }
 
-    public Router getRoute() {
-        return router;
+    public RouterEntry getRoute() {
+        return routerEntry;
     }
 }

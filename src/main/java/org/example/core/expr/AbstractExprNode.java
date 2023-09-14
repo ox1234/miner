@@ -3,6 +3,7 @@ package org.example.core.expr;
 import org.example.core.Loc;
 import org.example.core.basic.Node;
 import org.example.core.basic.obj.Obj;
+import soot.Type;
 import soot.jimple.Stmt;
 
 import java.util.List;

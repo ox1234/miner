@@ -2,9 +2,11 @@ package org.example.flow.collector.vuln;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.example.basic.Router;
+import org.example.config.entry.RouterEntry;
 import org.example.basic.Vulnerability;
 import org.example.config.Configuration;
+import org.example.config.sourcesink.Sink;
+import org.example.config.sourcesink.SourceSinkManager;
 import org.example.core.IntraAnalyzedMethod;
 import org.example.core.MyBatisIntraAnalyzedMethod;
 import org.example.core.RouteIntraAnalyzedMethod;
@@ -16,7 +18,6 @@ import org.example.flow.collector.Collector;
 import org.example.flow.PointToContainer;
 import org.example.flow.TaintContainer;
 import org.example.flow.context.ContextMethod;
-import org.example.rule.Sink;
 import org.example.util.MethodUtil;
 import soot.PrimType;
 import soot.RefType;
@@ -26,7 +27,8 @@ import java.util.*;
 
 public class VulnCollector implements Collector {
     private final Logger logger = LogManager.getLogger(VulnCollector.class);
-    private static Set<Vulnerability> vulnerabilities = new HashSet<>();
+    private Set<Vulnerability> vulnerabilities = new HashSet<>();
+    private SourceSinkManager sourceSinkManager = Configuration.getSourceSinkManager();
 
     @Override
     public void collect(CallStack callStack) {
@@ -34,17 +36,17 @@ public class VulnCollector implements Collector {
         if (checkReachSink(reachedMethod)) {
             ContextMethod entryMethod = callStack.getFirst();
             IntraAnalyzedMethod entryAnalyzedMethod = entryMethod.getIntraAnalyzedMethod();
-            Router router = null;
+            RouterEntry routerEntry = null;
             if (entryAnalyzedMethod instanceof RouteIntraAnalyzedMethod) {
                 RouteIntraAnalyzedMethod routeIntraAnalyzedMethod = (RouteIntraAnalyzedMethod) entryAnalyzedMethod;
-                router = routeIntraAnalyzedMethod.getRouter();
+                routerEntry = routeIntraAnalyzedMethod.getRouter();
             }
-            vulnerabilities.add(new Vulnerability(router, reachedMethod, callStack));
+            vulnerabilities.add(new Vulnerability(routerEntry, reachedMethod, callStack));
             logger.error(String.format("!!! find vulnerability reach sink to %s", reachedMethod.getSootMethod().getSignature()));
         }
     }
 
-    public static Set<Vulnerability> getVulnerabilities() {
+    public Set<Vulnerability> getVulnerabilities() {
         return vulnerabilities;
     }
 
@@ -67,18 +69,22 @@ public class VulnCollector implements Collector {
             }
         }
 
+        // test case sink match
+        if (reachedMethod.getSootMethod().getName().equals("sink") && taintContainer.checkIdxParamIsTaint(0)) {
+            return true;
+        }
 
         for (String signature : MethodUtil.getOverrideMethodSignatureOfInclude(reachedMethod.getSootMethod())) {
-            if (Configuration.getSinkMap().containsKey(signature)) {
-                Sink sink = Configuration.getSinkMap().get(signature);
+            if (sourceSinkManager.isSinkSig(signature)) {
+                Sink sink = sourceSinkManager.getSink(signature);
 
                 // if base is taint and config defined such sink without no param, will report
-                if (reachedMethod.isBaseTaint() && sink.index.size() == 0) {
+                if (reachedMethod.isBaseTaint() && sink.getSinkIdx().isEmpty()) {
                     return true;
                 }
 
                 // check index sink is taint
-                for (int idx : sink.index) {
+                for (int idx : sink.getSinkIdx()) {
                     if (taintContainer.checkIdxParamIsTaint(idx)) {
                         return true;
                     }
@@ -128,7 +134,7 @@ public class VulnCollector implements Collector {
                 Set<Obj> objs = pointToContainer.getPointRefObj(paramNode);
                 for (Obj perObj : objs) {
                     if (perObj instanceof NormalObj) {
-                        for (Obj fieldObj : ((NormalObj) perObj).getFieldObjByFieldName(placeHolder)) {
+                        for (Obj fieldObj : perObj.getField(placeHolder)) {
                             if (taintContainer.containsTaint(fieldObj)) {
                                 return true;
                             }

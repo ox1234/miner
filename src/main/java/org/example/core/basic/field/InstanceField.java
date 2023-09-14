@@ -19,6 +19,10 @@ public class InstanceField extends MethodLevelSite implements TypeNode{
         return base;
     }
 
+    public SootField getField() {
+        return field;
+    }
+
     @Override
     public Type getType() {
         return field.getDeclaringClass().getType();

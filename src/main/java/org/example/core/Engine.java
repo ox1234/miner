@@ -61,7 +61,7 @@ public class Engine {
     public Map<String, IntraAnalyzedMethod> extractPointRelation() {
         Map<String, IntraAnalyzedMethod> intraAnalyzedMethods = new HashMap<>();
         Set<SootMethod> visitedMethods = new HashSet<>();
-        Scene.v().getApplicationClasses().snapshotIterator().forEachRemaining(new Consumer<SootClass>() {
+        Scene.v().getApplicationClasses().snapshotIterator().forEachRemaining(new Consumer<>() {
             @Override
             public void accept(SootClass sootClass) {
                 engineHooks.forEach(engineHook -> {

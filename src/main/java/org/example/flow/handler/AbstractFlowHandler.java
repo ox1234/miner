@@ -37,6 +37,10 @@ abstract public class AbstractFlowHandler<T> implements FlowHandler<T> {
         this.staticInitializedClasses = new LinkedHashSet<>();
     }
 
+    public List<Collector> getCollectors() {
+        return collectors;
+    }
+
     public TaintContainer getTaintContainer() {
         return callStack.peek().getTaintContainer();
     }
@@ -59,6 +63,7 @@ abstract public class AbstractFlowHandler<T> implements FlowHandler<T> {
         }
         postProcessMethod(entry);
 
+        // for every method analysis finish, just do some information collect
         doCollect();
         callStack.pop();
     }

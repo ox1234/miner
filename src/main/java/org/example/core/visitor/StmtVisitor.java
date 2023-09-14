@@ -4,10 +4,12 @@ import org.example.core.IntraAnalyzedMethod;
 import org.example.core.Loc;
 import org.example.core.basic.Node;
 import org.example.core.basic.Site;
+import org.example.core.basic.TypeNode;
 import org.example.core.expr.AbstractExprNode;
 import org.example.core.basic.identity.UnifyReturn;
 import org.example.core.basic.identity.VoidNode;
 import soot.SootMethod;
+import soot.Type;
 import soot.Value;
 import soot.VoidType;
 import soot.jimple.*;
@@ -136,6 +138,12 @@ public class StmtVisitor extends AbstractStmtSwitch<Void> {
         AbstractExprNode rightNode = rightVisitor.getResult();
 
         Node node = leftNodes.getFirstNode();
+
+        if (rightVal instanceof CastExpr && node instanceof TypeNode) {
+            Type castType = ((CastExpr) rightVal).getCastType();
+            ((TypeNode) node).resetType(castType);
+        }
+
         analyzedMethod.addFlow(node, rightNode, stmt);
     }
 

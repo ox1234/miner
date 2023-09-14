@@ -1,0 +1,16 @@
+{
+  "controllerClassTags": [
+    "Lorg/springframework/web/bind/annotation/RestController;",
+    "Lorg/springframework/stereotype/Controller;",
+    "Lcom/fr/third/springframework/stereotype/Controller;"
+  ],
+  "requestMethodTags": [
+    "Lorg/springframework/web/bind/annotation/RequestMapping;",
+    "Lorg/springframework/web/bind/annotation/DeleteMapping;",
+    "Lorg/springframework/web/bind/annotation/GetMapping;",
+    "Lorg/springframework/web/bind/annotation/PatchMapping;",
+    "Lorg/springframework/web/bind/annotation/PostMapping;",
+    "Lorg/springframework/web/bind/annotation/PutMapping;",
+    "Lcom/fr/third/springframework/web/bind/annotation/RequestMapping;"
+  ]
+}

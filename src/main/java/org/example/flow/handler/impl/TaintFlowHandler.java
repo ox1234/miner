@@ -11,6 +11,7 @@ import org.example.core.basic.obj.Obj;
 import org.example.core.expr.*;
 import org.example.flow.collector.Collector;
 import org.example.flow.FlowEngine;
+import org.example.flow.collector.vuln.VulnCollector;
 import org.example.flow.context.ContextMethod;
 import org.example.flow.context.SpecialContextMethod;
 import org.example.flow.handler.AbstractFlowHandler;
@@ -19,7 +20,6 @@ import java.util.*;
 
 public class TaintFlowHandler extends AbstractFlowHandler<Boolean> {
     private final Logger logger = LogManager.getLogger(TaintFlowHandler.class);
-    private boolean taintEntry = false;
 
     public TaintFlowHandler(FlowEngine flowEngine, Collector... collectors) {
         super(flowEngine, collectors);
@@ -34,6 +34,15 @@ public class TaintFlowHandler extends AbstractFlowHandler<Boolean> {
                 contextMethod.getTaintContainer().addTaint(paramNode, callStack.getRefObjs(paramNode), null);
             }
         }
+    }
+
+    public VulnCollector getVulnCollector() {
+        for (Collector collector : getCollectors()) {
+            if (collector instanceof VulnCollector) {
+                return (VulnCollector) collector;
+            }
+        }
+        return null;
     }
 
 
@@ -77,16 +86,6 @@ public class TaintFlowHandler extends AbstractFlowHandler<Boolean> {
     }
 
     @Override
-    public void doAnalysis(ContextMethod entry) {
-        if (!taintEntry) {
-            entry.taintAllParams();
-            taintEntry = true;
-        }
-        super.doAnalysis(entry);
-    }
-
-
-    @Override
     public void preProcessMethod(ContextMethod currentMethod) {
         if (currentMethod.isAllParamTaint()) {
             taintMethodParam(currentMethod);
@@ -107,7 +106,7 @@ public class TaintFlowHandler extends AbstractFlowHandler<Boolean> {
 
         // do arg param taint map
         List<Node> args = callNode.getArgs();
-        if (args != null && args.size() > 0) {
+        if (args != null && !args.isEmpty()) {
             for (int i = 0; i < args.size(); i++) {
                 // map taint variable
                 Set<Obj> paramObjs = callStack.getRefObjs(args.get(i));

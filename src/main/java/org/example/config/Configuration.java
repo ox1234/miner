@@ -6,58 +6,77 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
-import org.example.rule.Root;
-import org.example.rule.Rule;
-import org.example.rule.RuleUtil;
-import org.example.rule.Sink;
+import org.example.config.entry.EntryManager;
+import org.example.config.entry.SpringBootEntryManager;
+import org.example.config.sourcesink.SourceSinkManager;
 
-import java.io.FileInputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 public class Configuration {
     private static final Logger logger = LogManager.getLogger(Configuration.class);
 
+    private static Path runtimeConfigPath;
+
     private static Set<String> targets;
     private static String outputPath;
-    private static Set<String> entryPoints;
-
-    private static Root rule;
-    private static Set<String> sinks;
-    private static Map<String, Sink> sinkMap;
+    private static Set<String> entryPoints = new LinkedHashSet<>();
 
     private static boolean debugMode;
     private static boolean codeGraphMode;
 
-    public static void initialize(CommandLine commandLine) throws Exception {
-        sinkMap = new HashMap<>();
-        entryPoints = new LinkedHashSet<>();
+    private static SourceSinkManager sourceSinkManager;
+    private static List<EntryManager> registeredEntryManager;
 
+    static {
+        runtimeConfigPath = Paths.get("runtime_config");
+
+        // register spring route manager
+        registeredEntryManager = new ArrayList<>();
+        registerRouteManager(new SpringBootEntryManager(runtimeConfigPath));
+
+        // register source sink manager
+        sourceSinkManager = new SourceSinkManager();
+        sourceSinkManager.loadSinkRuleFromFile(runtimeConfigPath.resolve("sinks.json"));
+
+        outputPath = "tmp";
+    }
+
+    public static void parseCommandLine(CommandLine commandLine) throws Exception {
+        // set target
         targets = getAllTarget(commandLine.getOptionValue("target"));
+
+        // set debug mode
         debugMode = commandLine.hasOption("debug");
         if (debugMode) {
             Configurator.setRootLevel(Level.DEBUG);
         }
 
+        // set codegraph mode
         codeGraphMode = commandLine.hasOption("codegraph");
-        outputPath = commandLine.getOptionValue("output");
-        if (outputPath == null || outputPath.equals("")) {
-            outputPath = "tmp";
+
+        // set output path
+        String outputPathArg = commandLine.getOptionValue("output");
+        if (outputPathArg != null && !outputPathArg.isEmpty()) {
+            outputPath = outputPathArg;
         }
 
+        // set entry point
         entryPoints = getAllEntryPoints(commandLine.getOptionValue("entry"));
-        if (entryPoints.size() == 0 && !codeGraphMode) {
+        if (entryPoints.isEmpty() && !codeGraphMode) {
             throw new ParseException("no entry point method set, please set at least one entry point");
         }
 
-        try (FileInputStream fileInputStream = new FileInputStream("config.json")) {
-            byte[] buf = new byte[fileInputStream.available()];
-            fileInputStream.read(buf);
-            rule = RuleUtil.getRule(new String(buf));
-            sinks = getAllSinkSignature();
-            rule.rules.forEach(rule1 -> rule1.sinks.forEach(sink -> sinkMap.put(sink.expression, sink)));
-        } catch (Exception e) {
-            logger.info(String.format("read source sink rules fail: %s", e.getMessage()));
+        // set runtime config
+        String runtimeConfPath = commandLine.getOptionValue("conf");
+        if (runtimeConfPath != null && !runtimeConfPath.isEmpty()) {
+            runtimeConfigPath = Paths.get(runtimeConfPath);
         }
+    }
+
+    public static void registerRouteManager(EntryManager entryManager) {
+        registeredEntryManager.add(entryManager);
     }
 
     private static Set<String> getAllTarget(String target) {
@@ -66,7 +85,7 @@ public class Configuration {
 
     private static Set<String> splitWithComa(String target) {
         Set<String> targets = new LinkedHashSet<>();
-        if (target == null || target.equals("")) {
+        if (target == null || target.isEmpty()) {
             return targets;
         }
         Arrays.stream(target.split(",")).forEach(s -> targets.add(s.trim()));
@@ -77,38 +96,16 @@ public class Configuration {
         return splitWithComa(entry);
     }
 
-    private static Set<String> getAllSinkSignature() {
-        Set<String> sinks = new HashSet<>();
-        for (Rule sinkRule : rule.rules) {
-            if (sinkRule.name.equals("sql_injection")) {
-                continue;
-            }
-            for (Sink sink : sinkRule.sinks) {
-                sinks.add(sink.expression);
-            }
-        }
-        return sinks;
-    }
-
-
     public static Set<String> getTargets() {
         return targets;
     }
 
+    public static void setOutputPath(String outputPath) {
+        Configuration.outputPath = outputPath;
+    }
+
     public static String getOutputPath() {
         return outputPath;
-    }
-
-    public static Root getRule() {
-        return rule;
-    }
-
-    public static Set<String> getSinks() {
-        return sinks;
-    }
-
-    public static Map<String, Sink> getSinkMap() {
-        return sinkMap;
     }
 
     public static boolean isDebugMode() {
@@ -121,5 +118,13 @@ public class Configuration {
 
     public static Set<String> getEntryPoints() {
         return entryPoints;
+    }
+
+    public static SourceSinkManager getSourceSinkManager() {
+        return sourceSinkManager;
+    }
+
+    public static List<EntryManager> getRegisteredEntryManager() {
+        return registeredEntryManager;
     }
 }

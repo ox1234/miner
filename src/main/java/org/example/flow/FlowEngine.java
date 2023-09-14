@@ -2,6 +2,7 @@ package org.example.flow;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.example.config.entry.IEntry;
 import org.example.core.IntraAnalyzedMethod;
 import org.example.core.basic.Node;
 import org.example.core.basic.Site;
@@ -52,7 +53,8 @@ public class FlowEngine {
         return flowHandlers.get(flowType);
     }
 
-    public void doAnalysis(SootMethod entryPoint) {
+    public void doAnalysis(IEntry iEntry) {
+        SootMethod entryPoint = iEntry.entryMethod();
         SootClass entryClass = entryPoint.getDeclaringClass();
 
         ContextMethod entry;
@@ -73,6 +75,9 @@ public class FlowEngine {
 
         // generate input param object
         entry.genFakeParamObj();
+        if (iEntry.isParamTaint()) {
+            entry.taintAllParams();
+        }
 
         for (FlowHandlerEnum value : FlowHandlerEnum.values()) {
             logger.info(String.format("do %s analysis from %s entry", value, entryPoint.getSignature()));
